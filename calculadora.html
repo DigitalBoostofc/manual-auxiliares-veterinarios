@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora da aula · conferir a dose</title>
+  <meta name="description" content="Ferramenta simples para o auxiliar conferir o volume da ampola depois da ordem do veterinário." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%230c1c1b' width='32' height='32'/%3E%3Ccircle cx='10' cy='16' r='2' fill='%23c9a56a'/%3E%3Ccircle cx='22' cy='16' r='2' fill='%232f8f82'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ground: #0c1c1b;
+      --ground-2: #101a19;
+      --ink: #f4efe4;
+      --ink-2: #b7b3a8;
+      --muted: #6c7378;
+      --amber: #c9a56a;
+      --teal: #2f8f82;
+      --hair: rgba(244, 239, 228, .13);
+      --nav: 58px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--ground);
+      color: var(--ink);
+      font-family: Sora, system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font-family: inherit; color: inherit; }
+    .display { font-family: Syne, sans-serif; font-weight: 800; letter-spacing: -.025em; line-height: .92; }
+    .label {
+      font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .label.amber { color: var(--amber); }
+    .label.teal { color: var(--teal); }
+
+    nav.bar {
+      position: fixed; inset: 0 0 auto; height: var(--nav); z-index: 50;
+      display: flex; align-items: center; gap: 28px;
+      padding: 0 22px;
+      background: rgba(12, 28, 27, .72);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--hair);
+    }
+    .word {
+      font-family: Syne, sans-serif; font-weight: 800; font-size: 15px;
+      letter-spacing: -.02em; text-transform: uppercase;
+    }
+    .amp { color: var(--amber); }
+    .bar nav { display: flex; gap: 22px; flex: 1; }
+    .bar nav a {
+      font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--ink-2);
+    }
+    .bar nav a:hover, .bar nav a.on { color: var(--amber); }
+    .pill {
+      font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase;
+      padding: 8px 14px; border: 1px solid var(--hair);
+      background: transparent; cursor: pointer; color: var(--ink);
+    }
+    .bar > .pill { margin-left: auto; }
+    .pill:hover { border-color: var(--amber); color: var(--amber); }
+
+    main { padding: calc(var(--nav) + 48px) 8vw 80px; max-width: 1080px; }
+    h1 { font-size: clamp(36px, 6vw, 68px); max-width: 14ch; margin: 10px 0 16px; }
+    .talk { color: var(--ink-2); max-width: 52ch; font-size: 17px; }
+
+    .board {
+      margin-top: 40px;
+      padding: 28px 0;
+      border-top: 1px solid var(--hair);
+      border-bottom: 1px solid var(--hair);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.2fr;
+      gap: 28px;
+      align-items: end;
+    }
+    .seg { display: flex; gap: 8px; }
+    .seg button, .chip {
+      flex: 1; padding: 14px 10px;
+      border: 1px solid var(--hair); background: transparent;
+      cursor: pointer; font-size: 15px; font-weight: 600;
+    }
+    .seg button.on, .chip.on { border-color: var(--amber); color: var(--amber); }
+    .weight { display: flex; align-items: center; gap: 10px; }
+    .weight button {
+      width: 48px; height: 48px;
+      border: 1px solid var(--hair); background: transparent;
+      font-size: 22px; cursor: pointer;
+    }
+    .weight input {
+      flex: 1; background: transparent; border: 0;
+      border-bottom: 1px solid var(--hair);
+      font-family: Syne, sans-serif; font-weight: 800;
+      font-size: 42px; letter-spacing: -.03em;
+      text-align: center; outline: none; width: 120px;
+    }
+    .who {
+      font-size: 15px; color: var(--ink-2);
+    }
+    .who b { color: var(--amber); font-weight: 600; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 8px; }
+    .chip { flex: 0 0 auto; padding: 8px 12px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+
+    .list { display: grid; gap: 16px; margin-top: 20px; }
+    .drug {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr;
+      gap: 18px;
+      padding: 22px 0;
+      border-top: 1px solid var(--hair);
+    }
+    .drug h2 { font-size: 28px; margin: 6px 0 8px; }
+    .big {
+      font-family: Syne, sans-serif; font-weight: 800;
+      font-size: clamp(26px, 3vw, 36px);
+      letter-spacing: -.03em;
+      color: var(--amber);
+    }
+    .drug p { color: var(--ink-2); font-size: 14px; margin-top: 6px; }
+    .warn { color: var(--ink); font-size: 14px; margin-top: 10px; max-width: 42ch; }
+    .empty { color: var(--muted); padding: 40px 0; }
+
+    .note {
+      margin-top: 48px; padding-top: 22px;
+      border-top: 1px solid var(--hair);
+      color: var(--muted); font-size: 13px; max-width: 62ch;
+    }
+
+    @media (max-width: 900px) {
+      .board, .drug { grid-template-columns: 1fr; }
+      main { padding-left: 6vw; padding-right: 6vw; }
+      .bar nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="bar">
+    <a class="word" href="index.html">Aula<span class="amp">.</span></a>
+    <nav>
+      <a href="index.html">Voltar à aula</a>
+      <a class="on" href="calculadora.html">Calculadora</a>
+      <a href="index.html#quiz">Quiz</a>
+    </nav>
+    <a class="pill" href="index.html">Aula</a>
+  </nav>
+
+  <main>
+    <p class="label amber">Prática guiada</p>
+    <h1 class="display">Vamos conferir a conta juntos.</h1>
+    <p class="talk">Você não escolhe o remédio. O veterinário escolhe. Aqui a gente só faz a conta: peso × dose, e quanto puxar da ampola. Se o número não bater com a ordem, pergunte antes de aplicar.</p>
+
+    <div class="board">
+      <div>
+        <p class="label" style="margin-bottom:10px">1 · Quem é o paciente?</p>
+        <div class="seg" id="sp">
+          <button type="button" class="on" data-sp="cao">Cão</button>
+          <button type="button" data-sp="gato">Gato</button>
+        </div>
+      </div>
+      <div>
+        <p class="label" style="margin-bottom:10px">2 · Quanto pesa?</p>
+        <div class="weight">
+          <button type="button" id="minus" aria-label="Diminuir">−</button>
+          <input id="peso" type="number" min="0.5" max="80" step="0.1" value="10" />
+          <button type="button" id="plus" aria-label="Aumentar">+</button>
+        </div>
+      </div>
+      <p class="who" id="who">Conta para um <b>cão de 10 kg</b>.</p>
+    </div>
+
+    <p class="label" style="margin-top:28px">3 · Qual a situação? (isso só organiza a lista)</p>
+    <div class="chips" id="chips"></div>
+    <div class="list" id="list"></div>
+    <p class="note">Faixas de treino (Merck / Plumb / rotina de emergência). Ampola típica do Brasil — se a caixa for outra, o volume muda. Anti-inflamatório (meloxicam, carprofeno) só depois que o animal já está com pressão e hidratação boas. No gato, enrofloxacina não passa de 5 mg/kg.</p>
+  </main>
+
+  <script>
+    const cats = [
+      { id: "all", label: "Tudo" },
+      { id: "soro", label: "Soro" },
+      { id: "dor", label: "Dor" },
+      { id: "atb", label: "Antibiótico" },
+      { id: "crise", label: "Convulsão" },
+      { id: "apoio", label: "Enjoo e apoio" }
+    ];
+
+    const drugs = [
+      {
+        cat: "soro", name: "Soro Ringer",
+        for: "Quando o animal está em choque: gengiva pálida, frio, mole.",
+        cao: [10, 20], gato: [5, 10], u: "mL", conc: 1, fluid: true,
+        via: "Na veia, em 10 a 15 minutos",
+        freq: "O veterinário olha de novo depois de cada carga",
+        time: "Só na emergência, até melhorar a circulação",
+        note: "Cão aguenta mais volume que gato. Não saia correndo o soro no gato."
+      },
+      {
+        cat: "soro", name: "Soro — teto de choque",
+        for: "O máximo que se pensa em dar, se ainda precisar, sempre reavaliando.",
+        cao: [80, 90], gato: [40, 50], u: "mL", conc: 1, fluid: true,
+        via: "Na veia, aos poucos",
+        freq: "Nunca de uma vez só",
+        time: "Fase de choque",
+        note: "É teto, não alvo. A gente para quando o animal responde."
+      },
+      {
+        cat: "dor", name: "Metadona",
+        for: "Dor forte de fratura, cirurgia, atropelamento.",
+        cao: [0.2, 0.5], gato: [0.1, 0.4], u: "mg", conc: 10,
+        via: "Na veia, no músculo ou debaixo da pele",
+        freq: "A cada 4 a 6 horas",
+        time: "Em geral 1 a 3 dias de dor aguda",
+        note: "Primeira escolha de dor forte. Ampola comum: 10 mg/mL."
+      },
+      {
+        cat: "dor", name: "Morfina",
+        for: "Dor forte, quando não há metadona.",
+        cao: [0.2, 0.5], gato: [0.1, 0.2], u: "mg", conc: 10,
+        via: "No músculo ou debaixo da pele. Na veia só bem devagar.",
+        freq: "A cada 4 a 6 horas",
+        time: "1 a 3 dias de dor aguda",
+        note: "Na veia rápido pode cair a pressão. Pode dar vômito — avise."
+      },
+      {
+        cat: "dor", name: "Dipirona",
+        for: "Dor e febre. Ajuda, mas não substitui o remédio forte de fratura.",
+        cao: [25, 25], gato: [15, 25], u: "mg", conc: 500,
+        via: "Na veia (devagar), no músculo ou debaixo da pele",
+        freq: "A cada 8 horas",
+        time: "Em geral 2 a 5 dias",
+        note: "Ampola comum no Brasil: 500 mg/mL. Um mililitro já é muita coisa — confira a conta."
+      },
+      {
+        cat: "dor", name: "Tramadol",
+        for: "Ajuda na dor, quase sempre junto com outro remédio.",
+        cao: [3, 5], gato: [2, 4], u: "mg", conc: 50,
+        via: "Debaixo da pele, no músculo ou pela boca",
+        freq: "A cada 8 horas",
+        time: "Alguns dias, quando o animal já come",
+        note: "Sozinho quase não segura fratura. Ampola comum: 50 mg/mL."
+      },
+      {
+        cat: "dor", name: "Meloxicam (primeira vez)",
+        for: "Inflamação, só quando o animal já está estável, comendo e urinando.",
+        cao: [0.2, 0.2], gato: [0.1, 0.2], u: "mg", conc: 2,
+        via: "Debaixo da pele, uma vez",
+        freq: "No cão, no dia seguinte 0,1 mg/kg pela boca, uma vez ao dia",
+        time: "Cão: alguns dias. Gato: o veterinário decide com muito cuidado.",
+        note: "Nunca no choque. Nunca junto com outro anti-inflamatório ou corticoide."
+      },
+      {
+        cat: "dor", name: "Gabapentina",
+        for: "Dor que ‘formiga’, e para deixar o animal mais calmo no repouso.",
+        cao: [5, 10], gato: [5, 10], u: "mg", conc: 100,
+        via: "Pela boca",
+        freq: "A cada 8 a 12 horas",
+        time: "Uma ou duas semanas no pós-fratura, se o vet pedir",
+        note: "Cápsula comum: 100 mg. Pode ficar sonolento — isso é esperado."
+      },
+      {
+        cat: "crise", name: "Diazepam na veia",
+        for: "Para tentar parar a convulsão agora.",
+        cao: [0.5, 0.5], gato: [0.5, 0.5], u: "mg", conc: 5,
+        via: "Na veia",
+        freq: "Pode repetir se a crise voltar, só com o veterinário olhando",
+        time: "Minutos. Não é remédio de todo dia sozinho.",
+        note: "Ampola 5 mg/mL. Proteja o animal primeiro: longe de quina, sem mão na boca."
+      },
+      {
+        cat: "crise", name: "Diazepam no ânus",
+        for: "Quando não dá para furar a veia no meio da crise.",
+        cao: [1, 2], gato: [1, 1], u: "mg", conc: 5,
+        via: "Pelo reto, com seringa sem agulha",
+        freq: "Enquanto não houver acesso na veia",
+        time: "Só na crise",
+        note: "No gato o efeito por essa via é menos previsível."
+      },
+      {
+        cat: "crise", name: "Midazolam",
+        for: "Também para parar convulsão. Dá para músculo ou nariz.",
+        cao: [0.2, 0.5], gato: [0.2, 0.5], u: "mg", conc: 5,
+        via: "Na veia, no músculo ou no nariz",
+        freq: "Na crise. Às vezes em gota contínua no hospital",
+        time: "Minutos a algumas horas",
+        note: "Ampola 5 mg/mL. Melhor no músculo do que o diazepam."
+      },
+      {
+        cat: "atb", name: "Cefazolina",
+        for: "Quando o osso está exposto ou a ferida é feia.",
+        cao: [22, 22], gato: [22, 22], u: "mg", conc: 100,
+        via: "Na veia, em alguns minutos",
+        freq: "A cada 6 a 8 horas",
+        time: "1 a 3 dias, depois o vet ajusta",
+        note: "Primeiro antibiótico da fratura aberta. Confira como foi diluído."
+      },
+      {
+        cat: "atb", name: "Amoxicilina com clavulanato",
+        for: "Ferida, mordida, quando o animal já aceita comprimido.",
+        cao: [12.5, 25], gato: [12.5, 20], u: "mg", conc: 50,
+        via: "Pela boca",
+        freq: "A cada 12 horas",
+        time: "Em geral 5 a 10 dias",
+        note: "É a ‘saída’ quando o paciente já está melhor e come."
+      },
+      {
+        cat: "atb", name: "Enrofloxacina",
+        for: "Ferida muito suja, só se o veterinário pedir.",
+        cao: [5, 10], gato: [5, 5], u: "mg", conc: 50,
+        via: "Na veia bem devagar, debaixo da pele ou pela boca",
+        freq: "Uma vez ao dia",
+        time: "Curto, até o resultado da cultura",
+        note: "No gato não passa de 5 mg/kg — pode cegar. Dilua e vá devagar."
+      },
+      {
+        cat: "apoio", name: "Maropitant",
+        for: "Enjoo. Também ajuda quando o opioide dá vontade de vomitar.",
+        cao: [1, 1], gato: [1, 1], u: "mg", conc: 10,
+        via: "Debaixo da pele ou na veia",
+        freq: "Uma vez ao dia",
+        time: "1 a 5 dias",
+        note: "Ampola 10 mg/mL. Debaixo da pele pode arder; gelada arde menos."
+      },
+      {
+        cat: "apoio", name: "Omeprazol",
+        for: "Proteger o estômago, principalmente se for usar anti-inflamatório depois.",
+        cao: [1, 1], gato: [1, 1], u: "mg", conc: 4,
+        via: "Na veia ou pela boca",
+        freq: "A cada 12 horas",
+        time: "3 a 7 dias, se o vet pedir",
+        note: "Não é remédio de dor. É proteção."
+      },
+      {
+        cat: "apoio", name: "Glicose 50% (diluir na metade)",
+        for: "Quando a glicemia está baixa e o animal convulsiona ou desmaia.",
+        cao: [0.5, 1], gato: [0.5, 1], u: "mL", conc: 1, fluid: true,
+        via: "Na veia, bem devagar. Dilua 1 para 1 com soro.",
+        freq: "Aplique, espere 15 a 30 minutos e meça de novo",
+        time: "Até a glicose ficar estável",
+        note: "Se vazar fora da veia, queima o tecido. Dilua sempre."
+      },
+      {
+        cat: "apoio", name: "Naloxona",
+        for: "Se o opioide deixou o animal sem respirar direito.",
+        cao: [0.01, 0.04], gato: [0.01, 0.04], u: "mg", conc: 0.4,
+        via: "Na veia",
+        freq: "Pode repetir, porque dura pouco",
+        time: "Até a respiração voltar — a dor também volta",
+        note: "Ampola 0,4 mg/mL. Avise o veterinário na hora."
+      }
+    ];
+
+    let especie = "cao";
+    let filtro = "all";
+    const pesoEl = document.getElementById("peso");
+
+    const chips = document.getElementById("chips");
+    cats.forEach(c => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip" + (c.id === "all" ? " on" : "");
+      b.dataset.id = c.id;
+      b.textContent = c.label;
+      chips.appendChild(b);
+    });
+
+    function fmt(n) {
+      const d = n < 1 ? 2 : n < 10 ? 1 : 0;
+      return n.toFixed(d).replace(".", ",");
+    }
+    function rng(a, b, suf) {
+      if (Math.abs(a - b) < 1e-9) return `${fmt(a)} ${suf}`;
+      return `${fmt(a)} a ${fmt(b)} ${suf}`;
+    }
+
+    function render() {
+      const w = parseFloat(pesoEl.value);
+      const spName = especie === "cao" ? "cão" : "gato";
+      document.getElementById("who").innerHTML = Number.isFinite(w) && w > 0
+        ? `Conta para um <b>${spName} de ${fmt(w)} kg</b>.`
+        : "Digite o peso.";
+      const list = document.getElementById("list");
+      if (!w || w <= 0) { list.innerHTML = ""; return; }
+      const rows = drugs.filter(d => filtro === "all" || d.cat === filtro);
+      if (!rows.length) { list.innerHTML = "<p class='empty'>Nada neste grupo.</p>"; return; }
+      list.innerHTML = rows.map(d => {
+        const [lo, hi] = d[especie];
+        const A = lo * w, B = hi * w;
+        const dose = rng(A, B, d.u);
+        const vol = d.fluid ? rng(A, B, "mL") : rng(A / d.conc, B / d.conc, "mL");
+        const amp = d.fluid ? "é o próprio volume de soro" : `ampola ${d.conc} ${d.u}/mL → puxe ${vol}`;
+        return `<article class="drug">
+          <div>
+            <p style="color:var(--teal)">${d.for}</p>
+            <h2 class="display">${d.name}</h2>
+            <p class="warn">${d.note}</p>
+          </div>
+          <div>
+            <p class="label">Para este ${spName}</p>
+            <p class="big">${dose}</p>
+            <p>${lo === hi ? fmt(lo) : fmt(lo) + " a " + fmt(hi)} ${d.u} por quilo</p>
+          </div>
+          <div>
+            <p class="label">Como usar</p>
+            <p>${d.via}</p>
+            <p>${d.freq}</p>
+            <p>${d.time}</p>
+            <p><b style="color:var(--ink)">${amp}</b></p>
+          </div>
+        </article>`;
+      }).join("");
+    }
+
+    document.getElementById("sp").addEventListener("click", e => {
+      const b = e.target.closest("button[data-sp]");
+      if (!b) return;
+      especie = b.dataset.sp;
+      [...e.currentTarget.children].forEach(x => x.classList.toggle("on", x === b));
+      render();
+    });
+    chips.addEventListener("click", e => {
+      const b = e.target.closest(".chip");
+      if (!b) return;
+      filtro = b.dataset.id;
+      [...chips.children].forEach(x => x.classList.toggle("on", x === b));
+      render();
+    });
+    pesoEl.addEventListener("input", render);
+    document.getElementById("minus").onclick = () => {
+      pesoEl.value = Math.max(0.5, (parseFloat(pesoEl.value) || 10) - 0.5).toFixed(1);
+      render();
+    };
+    document.getElementById("plus").onclick = () => {
+      pesoEl.value = Math.min(80, (parseFloat(pesoEl.value) || 10) + 0.5).toFixed(1);
+      render();
+    };
+    render();
+  </script>
+</body>
+</html>
