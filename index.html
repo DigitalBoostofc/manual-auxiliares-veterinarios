@@ -373,6 +373,22 @@
     .tick { display: none; }
     .rail-hint { display: none; }
     .hint-phone { display: none; }
+    .shot, .nx-nav, .nx-track { display: none; }
+
+    @keyframes nx-halo {
+      0%, 100% { opacity: .25; }
+      50% { opacity: .7; }
+    }
+    @keyframes nx-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes nx-sweep {
+      0% { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+      25% { opacity: .85; }
+      60% { opacity: 0; }
+      100% { transform: translateX(180%) skewX(-18deg); opacity: 0; }
+    }
 
     @media (max-width: 900px) {
       .bar { padding: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right)); gap: 10px; backdrop-filter: none; background: var(--ground); }
@@ -503,11 +519,271 @@
       .pin.tr, .pin.br { display: none; }
       .title .half { font-size: clamp(28px, 9vw, 56px); }
       .crop { font-size: clamp(48px, 18vw, 96px); }
+
+      html { scroll-snap-type: y mandatory; scroll-padding: 0; }
+      .portal { scroll-snap-align: none; }
+      .sess {
+        height: 100svh;
+        max-height: 100svh;
+        min-height: 100svh;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        scroll-margin: 0 !important;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 6px;
+        padding: calc(30svh + var(--nav)) 6vw max(22px, env(safe-area-inset-bottom)) !important;
+      }
+      .shot {
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .shot .float {
+        position: absolute;
+        inset: 0;
+      }
+      .shot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 28%;
+      }
+      .shot .halo {
+        position: absolute;
+        left: 10%;
+        right: 10%;
+        top: 14%;
+        height: 42%;
+        border-radius: 50%;
+        background: rgba(47, 143, 130, .34);
+        filter: blur(42px);
+        animation: nx-halo 3.4s ease-in-out infinite;
+      }
+      .shot .sweep {
+        position: absolute;
+        inset: 0 auto 38% 0;
+        width: 38%;
+        background: linear-gradient(90deg, transparent, rgba(201, 165, 106, .2), transparent);
+        animation: nx-sweep 4.8s ease-in-out infinite;
+      }
+      .shot::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(12,28,27,.18) 0%, rgba(12,28,27,.4) 34%, rgba(12,28,27,.88) 60%, var(--ground) 74%);
+      }
+      .sess > *:not(.shot) { position: relative; z-index: 1; }
+      .sess > .label,
+      .sess h2,
+      .sess > .talk,
+      .sess > .lede,
+      .sess > .fine,
+      .nx-track,
+      .nx-nav { flex-shrink: 0; }
+      .sess > .label { margin: 0; }
+      .sess h2 {
+        font-size: clamp(24px, 6.6vw, 32px);
+        margin: 4px 0 6px;
+        line-height: 1.06;
+        max-width: 16ch;
+      }
+      .sess > .talk, .sess > .lede, .sess > .fine {
+        font-size: 14px;
+        line-height: 1.45;
+        margin-top: 0;
+        max-width: none;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+      }
+      .nx-track {
+        display: block;
+        position: relative;
+        height: 1px;
+        background: var(--hair);
+        margin: 2px 0 6px;
+        flex-shrink: 0;
+      }
+      .nx-track-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 1px;
+        width: 0;
+        display: block;
+        background: linear-gradient(90deg, var(--teal), var(--amber));
+        transition: width .32s cubic-bezier(.2, .8, .2, 1);
+      }
+      .nx-track-dot {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 11px;
+        height: 11px;
+        margin: 0;
+        display: block;
+        border-radius: 50%;
+        background: var(--amber);
+        transform: translate(-50%, -50%);
+        box-shadow: 0 0 0 4px rgba(201, 165, 106, .18);
+        transition: left .32s cubic-bezier(.2, .8, .2, 1);
+      }
+      .nx-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-shrink: 0;
+        z-index: 4;
+        padding: 2px 0 4px;
+      }
+      .nx-arr {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        border: 1px solid var(--hair);
+        background: transparent;
+        color: var(--ink-2);
+        cursor: pointer;
+        padding: 0;
+      }
+      .nx-arr:disabled { opacity: .3; pointer-events: none; }
+      .nx-pills { display: flex; align-items: center; gap: 2px; max-width: 48vw; overflow: hidden; }
+      .nx-nav.many .nx-pills { display: none; }
+      .nx-pill {
+        width: 28px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        padding: 0;
+      }
+      .nx-pill i {
+        display: block;
+        height: 8px;
+        width: 8px;
+        border-radius: 99px;
+        background: var(--muted);
+        transition: width .32s cubic-bezier(.2, .8, .2, 1), background-color .32s cubic-bezier(.2, .8, .2, 1);
+      }
+      .nx-pill.on i { width: 24px; background: var(--amber); }
+      .nx-scroller,
+      .phone-story .rail,
+      .phone-story #abcdeNav,
+      .phone-story #deck {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        margin: 4px -6vw 0;
+        padding: 4px 6vw 8px;
+        max-width: none;
+        width: auto;
+        touch-action: pan-y;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+      .nx-scroller::-webkit-scrollbar { display: none; }
+      .nx-scroller > *,
+      .phone-story .rail > *,
+      .phone-story #abcdeNav > *,
+      .phone-story #deck > * {
+        flex: 0 0 calc(100vw - 12vw);
+        width: calc(100vw - 12vw);
+        max-width: calc(100vw - 12vw);
+        scroll-snap-align: start;
+        min-height: 0;
+        height: auto;
+      }
+      .phone-story .releases {
+        display: flex;
+        flex-direction: column;
+      }
+      .phone-story .deck-col {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        justify-self: stretch;
+      }
+      .phone-story #deck { flex: 1; height: auto; aspect-ratio: auto; }
+      .phone-story .sleeve {
+        min-height: 0;
+        height: 100%;
+        position: relative;
+        inset: auto;
+      }
+      .phone-story .sleeve img { height: 46%; min-height: 110px; }
+      .phone-story .abcde button {
+        min-height: 0;
+        height: 100%;
+        padding: 16px;
+        text-align: left;
+        font-size: 13px;
+        overflow: auto;
+      }
+      .phone-story .abcde .talk {
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 14px;
+        margin-top: 10px;
+        color: var(--ink-2);
+        font-weight: 400;
+      }
+      .phone-story .nx-scroller > .box,
+      .phone-story .rail > .box,
+      .phone-story .nx-slide {
+        border: 1px solid var(--hair);
+        padding: 16px 16px 14px;
+        background: rgba(12, 28, 27, .62);
+        overflow: auto;
+        max-height: 100%;
+      }
+      .phone-story .nx-slide h3 { font-size: 18px; margin-bottom: 8px; }
+      .phone-story .nx-slide .talk { display: block; -webkit-line-clamp: unset; overflow: visible; font-size: 14px; margin-top: 8px; }
+      .phone-story .nx-hide,
+      .phone-story .rail-hint,
+      .phone-story .hint,
+      .phone-story .frame,
+      .phone-story .clinic-side,
+      .phone-story #abcdePanel,
+      .phone-story .alarm,
+      .phone-story .idx,
+      .phone-story .crop,
+      .phone-story .foot { display: none !important; }
+      .phone-story .btns { margin-top: 8px; }
+      .phone-story #situacoes .btns { display: none; }
+      .phone-story #situacoes .lede { -webkit-line-clamp: 2; }
+      .phone-story #usar,
+      .phone-story #quiz,
+      .phone-story #fecho { justify-content: flex-end; }
+      .phone-story #usar .talk { -webkit-line-clamp: 6; }
+      .phone-story #quiz .talk,
+      .phone-story #fecho .fine { -webkit-line-clamp: 5; }
+      .phone-story .nx-slide { scrollbar-width: none; }
+      .phone-story .nx-slide::-webkit-scrollbar { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
       .orb { transform: none !important; }
       .motion .reveal, .motion .rise { opacity: 1; transform: none; filter: none; }
       html { scroll-behavior: auto; }
+      .shot .halo, .shot .float, .shot .sweep { animation: none !important; }
     }
     @media (prefers-reduced-motion: no-preference) {
       html { scroll-behavior: smooth; }
@@ -1157,6 +1433,307 @@
       });
     });
     addEventListener("hashchange", () => revealSec(location.hash));
+
+    const NX_SWIPE = 16;
+    const NX_MOVE = 380;
+    function nxChevron(dir) {
+      return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${dir === "prev" ? '<path d="m15 18-6-6 6-6"/>' : '<path d="m9 18 6-6-6-6"/>'}</svg>`;
+    }
+    function makeShot(src) {
+      const fig = document.createElement("figure");
+      fig.className = "shot";
+      fig.setAttribute("aria-hidden", "true");
+      fig.innerHTML = `<span class="halo"></span><div class="float"><img src="${src}" alt=""></div><span class="sweep"></span>`;
+      return fig;
+    }
+    function makeTrack() {
+      const t = document.createElement("div");
+      t.className = "nx-track";
+      t.setAttribute("aria-hidden", "true");
+      t.innerHTML = `<i class="nx-track-fill"></i><i class="nx-track-dot"></i>`;
+      return t;
+    }
+    function makeNav(count, labelFor) {
+      const nav = document.createElement("div");
+      nav.className = "nx-nav";
+      nav.innerHTML = `<button type="button" class="nx-arr" data-dir="-1" aria-label="Anterior">${nxChevron("prev")}</button><div class="nx-pills">${Array.from({ length: count }, (_, i) => `<button type="button" class="nx-pill${i === 0 ? " on" : ""}" data-go="${i}" aria-label="${labelFor(i)}"><i></i></button>`).join("")}</div><button type="button" class="nx-arr" data-dir="1" aria-label="Próximo">${nxChevron("next")}</button>`;
+      if (count > 6) nav.classList.add("many");
+      return nav;
+    }
+    function bindNxCarousel(scroller, opts = {}) {
+      const total = () => scroller.children.length;
+      if (total() < 2) return;
+      let slide = 0;
+      let moving = false;
+      let holding = false;
+      let moveTimer = 0;
+      let autoTimer = 0;
+      const nav = opts.nav;
+      const track = opts.track;
+      const width = () => scroller.clientWidth;
+      const indexAt = (left = scroller.scrollLeft) => {
+        const w = width();
+        if (w <= 0) return 0;
+        return Math.max(0, Math.min(total() - 1, Math.round(left / w)));
+      };
+      function paint(i) {
+        slide = i;
+        if (nav) {
+          nav.querySelectorAll(".nx-pill").forEach((p, n) => p.classList.toggle("on", n === i));
+          const prev = nav.querySelector('[data-dir="-1"]');
+          const next = nav.querySelector('[data-dir="1"]');
+          if (prev) prev.disabled = i === 0;
+          if (next) next.disabled = i === total() - 1;
+        }
+        if (track) {
+          const n = total();
+          const fill = track.querySelector(".nx-track-fill");
+          const dot = track.querySelector(".nx-track-dot");
+          if (fill) fill.style.width = `${((i + 1) / n) * 100}%`;
+          if (dot) dot.style.left = `${((i + 0.5) / n) * 100}%`;
+        }
+        if (opts.onChange) opts.onChange(i);
+        arm();
+      }
+      function goTo(index, smooth = true) {
+        const last = total() - 1;
+        const next = Math.max(0, Math.min(last, index));
+        const target = next * width();
+        if (next === slide && Math.abs(scroller.scrollLeft - target) < 2) return;
+        const wrapBack = next === 0 && slide === last && last > 0;
+        moving = true;
+        scroller.scrollTo({ left: target, behavior: !smooth || wrapBack ? "auto" : "smooth" });
+        paint(next);
+        clearTimeout(moveTimer);
+        moveTimer = setTimeout(() => { moving = false; }, wrapBack ? 80 : NX_MOVE);
+      }
+      if (nav) {
+        nav.addEventListener("click", e => {
+          const btn = e.target.closest("button");
+          if (!btn) return;
+          if (btn.dataset.dir) goTo(slide + Number(btn.dataset.dir));
+          else if (btn.dataset.go != null) goTo(Number(btn.dataset.go));
+        });
+      }
+      let origin = 0, startX = 0, startY = 0, lastX = 0, axis = null;
+      scroller.addEventListener("pointerdown", e => {
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        holding = true;
+        axis = null;
+        origin = indexAt();
+        startX = lastX = e.clientX;
+        startY = e.clientY;
+      });
+      scroller.addEventListener("pointermove", e => {
+        if (!holding) return;
+        lastX = e.clientX;
+        if (axis === "x") { e.preventDefault(); return; }
+        if (axis) return;
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < NX_SWIPE) return;
+        axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+        if (axis === "x") {
+          e.preventDefault();
+          try { scroller.setPointerCapture(e.pointerId); } catch (err) { /* Safari antigo */ }
+        } else {
+          holding = false;
+          axis = null;
+        }
+      }, { passive: false });
+      function settle() {
+        if (!holding) return;
+        holding = false;
+        let next = origin;
+        if (axis === "x") {
+          const dx = lastX - startX;
+          if (dx <= -NX_SWIPE) next = Math.min(total() - 1, origin + 1);
+          else if (dx >= NX_SWIPE) next = Math.max(0, origin - 1);
+        }
+        axis = null;
+        if (next !== origin) goTo(next, true);
+      }
+      scroller.addEventListener("pointerup", settle);
+      scroller.addEventListener("pointercancel", settle);
+      scroller.addEventListener("scroll", () => {
+        if (holding || moving) return;
+        const next = indexAt();
+        if (next !== slide) paint(next);
+      }, { passive: true });
+      addEventListener("resize", () => {
+        const w = width();
+        if (w <= 0) return;
+        scroller.scrollTo({ left: indexAt() * w, behavior: "auto" });
+      }, { passive: true });
+      function inView() {
+        const sec = scroller.closest(".sess");
+        if (!sec) return false;
+        const r = sec.getBoundingClientRect();
+        return r.top < innerHeight * 0.45 && r.bottom > innerHeight * 0.55;
+      }
+      function arm() {
+        const ms = opts.cycleMs;
+        clearTimeout(autoTimer);
+        if (!ms || total() < 2 || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!inView()) return;
+        autoTimer = setTimeout(() => {
+          if (holding || moving || !inView()) { arm(); return; }
+          goTo((slide + 1) % total());
+        }, ms);
+      }
+      addEventListener("scroll", () => { if (inView()) arm(); else clearTimeout(autoTimer); }, { passive: true });
+      paint(0);
+      return { goTo };
+    }
+    function cardFromRow(tr, heads) {
+      const tds = [...tr.children];
+      const art = document.createElement("article");
+      art.className = "box nx-slide";
+      art.innerHTML = `<h3>${tds[0].textContent}</h3>` + tds.slice(1).map((td, i) => `<p class="talk"><b>${heads[i + 1] || ""}.</b> ${td.textContent}</p>`).join("");
+      return art;
+    }
+    function slideCard(html) {
+      const art = document.createElement("article");
+      art.className = "box nx-slide";
+      art.innerHTML = html;
+      return art;
+    }
+    function enhanceMobile() {
+      if (!phone.matches || document.documentElement.classList.contains("phone-story")) return;
+      document.documentElement.classList.add("phone-story");
+      document.querySelectorAll(".sess").forEach(sec => {
+        sec.prepend(makeShot("assets/sess/" + sec.id + ".jpg"));
+      });
+      function mount(sec, scroller, opts = {}) {
+        if (!sec || !scroller || scroller.dataset.nxBound) return;
+        const n = scroller.children.length;
+        if (n < 2) return;
+        scroller.dataset.nxBound = "1";
+        scroller.classList.add("nx-scroller");
+        const labels = opts.labels || [...scroller.children].map((el, i) => el.querySelector("h3, .ltr, .label")?.textContent?.trim() || `Item ${i + 1}`);
+        const track = makeTrack();
+        const nav = makeNav(n, i => "Ver " + (labels[i] || i + 1));
+        scroller.before(track);
+        scroller.after(nav);
+        bindNxCarousel(scroller, { cycleMs: opts.cycleMs ?? 8000, nav, track, onChange: opts.onChange });
+      }
+
+      mount(document.getElementById("como"), document.querySelector("#como .rail"), { cycleMs: 7000 });
+      mount(document.getElementById("situacoes"), deck, { cycleMs: 9000, labels: sleeves.map(s => s.title) });
+
+      const papel = document.getElementById("papel");
+      const papelBoxes = [...papel.querySelectorAll(".box")];
+      const papelRail = document.createElement("div");
+      papelRail.className = "nx-scroller";
+      papelBoxes.forEach(b => papelRail.appendChild(b));
+      papel.querySelectorAll(".grid-2").forEach(g => g.remove());
+      papel.appendChild(papelRail);
+      mount(papel, papelRail);
+
+      document.querySelectorAll("#abcdeNav button").forEach(btn => {
+        const p = document.createElement("p");
+        p.className = "talk";
+        p.textContent = abcde[btn.dataset.k];
+        btn.appendChild(p);
+      });
+      mount(document.getElementById("abcde"), document.getElementById("abcdeNav"), {
+        labels: ["A", "B", "C", "D", "E"],
+        onChange(i) {
+          const k = document.getElementById("abcdeNav").children[i]?.dataset.k;
+          if (k) setABC(k);
+        }
+      });
+
+      const vitais = document.getElementById("vitais");
+      const vTable = vitais.querySelector("table");
+      const vHeads = [...vTable.querySelectorAll("th")].map(th => th.textContent.trim());
+      const vRail = document.createElement("div");
+      vRail.className = "nx-scroller";
+      vTable.querySelectorAll("tbody tr").forEach(tr => vRail.appendChild(cardFromRow(tr, vHeads)));
+      vitais.querySelectorAll(".steps li").forEach((li, i) => {
+        vRail.appendChild(slideCard(`<p class="label teal">Como medir · ${String(i + 1).padStart(2, "0")}</p><h3>${li.textContent}</h3>`));
+      });
+      vTable.classList.add("nx-hide");
+      vitais.querySelector(".steps")?.classList.add("nx-hide");
+      [...vitais.querySelectorAll(":scope > .label")].forEach((el, i) => { if (i) el.classList.add("nx-hide"); });
+      vitais.appendChild(vRail);
+      mount(vitais, vRail);
+
+      const trauma = document.getElementById("trauma");
+      const tRail = document.createElement("div");
+      tRail.className = "nx-scroller";
+      trauma.querySelectorAll("ul.box li").forEach(li => {
+        tRail.appendChild(slideCard(`<p class="label amber">O que você vê</p><h3>${li.textContent}</h3>`));
+      });
+      const tExtra = trauma.querySelector(".photo-row .talk");
+      if (tExtra) tRail.appendChild(slideCard(`<p class="label teal">Lembre</p><h3>Não trate a pata isolada.</h3><p class="talk">${tExtra.textContent}</p>`));
+      trauma.querySelector(".photo-row")?.classList.add("nx-hide");
+      trauma.appendChild(tRail);
+      mount(trauma, tRail);
+
+      ["fraturas", "coluna", "feridas"].forEach(id => {
+        const sec = document.getElementById(id);
+        const boxes = [...sec.querySelectorAll(".box")];
+        const rail = document.createElement("div");
+        rail.className = "nx-scroller";
+        boxes.forEach(b => rail.appendChild(b));
+        [...sec.querySelectorAll(":scope > .talk")].slice(1).forEach(p => {
+          rail.appendChild(slideCard(`<p class="label amber">Atenção</p><p class="talk">${p.innerHTML}</p>`));
+          p.classList.add("nx-hide");
+        });
+        sec.querySelectorAll(".grid-2").forEach(g => g.remove());
+        sec.appendChild(rail);
+        mount(sec, rail);
+      });
+
+      const manejo = document.getElementById("manejo");
+      const mRail = manejo.querySelector(".rail");
+      const conv = [...manejo.querySelectorAll(":scope > .talk")].pop();
+      if (conv && /Convulsão/.test(conv.textContent)) {
+        mRail.appendChild(slideCard(`<p class="label amber">Convulsão</p><h3>Afaste. Proteja. Conte o tempo.</h3><p class="talk">${conv.textContent}</p>`));
+        conv.classList.add("nx-hide");
+      }
+      const row = manejo.querySelector(".photo-row");
+      if (row) {
+        row.replaceWith(mRail);
+      }
+      mount(manejo, mRail);
+
+      const clinic = document.querySelector("#terapeutico .clinic");
+      const pRail = document.createElement("div");
+      pRail.className = "nx-scroller";
+      protocols.forEach(p => {
+        pRail.appendChild(slideCard(`<p class="label amber">Situação</p><h3>${p.name}</h3><p class="talk">${p.lead}</p><p class="talk"><b>Faça.</b> ${p.do.join(" · ")}</p><p class="talk"><b>Não faça.</b> ${p.dont.join(" · ")}</p><p class="talk"><b>O veterinário pede:</b> ${p.drugs}</p><div class="btns"><a class="pill" href="calculadora.html?sit=${p.calc}">Ver a conta</a></div>`));
+      });
+      protoNav.classList.add("nx-hide");
+      document.querySelector("#terapeutico .clinic-grid")?.classList.add("nx-hide");
+      document.querySelector("#terapeutico > .talk:last-of-type")?.classList.add("nx-hide");
+      clinic.appendChild(pRail);
+      mount(document.getElementById("terapeutico"), pRail, { cycleMs: 10000, labels: protocols.map(p => p.name) });
+
+      const pos = document.getElementById("pos");
+      const pTable = pos.querySelector("table");
+      const pHeads = [...pTable.querySelectorAll("th")].map(th => th.textContent.trim());
+      const posRail = document.createElement("div");
+      posRail.className = "nx-scroller";
+      pTable.querySelectorAll("tbody tr").forEach(tr => posRail.appendChild(cardFromRow(tr, pHeads)));
+      pTable.classList.add("nx-hide");
+      pos.appendChild(posRail);
+      mount(pos, posRail);
+
+      const fontes = document.getElementById("fontes");
+      const fRail = document.createElement("div");
+      fRail.className = "nx-scroller";
+      fontes.querySelectorAll(".box li").forEach(li => {
+        fRail.appendChild(slideCard(`<p class="label teal">Fonte</p><p class="talk">${li.textContent}</p>`));
+      });
+      fontes.querySelector(".box")?.classList.add("nx-hide");
+      fontes.appendChild(fRail);
+      mount(fontes, fRail, { cycleMs: 9000 });
+
+      document.querySelectorAll(".reveal, .rise").forEach(el => el.classList.add("in"));
+    }
+    if (phone.matches) enhanceMobile();
+    phone.addEventListener("change", () => location.reload());
   </script>
 </body>
 </html>
