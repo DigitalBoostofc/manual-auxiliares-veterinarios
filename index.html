@@ -340,24 +340,7 @@
     .rx { display: grid; gap: 10px; }
     .rx .line { padding: 16px 0; border-top: 1px solid var(--hair); }
     .rx .line b { color: var(--amber); }
-    .check label {
-      display: flex; gap: 10px; padding: 12px 0; border-top: 1px solid var(--hair);
-      cursor: pointer; color: var(--ink-2); font-size: 15px;
-    }
-    .check label.done { opacity: .5; text-decoration: line-through; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
-    .form-grid label { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-    .form-grid input, .form-grid textarea {
-      width: 100%; margin-top: 6px; background: transparent; border: 0;
-      border-bottom: 1px solid var(--hair); padding: 8px 0; color: var(--ink); outline: none; font-size: 15px;
-    }
-    .form-grid .full { grid-column: 1 / -1; }
-    .toast {
-      position: fixed; bottom: 22px; right: 22px; z-index: 80;
-      border: 1px solid var(--amber); background: var(--ground);
-      padding: 12px 16px; opacity: 0; transform: translateY(12px); transition: .35s ease; pointer-events: none;
-    }
-    .toast.show { opacity: 1; transform: none; }
+
     .motion .reveal { opacity: 0; transform: translateY(18px); }
     .motion .reveal.in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease; }
 
@@ -376,7 +359,7 @@
       .portal { height: 180vh; }
       .fold, .lesson, .releases, .quiz, .roster { padding-left: 6vw; padding-right: 6vw; }
       .lesson { padding-top: 56px; padding-bottom: 56px; }
-      .releases, .row, .close-top, .grid-2, .grid-3, .photo-row, .form-grid, .clinic-grid { grid-template-columns: 1fr; }
+      .releases, .row, .close-top, .grid-2, .grid-3, .photo-row, .clinic-grid { grid-template-columns: 1fr; }
       .clinic-side img { height: 120px; }
       .abcde { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
       .abcde button { padding: 12px 2px; font-size: 8px; letter-spacing: .02em; }
@@ -396,7 +379,6 @@
       .pin.tr, .pin.br { display: none; }
       .title .half { font-size: clamp(28px, 9vw, 56px); }
       .crop { font-size: clamp(48px, 18vw, 96px); }
-      .form-grid input, .form-grid textarea { font-size: 16px; }
     }
     @media (prefers-reduced-motion: reduce) {
       .orb { transform: none !important; }
@@ -419,7 +401,6 @@
         <a href="#manejo">Manejo</a>
         <a href="#terapeutico">Terapêutica</a>
         <a href="calculadora.html">Calculadora</a>
-        <a href="#checklists">Checklists</a>
         <a href="#quiz">Quiz</a>
         <a href="#fontes">Fontes</a>
       </nav>
@@ -701,32 +682,8 @@
     </table>
   </section>
 
-  <section class="lesson alt" id="checklists">
-    <p class="label amber">11 · Bolso</p>
-    <h2 class="display reveal">Checklists do plantão.</h2>
-    <p class="talk">Marque na tela. Isso não substitui o protocolo da casa. Piora súbita: pare de preencher e chame.</p>
-    <div class="grid-3" id="checkHost"></div>
-    <p class="label" style="margin-top:36px">Ficha rápida</p>
-    <form class="form-grid" id="fichaForm">
-      <label>Paciente<input name="paciente" /></label>
-      <label>Data / hora<input name="quando" type="datetime-local" /></label>
-      <label>Coração / pulso<input name="fc" /></label>
-      <label>Respiração<input name="fr" /></label>
-      <label>Temperatura<input name="temp" /></label>
-      <label>Gengiva / TPC<input name="tpc" /></label>
-      <label class="full">Consciência / comportamento<input name="neuro" /></label>
-      <label class="full">Membro / ferida<input name="membro" /></label>
-      <label class="full">O que o veterinário pediu<input name="conduta" /></label>
-      <label class="full">Observações<textarea name="obs" rows="3"></textarea></label>
-      <div class="full btns">
-        <button class="pill" type="button" id="saveFicha">Salvar neste navegador</button>
-        <button class="pill" type="button" onclick="window.print()">Imprimir</button>
-      </div>
-    </form>
-  </section>
-
   <section class="quiz" id="quiz">
-    <p class="label amber">12 · Agora você responde</p>
+    <p class="label amber">11 · Agora você responde</p>
     <h2 class="display reveal">Quiz por tema.</h2>
     <p class="talk">Escolha o tema. Responda. Depois, se quiser, abra a explicação — com a fonte. Errar aqui é treino.</p>
     <div class="quiz-themes" id="quizThemes"></div>
@@ -735,7 +692,7 @@
   </section>
 
   <section class="lesson" id="fontes">
-    <p class="label teal">13 · De onde veio esta aula</p>
+    <p class="label teal">12 · De onde veio esta aula</p>
     <h2 class="display reveal">Fontes profissionais.</h2>
     <p class="talk">Este material é de <b>treino</b>. Não é receita. Não substitui o veterinário da casa nem a bula. As condutas de auxiliar e as faixas de dose foram alinhadas a manuais e normas abaixo — sempre no contexto de cão e gato em emergência.</p>
     <ul class="box" style="margin-top:18px; color: var(--ink-2);">
@@ -753,7 +710,7 @@
       <div>
         <p class="label teal">05 · Próximo passo</p>
         <h2 class="display reveal">Agora vamos à conta.</h2>
-        <p class="fine">Você já viu o papel, o ABCDE, os vitais, fratura, coluna, ferida, convulsão e os checklists. Na calculadora a gente confere o volume da ampola — só depois da ordem do veterinário. CFMV 1.260/2019.</p>
+        <p class="fine">Você já viu o papel, o ABCDE, os vitais, fratura, coluna, ferida e convulsão. Na calculadora a gente confere o volume da ampola — só depois da ordem do veterinário. CFMV 1.260/2019.</p>
       </div>
       <div class="btns">
         <a class="pill" href="calculadora.html">Abrir calculadora</a>
@@ -958,36 +915,6 @@
       renderProto(b.dataset.id);
       protoHost.scrollIntoView({ block: "nearest", behavior: "smooth" });
     });
-
-    const lists = [
-      { k: "chegada", t: "Chegada de trauma", items: ["Sala segura, gente o bastante", "O que aconteceu + horário", "ABCDE", "Coração, respiração, gengiva, TPC, temperatura", "Sangramento controlado", "Coluna protegida se houver suspeita", "Membros olhados sem mexer à toa", "Veterinário avisado se houver alarme"] },
-      { k: "fratura", t: "Suspeita de fratura", items: ["Não deixar caminhar à toa", "Menos movimento no membro", "Cobrir ferida", "Olhar a ponta da pata", "Não alinhar nem testar", "Tala só com ordem", "Anotar mecanismo, horário, evolução"] },
-      { k: "coluna", t: "Suspeita de coluna", items: ["Não deixar caminhar", "Cabeça, pescoço e tronco alinhados", "Superfície firme ou cobertor", "Transferir em equipe", "Sem torcer", "Olhar respiração e consciência", "Chamar o veterinário agora"] }
-    ];
-    const checkHost = document.getElementById("checkHost");
-    const savedChecks = JSON.parse(localStorage.getItem("aula-checks") || "{}");
-    checkHost.innerHTML = lists.map(l => `<article><h3>${l.t}</h3><div class="check" data-k="${l.k}">${l.items.map((it,i)=>`<label><input type="checkbox" ${savedChecks[l.k]?.[i]?"checked":""}/> <span>${it}</span></label>`).join("")}</div></article>`).join("");
-    checkHost.querySelectorAll("input:checked").forEach(i => i.closest("label").classList.add("done"));
-    checkHost.addEventListener("change", e => {
-      const state = {};
-      document.querySelectorAll(".check").forEach(c => { state[c.dataset.k] = [...c.querySelectorAll("input")].map(i => i.checked); });
-      localStorage.setItem("aula-checks", JSON.stringify(state));
-      e.target.closest("label").classList.toggle("done", e.target.checked);
-    });
-
-    function toast(msg) {
-      let t = document.getElementById("toast");
-      if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; document.body.appendChild(t); }
-      t.textContent = msg; t.classList.add("show");
-      setTimeout(() => t.classList.remove("show"), 2600);
-    }
-    document.getElementById("saveFicha").addEventListener("click", () => {
-      const obj = Object.fromEntries(new FormData(document.getElementById("fichaForm")).entries());
-      localStorage.setItem("aula-ficha", JSON.stringify(obj));
-      toast("Ficha salva neste navegador.");
-    });
-    const prev = JSON.parse(localStorage.getItem("aula-ficha") || "null");
-    if (prev) Object.entries(prev).forEach(([k,v]) => { const el = document.querySelector(`#fichaForm [name="${k}"]`); if (el) el.value = v; });
 
     const quiz = [
       { theme: "trauma", tag: "Trauma", q: "O animal chegou com a pata torta. Por que você ainda olha o corpo inteiro?",
