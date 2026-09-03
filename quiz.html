@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Teste da aula · Auxiliar veterinário</title>
+  <meta name="description" content="Teste: uma pergunta por vez. 70% para passar." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%230c1c1b' width='32' height='32'/%3E%3Ccircle cx='10' cy='16' r='2' fill='%23c9a56a'/%3E%3Ccircle cx='22' cy='16' r='2' fill='%232f8f82'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Sora:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ground: #0c1c1b;
+      --ground-2: #101a19;
+      --ink: #f4efe4;
+      --ink-2: #b7b3a8;
+      --muted: #6c7378;
+      --amber: #c9a56a;
+      --teal: #2f8f82;
+      --hair: rgba(244, 239, 228, .13);
+      --nav: 58px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--ground);
+      color: var(--ink);
+      font-family: Sora, system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; color: inherit; }
+    .display { font-family: Syne, sans-serif; font-weight: 800; letter-spacing: -.025em; line-height: .92; }
+    .label {
+      font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .label.amber { color: var(--amber); }
+    .label.teal { color: var(--teal); }
+    nav.bar {
+      position: fixed; inset: 0 0 auto; height: var(--nav); z-index: 100;
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 max(12px, env(safe-area-inset-left));
+      background: var(--ground);
+      border-bottom: 1px solid var(--hair);
+    }
+    .brand { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .brand img { height: 28px; width: auto; max-width: none; border-radius: 6px; }
+    .word { font-family: Syne, sans-serif; font-weight: 800; font-size: 13px; letter-spacing: -.02em; text-transform: uppercase; }
+    .amp { color: var(--amber); }
+    .bar nav { display: none; }
+    .bar nav.open {
+      display: flex; flex-direction: column; position: fixed;
+      top: var(--nav); left: 0; right: 0; padding: 8px 16px 20px;
+      background: var(--ground); border-bottom: 1px solid var(--hair); z-index: 110;
+    }
+    .bar nav.open a { padding: 14px 0; border-bottom: 1px solid var(--hair); font-size: 13px; text-transform: uppercase; color: var(--ink-2); }
+    .bar nav a.on { color: var(--amber); }
+    .menu {
+      margin-left: auto; background: none; border: 1px solid var(--hair);
+      color: var(--ink); font-size: 10.5px; letter-spacing: .14em;
+      text-transform: uppercase; cursor: pointer; min-width: 44px; min-height: 44px;
+    }
+    .pill {
+      font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
+      text-transform: uppercase; padding: 8px 12px;
+      border: 1px solid var(--hair); background: transparent; cursor: pointer; color: var(--ink);
+    }
+    .pill:hover { border-color: var(--amber); color: var(--amber); }
+    main { padding: calc(var(--nav) + 36px) 6vw 80px; max-width: 720px; margin: 0 auto; }
+    h1 { font-size: clamp(32px, 8vw, 52px); margin: 8px 0 12px; max-width: 14ch; }
+    .talk { color: var(--ink-2); font-size: 17px; max-width: 48ch; }
+    .bar-prog {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin: 28px 0 18px; padding-bottom: 12px; border-bottom: 1px solid var(--hair);
+    }
+    .bar-prog .n { font-family: Syne, sans-serif; font-weight: 800; color: var(--amber); font-size: 22px; }
+    .q h2 { font-size: clamp(20px, 5vw, 26px); font-weight: 500; margin: 8px 0 18px; line-height: 1.35; }
+    .opts { display: grid; gap: 10px; }
+    .opts button {
+      text-align: left; background: transparent; border: 1px solid var(--hair);
+      padding: 14px 16px; cursor: pointer; font-size: 16px; min-height: 52px; color: var(--ink);
+    }
+    .opts button:hover { border-color: var(--amber); }
+    .result { text-align: left; }
+    .result .big {
+      font-family: Syne, sans-serif; font-weight: 800;
+      font-size: clamp(48px, 14vw, 88px); letter-spacing: -.04em;
+      color: var(--amber); margin: 12px 0 8px;
+    }
+    .result.fail .big { color: var(--ink); }
+    .result.pass .big { color: var(--teal); }
+    .btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .gab { margin-top: 36px; }
+    .gab article {
+      padding: 20px 0; border-top: 1px solid var(--hair);
+    }
+    .gab h3 { font-size: 17px; font-weight: 500; margin: 8px 0 12px; }
+    .gab .picked, .gab .right { font-size: 14px; color: var(--ink-2); margin: 4px 0; }
+    .gab .right { color: var(--teal); }
+    .gab .wrong { color: var(--amber); }
+    .why-btn { margin-top: 12px; }
+    .why { display: none; margin-top: 10px; color: var(--ink-2); font-size: 15px; }
+    .why.show { display: block; }
+    .src { display: block; font-size: 12px; color: var(--muted); margin-top: 8px; }
+    @media (min-width: 900px) {
+      .brand img { height: 34px; }
+      .word { font-size: 15px; }
+      .menu { display: none; }
+      .bar { padding: 0 22px; gap: 28px; }
+      .bar nav { display: flex; gap: 22px; flex: 1; }
+      .bar nav a { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); }
+      .bar nav a:hover, .bar nav a.on { color: var(--amber); }
+      .bar > .pill { margin-left: auto; }
+      main { padding-top: calc(var(--nav) + 56px); }
+    }
+  </style>
+</head>
+<body>
+  <nav class="bar">
+    <a class="brand" href="index.html">
+      <img src="assets/logo.png" alt="ONG Amigo Bicho" width="405" height="210" />
+      <span class="word">Aula<span class="amp">.</span></span>
+    </a>
+    <nav id="links">
+      <a href="index.html">Voltar à aula</a>
+      <a class="on" href="quiz.html">Teste</a>
+      <a href="calculadora.html">Calculadora</a>
+    </nav>
+    <button class="menu" type="button" id="menu">Menu</button>
+    <a class="pill" href="index.html">Aula</a>
+  </nav>
+
+  <main>
+    <p class="label amber">Teste do plantão</p>
+    <div id="app"></div>
+  </main>
+
+  <script>
+    const BANK = [
+      { tag: "Trauma", q: "O animal chegou com a pata torta. Por que você ainda olha o corpo inteiro?",
+        opts: ["Porque a fratura sempre é o problema mais grave.", "Porque o mesmo tombo pode ter machucado por dentro, mesmo sem aparecer.", "Porque todo mundo com fratura precisa de remédio na hora.", "Porque você deve endireitar o osso antes do raio-x."],
+        a: 1, why: "O trauma de alta energia costuma ter várias lesões ao mesmo tempo. Primeiro estabilizar (ABCDE), depois o osso.",
+        src: "Merck Veterinary Manual — Trauma in Emergency Medicine (2025/2026)." },
+      { tag: "Trauma", q: "O animal anda depois do atropelamento. Isso prova que está bem?",
+        opts: ["Sim. Se anda, não tem lesão grave.", "Não. Lesão interna pode aparecer horas depois.", "Sim, se a gengiva estiver rosada uma vez.", "Só se ele abanar o rabo."],
+        a: 1, why: "Muitos danos internos só ficam claros depois. Internar para observar mesmo quem parece estável.",
+        src: "Merck Veterinary Manual — delayed injury; hospitalize for monitoring." },
+      { tag: "Coluna", q: "Qual conjunto de sinais faz você pensar em coluna?",
+        opts: ["Só um dedo mancando.", "De repente não anda, pernas moles, dor forte no pescoço ou nas costas.", "Só febre.", "Gengiva rosada e TPC de 1 segundo."],
+        a: 1, why: "Incapacidade súbita de andar, fraqueza, dor na coluna e perda de xixi/fezes pedem movimento em bloco.",
+        src: "Merck Veterinary Manual — Trauma of the Spinal Column and Cord." },
+      { tag: "Coluna", q: "Como você move um animal com suspeita de coluna?",
+        opts: ["Pelas patas de trás, rápido.", "Em bloco, superfície firme, mais de uma pessoa, cabeça e tronco alinhados.", "Pela coleira, para controlar a cabeça.", "Deixa andar ‘para ver se melhora’."],
+        a: 1, why: "Torção e puxão pelas patas podem piorar a medula. Tábua, maca ou cobertor esticado.",
+        src: "Merck Veterinary Manual — First Aid and Transport; VetATLS." },
+      { tag: "Fratura", q: "Para que serve a tala provisória?",
+        opts: ["Para deixar o osso no lugar certo.", "Para diminuir o movimento e a dor até o veterinário avaliar.", "Para substituir a cirurgia.", "Para o animal poder caminhar no canil."],
+        a: 1, why: "Imobilização provisória reduz movimento e dor. Não é redução da fratura.",
+        src: "Merck Veterinary Manual — Bone Fractures; First Aid and Transport." },
+      { tag: "Fratura", q: "Por que não se puxa o membro para ‘alinhar’?",
+        opts: ["Porque dói em quem está segurando.", "Porque pode piorar a dor e machucar vaso, nervo e músculo.", "Porque o osso se arruma sozinho em dez minutos.", "Porque tala apertada resolve tudo."],
+        a: 1, why: "Alinhar à força lesa partes moles, vasos e nervos. Prioridade: quietude e proteção.",
+        src: "Merck Veterinary Manual — First Aid and Transport." },
+      { tag: "Ferida", q: "Tem ferimento em cima de uma possível fratura. O que você faz?",
+        opts: ["Empurra o osso para dentro e sutura.", "Cobre, segura o sangramento por fora, não suja mais e chama o veterinário.", "Lava com álcool e deixa ao ar.", "Dá um anti-inflamatório por conta própria."],
+        a: 1, why: "Fratura aberta: cubra, controle o sangue por fora, não recoloque o osso. Antibiótico é do veterinário.",
+        src: "Clinician’s Brief — Trauma medication therapies." },
+      { tag: "Ferida", q: "Há um objeto cravado. Você tira no local?",
+        opts: ["Sim, para limpar a ferida.", "Não. Estabilize o objeto e chame o veterinário.", "Só se for um graveto fino.", "Sim, se o animal estiver andando."],
+        a: 1, why: "Retirar pode piorar o sangramento e o dano profundo.",
+        src: "Merck Veterinary Manual — First Aid and Transport." },
+      { tag: "ABCDE", q: "Quais sinais de respiração pedem o veterinário na hora?",
+        opts: ["Um suspiro enquanto dorme.", "Muito esforço para respirar, gengiva roxa, gato de boca aberta.", "Cão calmo com 24 respirações por minuto.", "Ofegação depois de brincar, que já passou."],
+        a: 1, why: "Dispneia, cianose e boca aberta no gato são emergência.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation." },
+      { tag: "ABCDE", q: "Em que ordem você olha o animal na chegada?",
+        opts: ["Primeiro a fratura, depois o resto.", "A vias aéreas, B respiração, C circulação, D neurológico, E exposição.", "Primeiro a temperatura, sempre.", "Como o tutor pedir."],
+        a: 1, why: "ABCDE é o padrão de emergência em pequenos animais.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation." },
+      { tag: "Convulsão", q: "Na convulsão, o que é seguro — e o que é proibido?",
+        opts: ["Pôr a mão na boca e puxar a língua.", "Afastar objetos, proteger a cabeça, contar o tempo. Não pôr a mão na boca nem segurar à força.", "Amarrar as quatro patas e pôr gelo na cabeça.", "Dar diazepam por conta e filmar depois."],
+        a: 1, why: "Você protege e cronometra. Remédio só com o veterinário. Mão na boca = mordida.",
+        src: "Merck Veterinary Manual — emergency management of seizures." },
+      { tag: "Convulsão", q: "Uma crise passa de 5 minutos. O que isso pede?",
+        opts: ["Esperar mais 10 minutos em silêncio.", "Avisar o veterinário na hora: pode ser status. Glicemia se houver aparelho.", "Dar açúcar na boca à força.", "Banho frio."],
+        a: 1, why: "Crise longa é emergência. O veterinário pode usar benzodiazepínico.",
+        src: "Merck Veterinary Manual — Initial Triage (seizures; glucose)." },
+      { tag: "Vitais", q: "Além do número (febre, coração, respiração), o que você anota?",
+        opts: ["Só o nome do tutor.", "Horário, se está piorando ou melhorando, e o que foi feito.", "Nada, se o número parecer ‘normal’.", "Nada. O veterinário lembra."],
+        a: 1, why: "Tendência com horário vale mais que um valor isolado.",
+        src: "Merck Veterinary Manual — monitoring the critically ill small animal." },
+      { tag: "Vitais", q: "TPC de 3 segundos e gengiva muito pálida. O que isso sugere?",
+        opts: ["Que o animal está descansando.", "Má circulação / choque — chame o veterinário agora.", "Que a temperatura está normal.", "Nada, se ele ainda anda."],
+        a: 1, why: "TPC em geral é até 2 segundos, gengiva rosada. TPC demorado e mucosa pálida apontam má perfusão.",
+        src: "UC Davis CVET Normal Vital Signs (2026); Merck triage." },
+      { tag: "Papel", q: "Quem escolhe o remédio e a dose?",
+        opts: ["O auxiliar, se já viu o caso uma vez.", "Só o médico-veterinário. Você prepara e confere depois da ordem.", "O tutor, pelo WhatsApp.", "Qualquer um da equipe, se tiver pressa."],
+        a: 1, why: "A Resolução CFMV 1.260/2019 coloca o auxiliar em apoio sob orientação. Prescrição não é sua.",
+        src: "CFMV — Resolução nº 1.260/2019." }
+    ];
+
+    const PASS = 0.7;
+    const app = document.getElementById("app");
+    let order = BANK.map((_, i) => i);
+    let i = 0;
+    let picks = [];
+    let passed = false;
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let k = a.length - 1; k > 0; k--) {
+        const j = Math.floor(Math.random() * (k + 1));
+        [a[k], a[j]] = [a[j], a[k]];
+      }
+      return a;
+    }
+
+    function start(reshuffle) {
+      order = reshuffle ? shuffle(BANK.map((_, n) => n)) : BANK.map((_, n) => n);
+      i = 0;
+      picks = [];
+      passed = false;
+      drawQ();
+    }
+
+    function drawQ() {
+      const item = BANK[order[i]];
+      const n = BANK.length;
+      app.innerHTML = `
+        <div class="bar-prog">
+          <p class="label">Pergunta</p>
+          <p class="n">${i + 1} <span class="label">/ ${n}</span></p>
+        </div>
+        <article class="q">
+          <p class="label amber">${item.tag}</p>
+          <h2>${item.q}</h2>
+          <div class="opts">
+            ${item.opts.map((o, oi) => `<button type="button" data-o="${oi}">${o}</button>`).join("")}
+          </div>
+        </article>`;
+    }
+
+    function finish() {
+      const n = BANK.length;
+      const hits = picks.filter((p, k) => p === BANK[order[k]].a).length;
+      const pct = Math.round((hits / n) * 100);
+      passed = hits / n >= PASS;
+      const need = Math.ceil(n * PASS);
+      if (passed) {
+        app.innerHTML = `
+          <p class="label teal">Resultado</p>
+          <div class="result pass">
+            <h1 class="display">Aprovado.</h1>
+            <p class="big">${pct}%</p>
+            <p class="talk">${hits} de ${n} certas. A nota mínima era ${need} (${Math.round(PASS * 100)}%).</p>
+            <div class="btns">
+              <button class="pill" type="button" id="gab">Ver gabarito</button>
+              <a class="pill" href="index.html">Voltar à aula</a>
+            </div>
+            <div class="gab" id="gabBox" hidden></div>
+          </div>`;
+      } else {
+        app.innerHTML = `
+          <p class="label amber">Resultado</p>
+          <div class="result fail">
+            <h1 class="display">Reprovado.</h1>
+            <p class="big">${pct}%</p>
+            <p class="talk">${hits} de ${n} certas. Precisa de ${need} (${Math.round(PASS * 100)}%) para passar. Na próxima tentativa as perguntas mudam de ordem.</p>
+            <div class="btns">
+              <button class="pill" type="button" id="retry">Refazer o teste</button>
+              <a class="pill" href="index.html">Voltar à aula</a>
+            </div>
+          </div>`;
+      }
+    }
+
+    function gabarito() {
+      const box = document.getElementById("gabBox");
+      box.hidden = false;
+      box.innerHTML = order.map((qi, k) => {
+        const item = BANK[qi];
+        const pick = picks[k];
+        const ok = pick === item.a;
+        return `<article>
+          <p class="label ${ok ? "teal" : "amber"}">${k + 1} · ${item.tag} · ${ok ? "certa" : "errada"}</p>
+          <h3>${item.q}</h3>
+          <p class="${ok ? "right" : "wrong"}">Sua resposta: ${item.opts[pick]}</p>
+          <p class="right">Gabarito: ${item.opts[item.a]}</p>
+          <button class="pill why-btn" type="button" data-w="${k}">Ver explicação</button>
+          <p class="why" id="w-${k}"><b>Por quê.</b> ${item.why}<span class="src">${item.src}</span></p>
+        </article>`;
+      }).join("");
+    }
+
+    app.addEventListener("click", e => {
+      const opt = e.target.closest("[data-o]");
+      if (opt && i < BANK.length) {
+        picks[i] = +opt.dataset.o;
+        i += 1;
+        if (i >= BANK.length) finish();
+        else drawQ();
+        return;
+      }
+      if (e.target.id === "retry") { start(true); return; }
+      if (e.target.id === "gab") { gabarito(); return; }
+      const w = e.target.closest("[data-w]");
+      if (w) document.getElementById("w-" + w.dataset.w).classList.toggle("show");
+    });
+
+    document.getElementById("menu").onclick = () => document.getElementById("links").classList.toggle("open");
+    start(false);
+  </script>
+</body>
+</html>

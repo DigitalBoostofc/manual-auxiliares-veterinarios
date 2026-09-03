@@ -533,7 +533,7 @@
         <a href="#manejo">Manejo</a>
         <a href="#terapeutico">Terapêutica</a>
         <a href="calculadora.html">Calculadora</a>
-        <a href="#quiz">Quiz</a>
+        <a href="quiz.html">Teste</a>
         <a href="#fontes">Fontes</a>
       </nav>
       <button class="menu" type="button" id="menu">Menu</button>
@@ -588,7 +588,7 @@
       <h2 class="display reveal">Oito situações do plantão.</h2>
       <p class="lede">Vire as cartas. Em cada uma eu digo o que você faz — e o que você não faz. Não é para decorar nome de remédio. É para acertar a atitude.</p>
       <div class="btns">
-        <a class="pill" href="#quiz">Ir ao quiz</a>
+        <a class="pill" href="quiz.html">Iniciar teste</a>
         <a class="pill" href="calculadora.html">Praticar doses</a>
       </div>
     </div>
@@ -823,13 +823,11 @@
     </table>
   </section>
 
-  <section class="quiz sess" id="quiz" data-tick="11 · Quiz">
+  <section class="quiz sess" id="quiz" data-tick="11 · Teste">
     <p class="label amber">11 · Agora você responde</p>
-    <h2 class="display reveal">Quiz por tema.</h2>
-    <p class="talk">Escolha o tema. Responda. Depois, se quiser, abra a explicação — com a fonte. Errar aqui é treino.</p>
-    <div class="quiz-themes" id="quizThemes"></div>
-    <div id="quizHost"></div>
-    <div class="score" id="scoreBox"></div>
+    <h2 class="display reveal">Hora do teste.</h2>
+    <p class="talk">Uma pergunta por vez. No fim sai a nota. Precisa de 70% para passar. Se reprovar, as perguntas mudam de ordem na próxima tentativa.</p>
+    <div class="btns" style="margin-top:28px"><a class="pill" href="quiz.html">Iniciar teste</a></div>
   </section>
 
   <section class="lesson sess" id="fontes" data-tick="12 · Fontes">
@@ -855,7 +853,7 @@
       </div>
       <div class="btns">
         <a class="pill" href="calculadora.html">Abrir calculadora</a>
-        <a class="pill" href="#quiz">Refazer o quiz</a>
+        <a class="pill" href="quiz.html">Iniciar teste</a>
       </div>
     </div>
     <div class="foot">
@@ -1078,167 +1076,7 @@
       protoHost.scrollIntoView({ block: "nearest", behavior: "smooth" });
     });
 
-    const quiz = [
-      { theme: "trauma", tag: "Trauma", q: "O animal chegou com a pata torta. Por que você ainda olha o corpo inteiro?",
-        opts: ["Porque a fratura sempre é o problema mais grave.", "Porque o mesmo tombo pode ter machucado por dentro, mesmo sem aparecer.", "Porque todo mundo com fratura precisa de remédio na hora.", "Porque você deve endireitar o osso antes do raio-x."],
-        a: 1, why: "O trauma de alta energia (atropelamento, queda, briga) costuma ter várias lesões ao mesmo tempo. Uma fratura visível não exclui sangramento interno, lesão de peito ou de coluna. Por isso a regra é: primeiro estabilizar (ABCDE), depois investigar o osso.",
-        src: "Merck Veterinary Manual — Trauma in Emergency Medicine in Small Animals (2025/2026)." },
-      { theme: "trauma", tag: "Trauma", q: "O animal anda depois do atropelamento. Isso prova que está bem?",
-        opts: ["Sim. Se anda, não tem lesão grave.", "Não. Lesão interna pode aparecer horas depois.", "Sim, se a gengiva estiver rosada uma vez.", "Só se ele abanar o rabo."],
-        a: 1, why: "Muitos danos internos só ficam claros depois. O Merck recomenda internar para observar mesmo quem parece estável na chegada.",
-        src: "Merck Veterinary Manual — Trauma in Emergency Medicine: delayed injury; hospitalize for monitoring." },
-      { theme: "coluna", tag: "Coluna", q: "Qual conjunto de sinais faz você pensar em coluna?",
-        opts: ["Só um dedo mancando.", "De repente não anda, pernas moles, dor forte no pescoço ou nas costas.", "Só febre.", "Gengiva rosada e TPC de 1 segundo."],
-        a: 1, why: "Incapacidade súbita de andar, fraqueza ou paralisia, dor na coluna/pescoço e perda de xixi/fezes depois de trauma pedem movimentação em bloco e o veterinário na hora.",
-        src: "Merck Veterinary Manual — Trauma of the Spinal Column and Cord in Animals." },
-      { theme: "coluna", tag: "Coluna", q: "Como você move um animal com suspeita de coluna?",
-        opts: ["Pelas patas de trás, rápido.", "Em bloco, superfície firme, mais de uma pessoa, cabeça e tronco alinhados.", "Pela coleira, para controlar a cabeça.", "Deixa andar ‘para ver se melhora’."],
-        a: 1, why: "Torção, flexão e puxão pelas patas podem piorar a medula. Use tábua, maca ou cobertor esticado, equipe combinada.",
-        src: "Merck Veterinary Manual — First Aid and Transport of Small Animals; VetATLS." },
-      { theme: "fratura", tag: "Fratura", q: "Para que serve a tala provisória?",
-        opts: ["Para deixar o osso no lugar certo.", "Para diminuir o movimento e a dor até o veterinário avaliar.", "Para substituir a cirurgia.", "Para o animal poder caminhar no canil."],
-        a: 1, why: "Imobilização provisória reduz movimento, dor e lesão de tecido. Não é redução da fratura. Raio-x e tratamento definitivo são do veterinário.",
-        src: "Merck Veterinary Manual — Bone Fractures in Dogs and Cats; First Aid and Transport." },
-      { theme: "fratura", tag: "Fratura", q: "Por que não se puxa o membro para ‘alinhar’?",
-        opts: ["Porque dói em quem está segurando.", "Porque pode piorar a dor e machucar vaso, nervo e músculo.", "Porque o osso se arruma sozinho em dez minutos.", "Porque tala apertada resolve tudo."],
-        a: 1, why: "Manipulação repetida e alinhamento à força lesam partes moles, vasos e nervos. A prioridade do auxiliar é quietude e proteção.",
-        src: "Merck Veterinary Manual — First Aid and Transport; Bone Fractures in Dogs and Cats." },
-      { theme: "ferida", tag: "Ferida", q: "Tem ferimento em cima de uma possível fratura. O que você faz?",
-        opts: ["Empurra o osso para dentro e sutura.", "Cobre, segura o sangramento por fora, não suja mais e chama o veterinário.", "Lava com álcool e deixa ao ar.", "Dá um anti-inflamatório por conta própria."],
-        a: 1, why: "Fratura aberta: cubra com material limpo, controle hemorragia externa, não recoloque osso. Antibiótico é decisão do veterinário (em geral cefazolina na veia).",
-        src: "Clinician’s Brief — Trauma medication therapies; Merck — Bone Fractures." },
-      { theme: "ferida", tag: "Ferida", q: "Há um objeto cravado. Você tira no local?",
-        opts: ["Sim, para limpar a ferida.", "Não. Estabilize o objeto e chame o veterinário.", "Só se for um graveto fino.", "Sim, se o animal estiver andando."],
-        a: 1, why: "Retirar o objeto pode piorar o sangramento e o dano profundo. A abertura pequena por fora não mostra o caminho por dentro.",
-        src: "Merck Veterinary Manual — First Aid and Transport of Small Animals." },
-      { theme: "abcde", tag: "ABCDE", q: "Quais sinais de respiração pedem o veterinário na hora?",
-        opts: ["Um suspiro enquanto dorme.", "Muito esforço para respirar, gengiva roxa, gato de boca aberta.", "Cão calmo com 24 respirações por minuto.", "Ofegação depois de brincar, que já passou."],
-        a: 1, why: "Dispneia importante, cianose e respiração de boca aberta no gato são emergência. Oxigênio e mínimo estresse; não atrase por causa de raio-x.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation; Trauma (tórax)." },
-      { theme: "abcde", tag: "ABCDE", q: "Em que ordem você olha o animal na chegada?",
-        opts: ["Primeiro a fratura, depois o resto.", "A vias aéreas, B respiração, C circulação, D neurológico, E exposição.", "Primeiro a temperatura, sempre.", "Como o tutor pedir."],
-        a: 1, why: "ABCDE (ou ABCs) é o padrão de emergência em pequenos animais: via aérea, respiração, circulação, depois neurológico e exposição.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation of Small Animal Emergency Patients." },
-      { theme: "convulsao", tag: "Convulsão", q: "Na convulsão, o que é seguro — e o que é proibido?",
-        opts: ["Pôr a mão na boca e puxar a língua.", "Afastar objetos, proteger a cabeça, contar o tempo. Não pôr a mão na boca nem segurar à força.", "Amarrar as quatro patas e pôr gelo na cabeça.", "Dar diazepam por conta e filmar depois."],
-        a: 1, why: "Você protege o animal e cronometra. Remédio (diazepam/midazolam) só com o veterinário. Mão na boca = mordida.",
-        src: "Merck Veterinary Manual — Initial Triage (emergency management of seizures)." },
-      { theme: "convulsao", tag: "Convulsão", q: "Uma crise passa de 5 minutos. O que isso pede?",
-        opts: ["Esperar mais 10 minutos em silêncio.", "Avisar o veterinário na hora: pode ser status. Glicemia se houver aparelho.", "Dar açúcar na boca à força.", "Banho frio."],
-        a: 1, why: "Crise longa ou que volta logo é emergência. O veterinário pode usar benzodiazepínico. Hipoglicemia entra no diagnóstico diferencial — por isso a glicose, se o aparelho existir.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation (seizures; glucose)." },
-      { theme: "vitais", tag: "Vitais", q: "Além do número (febre, coração, respiração), o que você anota?",
-        opts: ["Só o nome do tutor.", "Horário, se está piorando ou melhorando, e o que foi feito.", "Nada, se o número parecer ‘normal’.", "Nada. O veterinário lembra."],
-        a: 1, why: "Tendência com horário vale mais que um valor isolado. Medo e dor também sobem coração e respiração — por isso o contexto.",
-        src: "Merck Veterinary Manual — Rule of 20 / monitoring the critically ill small animal." },
-      { theme: "vitais", tag: "Vitais", q: "TPC de 3 segundos e gengiva muito pálida. O que isso sugere?",
-        opts: ["Que o animal está descansando.", "Má circulação / choque — chame o veterinário agora.", "Que a temperatura está normal.", "Nada, se ele ainda anda."],
-        a: 1, why: "TPC em geral é até 2 segundos, gengiva rosada. TPC demorado e mucosa pálida apontam má perfusão. Isso entra no C do ABCDE.",
-        src: "UC Davis CVET Normal Vital Signs (2026): CRT < 2 s, MM pink/moist; Merck triage." },
-      { theme: "papel", tag: "Papel", q: "Quem escolhe o remédio e a dose?",
-        opts: ["O auxiliar, se já viu o caso uma vez.", "Só o médico-veterinário. Você prepara e confere depois da ordem.", "O tutor, pelo WhatsApp.", "Qualquer um da equipe, se tiver pressa."],
-        a: 1, why: "A Resolução CFMV 1.260/2019 coloca o auxiliar em apoio, assistência e acompanhamento sob orientação. Prescrição não é sua.",
-        src: "CFMV — Resolução nº 1.260/2019." }
-    ];
 
-    const themes = [
-      { id: "all", label: "Todos" },
-      { id: "trauma", label: "Trauma" },
-      { id: "abcde", label: "ABCDE" },
-      { id: "fratura", label: "Fratura" },
-      { id: "coluna", label: "Coluna" },
-      { id: "ferida", label: "Ferida" },
-      { id: "convulsao", label: "Convulsão" },
-      { id: "vitais", label: "Vitais" },
-      { id: "papel", label: "Papel" }
-    ];
-    let quizTheme = "all";
-    const answers = {};
-    const host = document.getElementById("quizHost");
-    const themeBar = document.getElementById("quizThemes");
-    themes.forEach((t, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.dataset.id = t.id;
-      b.textContent = t.label;
-      if (i === 0) b.classList.add("on");
-      themeBar.appendChild(b);
-    });
-    function visibleQuiz() {
-      return quiz.map((item, i) => ({ item, i })).filter(x => quizTheme === "all" || x.item.theme === quizTheme);
-    }
-    function renderQuiz() {
-      const vis = visibleQuiz();
-      host.innerHTML = vis.map(({ item, i }, n) => `
-        <article class="q" data-i="${i}">
-          <p class="label tag amber">${item.tag}</p>
-          <h3>${n + 1}. ${item.q}</h3>
-          <div class="opts" data-q="${i}">
-            ${item.opts.map((o, oi) => `<button type="button" data-o="${oi}">${o}</button>`).join("")}
-          </div>
-          <button type="button" class="pill why-btn" data-why="${i}">Ver explicação</button>
-          <p class="feedback" id="fb-${i}"></p>
-        </article>`).join("");
-      vis.forEach(({ item, i }) => {
-        if (answers[i] == null) return;
-        const wrap = host.querySelector(`.opts[data-q="${i}"]`);
-        wrap.querySelectorAll("button").forEach(b => {
-          const idx = +b.dataset.o;
-          if (idx === item.a) b.classList.add("good");
-          else if (idx === answers[i]) b.classList.add("bad");
-        });
-        host.querySelector(`[data-why="${i}"]`).classList.add("show");
-      });
-      document.getElementById("scoreBox").classList.remove("show");
-      host.querySelectorAll(".q").forEach((el, i) => {
-        el.classList.add("rise");
-        el.style.setProperty("--d", `${(i % 6) * 60}ms`);
-      });
-      armRise(host);
-    }
-    themeBar.addEventListener("click", e => {
-      const b = e.target.closest("button"); if (!b) return;
-      quizTheme = b.dataset.id;
-      themeBar.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
-      renderQuiz();
-    });
-    host.addEventListener("click", e => {
-      const why = e.target.closest("[data-why]");
-      if (why) {
-        const i = +why.dataset.why;
-        const item = quiz[i];
-        const fb = document.getElementById("fb-" + i);
-        const picked = answers[i];
-        const right = picked === item.a;
-        fb.classList.add("show");
-        fb.innerHTML = `<b>${right ? "Por que esta está certa." : "Por que esta é a resposta."}</b> ${item.why}<span class="src" style="display:block">${item.src}</span>`;
-        return;
-      }
-      const btn = e.target.closest("button[data-o]");
-      if (!btn) return;
-      const wrap = btn.parentElement;
-      const i = +wrap.dataset.q;
-      const oi = +btn.dataset.o;
-      answers[i] = oi;
-      wrap.querySelectorAll("button").forEach(b => {
-        b.classList.remove("good", "bad");
-        const idx = +b.dataset.o;
-        if (idx === quiz[i].a) b.classList.add("good");
-        else if (idx === oi) b.classList.add("bad");
-      });
-      host.querySelector(`[data-why="${i}"]`).classList.add("show");
-      const vis = visibleQuiz();
-      if (vis.every(x => answers[x.i] != null)) {
-        const s = vis.filter(x => answers[x.i] === x.item.a).length;
-        const box = document.getElementById("scoreBox");
-        box.classList.add("show");
-        let msg = "Leia a explicação das que errou. Errar aqui é treino.";
-        if (s === vis.length) msg = "Mandou bem neste tema. Na dúvida no plantão, chame o veterinário.";
-        else if (s >= Math.ceil(vis.length * 0.75)) msg = "Quase lá. Abra a explicação — o porquê importa mais do que a letra.";
-        box.innerHTML = `<h3 class="display">${s} de ${vis.length}</h3><p class="talk">${msg}</p>`;
-      }
-    });
-    renderQuiz();
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const stage = document.getElementById("stage");
