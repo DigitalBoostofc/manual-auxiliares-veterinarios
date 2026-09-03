@@ -360,6 +360,19 @@
 
     .motion .reveal { opacity: 0; transform: translateY(18px); }
     .motion .reveal.in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease; }
+    .motion .rise {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    .motion .rise.in {
+      opacity: 1;
+      transform: none;
+      transition: opacity .7s ease, transform .7s cubic-bezier(.22, 1, .36, 1);
+      transition-delay: var(--d, 0s);
+    }
+    .tick { display: none; }
+    .rail-hint { display: none; }
+    .hint-phone { display: none; }
 
     @media (max-width: 900px) {
       .bar { padding: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right)); gap: 10px; backdrop-filter: none; background: var(--ground); }
@@ -378,16 +391,106 @@
       .brand .word { font-size: 13px; }
       .hero-logo { width: min(82vw, 340px); }
       .portal { height: 180vh; }
-      .fold, .lesson, .releases, .quiz, .roster { padding-left: 6vw; padding-right: 6vw; }
-      .lesson { padding-top: 56px; padding-bottom: 56px; }
+      .fold, .lesson, .releases, .quiz, .roster, .close { padding-left: 6vw; padding-right: 6vw; }
+      .lesson, .quiz, .releases, .fold, .close { scroll-margin-top: calc(var(--nav) + 36px); }
+      .sess { padding-top: 48px; padding-bottom: 72px; overflow-x: clip; min-width: 0; }
+      .releases, .deck-col, .photo-row, .clinic-grid { min-width: 0; max-width: 100%; }
+      .fold { overflow: visible; min-height: 0; padding-bottom: 36px; }
       .releases, .row, .close-top, .grid-2, .grid-3, .photo-row, .clinic-grid { grid-template-columns: 1fr; }
       .clinic-side img { height: 120px; }
-      .abcde { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
-      .abcde button { padding: 12px 2px; font-size: 8px; letter-spacing: .02em; }
-      .abcde .ltr { font-size: 16px; margin-bottom: 4px; }
       .row .n { text-align: left; max-width: none; }
-      .deck-col { justify-self: stretch; overflow: hidden; }
+      .deck-col { justify-self: stretch; overflow: visible; }
       .orb { display: none; }
+      .tick {
+        display: flex; align-items: center;
+        position: fixed; top: var(--nav); left: 0; right: 0; z-index: 90;
+        height: 30px; padding: 0 max(16px, env(safe-area-inset-left));
+        font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
+        text-transform: uppercase; color: var(--amber);
+        background: var(--ground); border-bottom: 1px solid var(--hair);
+        transform: translateY(-110%); opacity: 0; pointer-events: none;
+        transition: transform .35s ease, opacity .35s ease;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .tick.on { transform: none; opacity: 1; }
+      .rail, .grid-3.rail, .grid-2.rail {
+        display: flex; flex-wrap: nowrap; gap: 12px;
+        overflow-x: auto; scroll-snap-type: x mandatory;
+        scroll-padding-inline: 6vw;
+        padding: 6px 6vw 18px; margin: 18px -6vw 0;
+        min-width: 0; max-width: 100vw;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        touch-action: pan-x;
+        scrollbar-width: none;
+      }
+      .rail::-webkit-scrollbar, .abcde::-webkit-scrollbar, .deck::-webkit-scrollbar,
+      .proto-nav::-webkit-scrollbar, .quiz-themes::-webkit-scrollbar, .alarm::-webkit-scrollbar { display: none; }
+      .rail > * {
+        flex: 0 0 min(78vw, 300px);
+        scroll-snap-align: start;
+      }
+      .rail > .box {
+        border: 1px solid var(--hair);
+        padding: 20px 16px 18px;
+        min-height: 220px;
+      }
+      .rail-hint { display: block; margin-top: 10px; }
+      .abcde {
+        display: flex; gap: 10px;
+        overflow-x: auto; scroll-snap-type: x mandatory;
+        scroll-padding-inline: 6vw;
+        margin: 18px -6vw 8px; padding: 4px 6vw 14px;
+        min-width: 0; max-width: 100vw;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        touch-action: pan-x;
+        scrollbar-width: none;
+      }
+      .abcde button {
+        flex: 0 0 min(78vw, 300px);
+        min-height: 132px; padding: 22px 18px;
+        font-size: 13px; letter-spacing: .08em; text-align: left;
+        scroll-snap-align: start;
+      }
+      .abcde .ltr { font-size: 36px; margin-bottom: 10px; }
+      .alarm, .proto-nav, .quiz-themes {
+        display: flex; flex-wrap: nowrap; gap: 8px;
+        overflow-x: auto; scroll-snap-type: x proximity;
+        scroll-padding-inline: 6vw;
+        margin-left: -6vw; margin-right: -6vw;
+        padding: 6px 6vw 12px;
+        min-width: 0; max-width: 100vw;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        touch-action: pan-x;
+        scrollbar-width: none;
+      }
+      .alarm span, .proto-nav button, .quiz-themes button {
+        flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start;
+      }
+      .deck {
+        display: flex; aspect-ratio: auto; height: auto;
+        overflow-x: auto; scroll-snap-type: x mandatory;
+        scroll-padding-inline: 6vw; gap: 12px;
+        padding: 4px 6vw 10px; margin-left: -6vw; margin-right: -6vw;
+        min-width: 0; max-width: 100vw;
+        touch-action: pan-x;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+      }
+      .sleeve {
+        position: relative; inset: auto;
+        flex: 0 0 min(78vw, 320px);
+        min-height: 340px; height: auto;
+        scroll-snap-align: start;
+        transform: none !important;
+        box-shadow: 0 16px 32px rgba(0,0,0,.4);
+      }
+      .sleeve img { height: 168px; }
+      .hint-desk { display: none; }
+      .hint-phone { display: block; }
       table.sheet thead { display: none; }
       table.sheet tr { display: grid; grid-template-columns: 1fr; gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--hair); }
       table.sheet td { border: 0; padding: 0; }
@@ -403,6 +506,11 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .orb { transform: none !important; }
+      .motion .reveal, .motion .rise { opacity: 1; transform: none; filter: none; }
+      html { scroll-behavior: auto; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      html { scroll-behavior: smooth; }
     }
   </style>
 </head>
@@ -432,8 +540,9 @@
       <a class="pill" href="calculadora.html">Calculadora</a>
     </nav>
   </header>
+  <div id="tick" class="tick" aria-live="polite"></div>
 
-  <section class="portal" id="topo">
+  <section class="portal" id="topo" data-tick="">
     <div class="stage" id="stage">
       <img class="hero-img" src="assets/hero.jpg" alt="Cão na mesa de emergência, com oxigênio" />
       <div class="duotone" aria-hidden="true"></div>
@@ -455,7 +564,7 @@
     </div>
   </section>
 
-  <section class="fold" id="usar">
+  <section class="fold sess" id="usar" data-tick="00 · Como usar">
     <p class="label amber k">00 · Como usar</p>
     <h2 class="display reveal">Primeiro o animal <em>inteiro</em>. Depois a ferida.</h2>
     <p class="talk">Olá. Esta aula é o seu caderno de plantão. Leia na ordem. Os quadros <b>Faça</b>, <b>Não faça</b> e <b>Chame o veterinário</b> são para os dez segundos da chegada. A calculadora fica numa página só dela — aqui a gente treina a cabeça. Se a conduta depende de remédio ou de diagnóstico, pare e chame.</p>
@@ -463,15 +572,17 @@
     <div class="orb" id="orb"><img src="assets/cat.jpg" alt="" /></div>
   </section>
 
-  <section class="lesson" id="como">
-    <div class="grid-3">
+  <section class="lesson sess" id="como" data-tick="00 · Como usar">
+    <p class="label teal">Três passos</p>
+    <p class="rail-hint label">Deslize para o lado</p>
+    <div class="grid-3 rail">
       <article class="box"><p class="label teal">1 · Chegada</p><h3>Segurança, peso, contenção</h3><p class="talk">A sala é segura? Tem gente o bastante? Fale baixo. Peça ajuda antes de tocar.</p></article>
       <article class="box"><p class="label">2 · Triagem</p><h3>ABCDE e vitais</h3><p class="talk">Ar, respiração, gengiva, consciência. Só depois a pata. Um número sozinho quase não serve — olhe se está piorando.</p></article>
       <article class="box"><p class="label amber">3 · Depois</p><h3>Anote e chame</h3><p class="talk">Horário, o que mudou, o que você fez. Remédio e cirurgia não são sua decisão.</p></article>
     </div>
   </section>
 
-  <section class="releases" id="situacoes">
+  <section class="releases sess" id="situacoes" data-tick="Treino · Cartas">
     <div>
       <p class="label teal">02 · Treino</p>
       <h2 class="display reveal">Oito situações do plantão.</h2>
@@ -484,13 +595,14 @@
     <div class="deck-col">
       <div class="deck" id="deck" tabindex="0" aria-label="Cartas de situações. Arraste ou use as setas."></div>
       <div class="hint">
-        <p class="label">Arraste a carta · ou use as setas</p>
+        <p class="label hint-desk">Arraste a carta · ou use as setas</p>
+        <p class="label hint-phone">Deslize as cartas para o lado</p>
         <div class="dots" id="dots"></div>
       </div>
     </div>
   </section>
 
-  <section class="lesson alt" id="papel">
+  <section class="lesson alt sess" id="papel" data-tick="01 · Papel">
     <p class="label amber">01 · Papel</p>
     <h2 class="display reveal">Você ajuda. O veterinário decide.</h2>
     <p class="talk">O CFMV diz: auxiliar é apoio, debaixo de orientação. Se a conduta depende de diagnóstico ou de remédio, pare e chame.</p>
@@ -523,10 +635,11 @@
     </div>
   </section>
 
-  <section class="lesson" id="abcde">
+  <section class="lesson sess" id="abcde" data-tick="02 · ABCDE">
     <p class="label teal">02 · Emergência</p>
     <h2 class="display reveal">ABCDE. Sempre nessa ordem.</h2>
-    <p class="talk">Clique em cada letra. Em trauma, isso vem antes da fratura.</p>
+    <p class="talk">Toque em cada letra. Em trauma, isso vem antes da fratura.</p>
+    <p class="rail-hint label">Deslize as letras</p>
     <div class="abcde" id="abcdeNav">
       <button class="on" data-k="A"><span class="ltr">A</span>O ar entra?</button>
       <button data-k="B"><span class="ltr">B</span>Respira bem?</button>
@@ -542,7 +655,7 @@
     </div>
   </section>
 
-  <section class="lesson alt" id="vitais">
+  <section class="lesson alt sess" id="vitais" data-tick="03 · Vitais">
     <p class="label amber">03 · Números do plantão</p>
     <h2 class="display reveal">Sinais vitais: olhe a tendência.</h2>
     <p class="talk">Estes valores são referência de treino (UC Davis CVET 2026 e tabelas do Merck/Plumb). Medo, dor, idade e tamanho mudam o número. O que mais importa é: está piorando?</p>
@@ -566,7 +679,7 @@
     </ol>
   </section>
 
-  <section class="lesson" id="trauma">
+  <section class="lesson sess" id="trauma" data-tick="04 · Trauma">
     <p class="label teal">04 · Reconhecer</p>
     <h2 class="display reveal">Trauma não é só o osso.</h2>
     <p class="talk">Fratura dói, incha, instabiliza. O mesmo tombo pode ter machucado peito, barriga, coluna ou um vaso por dentro. Não trate a pata isolada.</p>
@@ -589,7 +702,7 @@
     </div>
   </section>
 
-  <section class="lesson alt" id="fraturas">
+  <section class="lesson alt sess" id="fraturas" data-tick="05 · Fratura">
     <p class="label amber">05 · Fratura</p>
     <h2 class="display reveal">Não tente colocar o osso no lugar.</h2>
     <p class="talk">Seu trabalho é proteger até o veterinário ver. Raio-x, tala definitiva e cirurgia não são seus.</p>
@@ -618,7 +731,7 @@
     <p class="talk" style="margin-top:22px"><b>Osso para fora:</b> cubra, segure o sangue por fora, não empurre nada para dentro. Chame com urgência.</p>
   </section>
 
-  <section class="lesson" id="coluna">
+  <section class="lesson sess" id="coluna" data-tick="06 · Coluna">
     <p class="label teal">06 · Coluna e pelve</p>
     <h2 class="display reveal">Mova em bloco. Nunca pelas patas.</h2>
     <p class="talk">Pense em coluna se, depois do trauma, o animal não anda, as pernas amolecem, dói o pescoço ou as costas, a pose muda, ou ele perde o xixi/fezes.</p>
@@ -634,7 +747,7 @@
     </div>
   </section>
 
-  <section class="lesson alt" id="feridas">
+  <section class="lesson alt sess" id="feridas" data-tick="07 · Feridas">
     <p class="label amber">07 · Sangue e ferida</p>
     <h2 class="display reveal">Pressione. Não tire o objeto.</h2>
     <p class="talk">Um furo pequeno por fora pode ser fundo por dentro. Andar e responder não prova que está tudo bem.</p>
@@ -651,11 +764,12 @@
     <p class="talk">Luvas. Cubra com material limpo. Não jogue produto irritante em ferida funda sem ordem. Anote onde é, como está e quanto sangrou.</p>
   </section>
 
-  <section class="lesson" id="manejo">
+  <section class="lesson sess" id="manejo" data-tick="08 · Manejo">
     <p class="label teal">08 · Dor, frio, calor, convulsão</p>
     <h2 class="display reveal">Acalme. Observe. Avise.</h2>
+    <p class="rail-hint label">Deslize os cuidados</p>
     <div class="photo-row">
-      <div class="grid-2" style="display:grid">
+      <div class="grid-2 rail">
         <article class="box do"><h3>Menos estresse</h3><p class="talk">Devagar, voz baixa, chão que não escorrega, contenção curta, cobertor se estiver frio.</p></article>
         <article class="box no"><h3>Sinais de dor</h3><p class="talk">Pose estranha, vocaliza, foge, ofega sem falta de ar, protege um lado, fica agressivo ou apático. Olhe a evolução.</p></article>
         <article class="box"><h3>Frio</h3><p class="talk">Cobertor e calor indireto. Bolsa quente na pele queima. Meça de novo.</p></article>
@@ -669,7 +783,7 @@
     <p class="talk" style="margin-top:22px"><b>Convulsão:</b> afaste objetos, proteja a cabeça, conte o tempo. Não ponha a mão na boca e não segure à força. Chame na hora.</p>
   </section>
 
-  <section class="lesson alt" id="terapeutico">
+  <section class="lesson alt sess" id="terapeutico" data-tick="09 · Terapêutica">
     <p class="label amber">09 · O que o veterinário costuma usar</p>
     <h2 class="display reveal">Toque a situação. Leia o que fazer.</h2>
     <p class="talk">Isto não é para você escolher o remédio. É para reconhecer o pedido, preparar o material e conferir a conta. Escolha uma situação no menu — o quadro muda na hora.</p>
@@ -693,7 +807,7 @@
     <p class="talk" style="margin-top:22px">Corticoide em dose alta <b>não</b> é rotina na coluna (conduta atual de emergência). Anti-inflamatório só depois que o animal já tem pressão e volume. No gato, enrofloxacina não passa de 5 mg/kg.</p>
   </section>
 
-  <section class="lesson" id="pos">
+  <section class="lesson sess" id="pos" data-tick="10 · Depois">
     <p class="label teal">10 · Depois</p>
     <h2 class="display reveal">Observar também é tratar.</h2>
     <p class="talk">Anote com horário. Não só o número isolado.</p>
@@ -709,7 +823,7 @@
     </table>
   </section>
 
-  <section class="quiz" id="quiz">
+  <section class="quiz sess" id="quiz" data-tick="11 · Quiz">
     <p class="label amber">11 · Agora você responde</p>
     <h2 class="display reveal">Quiz por tema.</h2>
     <p class="talk">Escolha o tema. Responda. Depois, se quiser, abra a explicação — com a fonte. Errar aqui é treino.</p>
@@ -718,7 +832,7 @@
     <div class="score" id="scoreBox"></div>
   </section>
 
-  <section class="lesson" id="fontes">
+  <section class="lesson sess" id="fontes" data-tick="12 · Fontes">
     <p class="label teal">12 · De onde veio esta aula</p>
     <h2 class="display reveal">Fontes profissionais.</h2>
     <p class="talk">Este material é de <b>treino</b>. Não é receita. Não substitui o veterinário da casa nem a bula. As condutas de auxiliar e as faixas de dose foram alinhadas a manuais e normas abaixo — sempre no contexto de cão e gato em emergência.</p>
@@ -732,7 +846,7 @@
     <p class="src">Se o protocolo da sua ONG for diferente, vale o da casa. Em dúvida de remédio ou dose: não aplique — pergunte.</p>
   </section>
 
-  <section class="close" id="fecho">
+  <section class="close sess" id="fecho" data-tick="Calculadora">
     <div class="close-top">
       <div>
         <p class="label teal">05 · Próximo passo</p>
@@ -766,11 +880,22 @@
 
     const deck = document.getElementById("deck");
     const dots = document.getElementById("dots");
+    const phone = window.matchMedia("(max-width: 900px)");
     let order = sleeves.map((_, i) => i);
     let front = 0;
     let drag = null;
+    let riseIO = null;
 
     function stack() {
+      if (phone.matches) {
+        [...deck.children].forEach(el => {
+          el.style.transition = "none";
+          el.style.transform = "none";
+          el.style.zIndex = "1";
+        });
+        [...dots.children].forEach((d, i) => d.classList.toggle("on", i === 0));
+        return;
+      }
       const n = sleeves.length;
       order.forEach((idx, i) => {
         const el = deck.children[idx];
@@ -794,6 +919,7 @@
     stack();
 
     function onDown(e) {
+      if (phone.matches) return;
       const el = e.currentTarget;
       if (el !== deck.children[order[front]]) return;
       el.setPointerCapture(e.pointerId);
@@ -824,10 +950,19 @@
     deck.addEventListener("pointerup", release);
     deck.addEventListener("pointercancel", release);
     deck.addEventListener("keydown", e => {
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      if (phone.matches || (e.key !== "ArrowRight" && e.key !== "ArrowLeft")) return;
       e.preventDefault();
       throwCard(e.key === "ArrowRight" ? 1 : -1);
     });
+    phone.addEventListener("change", stack);
+    deck.addEventListener("scroll", () => {
+      if (!phone.matches) return;
+      const cards = [...deck.children];
+      const mid = deck.scrollLeft + deck.clientWidth * 0.35;
+      let i = 0;
+      cards.forEach((c, n) => { if (c.offsetLeft <= mid) i = n; });
+      [...dots.children].forEach((d, n) => d.classList.toggle("on", n === i));
+    }, { passive: true });
 
     const abcde = {
       A: "Olhe boca, pescoço, vômito e secreção. Tire só o que você alcança, sem enfiar nada no escuro. Se achar que o pescoço quebrou, mantenha alinhado e chame.",
@@ -1055,6 +1190,11 @@
         host.querySelector(`[data-why="${i}"]`).classList.add("show");
       });
       document.getElementById("scoreBox").classList.remove("show");
+      host.querySelectorAll(".q").forEach((el, i) => {
+        el.classList.add("rise");
+        el.style.setProperty("--d", `${(i % 6) * 60}ms`);
+      });
+      armRise(host);
     }
     themeBar.addEventListener("click", e => {
       const b = e.target.closest("button"); if (!b) return;
@@ -1104,14 +1244,33 @@
     const stage = document.getElementById("stage");
     const portal = document.querySelector(".portal");
     const orb = document.getElementById("orb");
+    const tick = document.getElementById("tick");
     function setP(p) { stage.style.setProperty("--p", p.toFixed(4)); }
+    function armRise(root = document) {
+      if (!riseIO) return;
+      root.querySelectorAll(".reveal, .rise").forEach(el => {
+        if (el.classList.contains("in")) return;
+        riseIO.observe(el);
+      });
+    }
     if (!reduced) {
       document.documentElement.classList.add("motion");
       setP(0);
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
-      }, { threshold: 0.08, rootMargin: "0px 0px -8% 0px" });
-      document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+      document.querySelectorAll(".sess").forEach(sec => {
+        sec.querySelectorAll(".box, .frame, table.sheet tbody tr, .steps li, .q, .clinic-panel, .clinic-side").forEach((el, i) => {
+          if (el.closest(".rail, .deck, .abcde, .alarm, .proto-nav, .quiz-themes")) return;
+          el.classList.add("rise");
+          el.style.setProperty("--d", `${(i % 6) * 70}ms`);
+        });
+      });
+      riseIO = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (!en.isIntersecting) return;
+          en.target.classList.add("in");
+          riseIO.unobserve(en.target);
+        });
+      }, { threshold: 0.06, rootMargin: "40px 0px -6% 0px" });
+      armRise();
       let ticking = false;
       function onScroll() {
         const rect = portal.getBoundingClientRect();
@@ -1119,12 +1278,29 @@
         setP(Math.min(1, Math.max(0, -rect.top / max)));
         const fold = document.getElementById("usar").getBoundingClientRect();
         const fy = (innerHeight - fold.top) / innerHeight;
-        orb.style.transform = `translateY(${fy * 36}px) rotate(${fy * 8}deg)`;
+        if (orb) orb.style.transform = `translateY(${fy * 36}px) rotate(${fy * 8}deg)`;
         ticking = false;
       }
       addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
       onScroll();
     }
+    function updateTick() {
+      const y = window.innerHeight * 0.32;
+      let current = null;
+      document.querySelectorAll("[data-tick]").forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top <= y && r.bottom > y) current = el;
+      });
+      if (!current || current.id === "topo" || !current.dataset.tick) {
+        tick.classList.remove("on");
+        tick.textContent = "";
+        return;
+      }
+      tick.textContent = current.dataset.tick;
+      tick.classList.add("on");
+    }
+    addEventListener("scroll", updateTick, { passive: true });
+    updateTick();
     document.querySelectorAll("table.sheet").forEach(t => {
       const heads = [...t.querySelectorAll("th")].map(th => th.textContent.trim());
       t.querySelectorAll("tbody tr").forEach(tr => {
@@ -1132,10 +1308,17 @@
       });
     });
     document.getElementById("menu").onclick = () => document.getElementById("links").classList.toggle("open");
-    document.getElementById("links").addEventListener("click", () => {
-      document.getElementById("links").classList.remove("open");
-      document.querySelectorAll(".reveal").forEach(el => el.classList.add("in"));
+    function revealSec(id) {
+      const sec = id ? document.querySelector(id) : null;
+      (sec || document).querySelectorAll(".reveal, .rise").forEach(el => el.classList.add("in"));
+    }
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", () => {
+        document.getElementById("links").classList.remove("open");
+        revealSec(a.getAttribute("href"));
+      });
     });
+    addEventListener("hashchange", () => revealSec(location.hash));
   </script>
 </body>
 </html>
