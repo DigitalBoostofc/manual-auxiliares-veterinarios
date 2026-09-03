@@ -51,6 +51,12 @@
       -webkit-backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--hair);
     }
+    .brand {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .brand img {
+      height: 34px; width: auto; max-width: none; border-radius: 6px;
+    }
     .word {
       font-family: Syne, sans-serif; font-weight: 800; font-size: 15px;
       letter-spacing: -.02em; text-transform: uppercase;
@@ -113,12 +119,23 @@
     }
     .spark.a { background: var(--amber); transform: translate(calc(var(--p) * -42vw), calc(var(--p) * -36vh)); }
     .spark.b { background: var(--teal); transform: translate(calc(var(--p) * 42vw), calc(var(--p) * 36vh)); }
+    .hero-logo {
+      position: absolute; left: 50%; top: 50%; z-index: 6;
+      margin: 0; width: min(48vw, 400px);
+      transform: translate(-50%, -50%) scale(calc(.86 + var(--p) * .14));
+      opacity: var(--p);
+      pointer-events: none;
+    }
+    .hero-logo img {
+      width: 100%; height: auto; max-width: none; border-radius: 18px;
+    }
     .title {
       position: absolute; inset: 0; z-index: 5;
       display: flex; align-items: center; justify-content: center;
       pointer-events: none;
-      transform: scale(calc(1 + var(--p) * .16));
+      transform: scale(calc(1 + var(--p) * .1));
       letter-spacing: calc(-.02em - var(--p) * .028em);
+      opacity: calc(1 - var(--p));
     }
     .title .half {
       font-family: Syne, sans-serif; font-weight: 800;
@@ -356,6 +373,10 @@
       .bar nav.open a { padding: 14px 0; border-bottom: 1px solid var(--hair); font-size: 13px; }
       .menu { display: grid; place-items: center; margin-left: auto; }
       .bar > .pill { margin-left: 0; padding: 8px 10px; }
+      .brand { gap: 8px; }
+      .brand img { height: 28px; }
+      .brand .word { font-size: 13px; }
+      .hero-logo { width: min(82vw, 340px); }
       .portal { height: 180vh; }
       .fold, .lesson, .releases, .quiz, .roster { padding-left: 6vw; padding-right: 6vw; }
       .lesson { padding-top: 56px; padding-bottom: 56px; }
@@ -388,7 +409,10 @@
 <body>
   <header>
     <nav class="bar">
-      <a class="word" href="#topo">Aula<span class="amp">.</span></a>
+      <a class="brand" href="#topo">
+        <img src="assets/logo.png" alt="ONG Amigo Bicho" width="405" height="210" />
+        <span class="word">Aula<span class="amp">.</span></span>
+      </a>
       <nav id="links">
         <a href="#usar">Como usar</a>
         <a href="#papel">Papel</a>
@@ -421,6 +445,9 @@
       <h1 class="title">
         <span class="half a">Au</span><span class="half b">la<span class="amp">.</span></span>
       </h1>
+      <figure class="hero-logo">
+        <img src="assets/logo.png" alt="ONG Amigo Bicho — Seja um amigo você também" width="405" height="210" />
+      </figure>
       <p class="pin tl">Para quem está <span class="amber">aprendendo</span></p>
       <p class="pin tr">Leia com <span class="teal">calma</span></p>
       <p class="pin bl">Desça para <span class="amber">abrir</span></p>

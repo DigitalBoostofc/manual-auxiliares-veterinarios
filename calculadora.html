@@ -47,6 +47,12 @@
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--hair);
     }
+    .brand {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .brand img {
+      height: 34px; width: auto; max-width: none; border-radius: 6px;
+    }
     .word {
       font-family: Syne, sans-serif; font-weight: 800; font-size: 15px;
       letter-spacing: -.02em; text-transform: uppercase;
@@ -139,6 +145,8 @@
       main { padding: calc(var(--nav) + 28px) 6vw 80px; }
       .bar { gap: 10px; padding: 0 12px; }
       .bar nav { display: none; }
+      .brand img { height: 28px; }
+      .brand .word { font-size: 13px; }
       .seg button, .weight button { min-height: 48px; }
       .chip { min-height: 40px; }
       .weight input { font-size: 36px; }
@@ -148,7 +156,10 @@
 </head>
 <body>
   <nav class="bar">
-    <a class="word" href="index.html">Aula<span class="amp">.</span></a>
+    <a class="brand" href="index.html">
+      <img src="assets/logo.png" alt="ONG Amigo Bicho" width="405" height="210" />
+      <span class="word">Aula<span class="amp">.</span></span>
+    </a>
     <nav>
       <a href="index.html">Voltar à aula</a>
       <a class="on" href="calculadora.html">Calculadora</a>
