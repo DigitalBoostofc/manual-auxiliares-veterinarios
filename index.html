@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Aula de plantão · Auxiliar veterinário</title>
-  <meta name="description" content="Aula simples de triagem e emergência para quem está começando no plantão: o que fazer, o que não fazer, e um quiz para treinar." />
+  <meta name="description" content="Mapa do plantão: toque uma estação e treine uma ideia por vez." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%230c1c1b' width='32' height='32'/%3E%3Ccircle cx='10' cy='16' r='2' fill='%23c9a56a'/%3E%3Ccircle cx='22' cy='16' r='2' fill='%232f8f82'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,20 +20,19 @@
       --teal: #2f8f82;
       --hair: rgba(244, 239, 228, .13);
       --nav: 58px;
-      --p: 1;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
       background: var(--ground);
       color: var(--ink);
       font-family: Sora, system-ui, sans-serif;
-      font-weight: 400;
       font-size: 16px;
-      line-height: 1.55;
+      line-height: 1.5;
     }
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
-    button, input, select { font-family: inherit; color: inherit; }
+    button { font-family: inherit; color: inherit; }
     .display { font-family: Syne, sans-serif; font-weight: 800; letter-spacing: -.025em; line-height: .92; }
     .label {
       font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
@@ -44,1428 +43,590 @@
 
     nav.bar {
       position: fixed; inset: 0 0 auto; height: var(--nav); z-index: 100;
-      display: flex; align-items: center; gap: 28px;
-      padding: 0 22px;
-      background: rgba(12, 28, 27, .72);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      display: flex; align-items: center; gap: 12px;
+      padding: 0 max(12px, env(safe-area-inset-left));
+      background: var(--ground);
       border-bottom: 1px solid var(--hair);
     }
-    .brand {
-      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-    }
-    .brand img {
-      height: 34px; width: auto; max-width: none; border-radius: 6px;
-    }
-    .word {
-      font-family: Syne, sans-serif; font-weight: 800; font-size: 15px;
-      letter-spacing: -.02em; text-transform: uppercase;
-    }
+    .brand { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .brand img { height: 28px; width: auto; max-width: none; border-radius: 6px; }
+    .word { font-family: Syne, sans-serif; font-weight: 800; font-size: 13px; letter-spacing: -.02em; text-transform: uppercase; }
     .amp { color: var(--amber); }
-    .bar nav {
-      display: flex; gap: 16px; flex: 1;
-      overflow-x: auto; scrollbar-width: none;
+    .bar nav { display: none; }
+    .bar nav.open {
+      display: flex; flex-direction: column; position: fixed;
+      top: var(--nav); left: 0; right: 0; padding: 8px 16px 20px;
+      background: var(--ground); border-bottom: 1px solid var(--hair);
+      max-height: calc(100vh - var(--nav)); overflow: auto; z-index: 110;
     }
-    .bar nav::-webkit-scrollbar { display: none; }
-    .bar nav a { white-space: nowrap; }
-    .bar nav a {
-      font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--ink-2);
-    }
-    .bar nav a:hover { color: var(--amber); }
-    .pill {
-      font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
-      text-transform: uppercase;
-      padding: 8px 14px; border: 1px solid var(--hair);
-      background: transparent; cursor: pointer; color: var(--ink);
-    }
-    .bar > .pill { margin-left: auto; }
-    .pill:hover { border-color: var(--amber); color: var(--amber); }
+    .bar nav.open a { padding: 14px 0; border-bottom: 1px solid var(--hair); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
     .menu {
-      display: none; background: none; border: 1px solid var(--hair);
+      margin-left: auto; background: none; border: 1px solid var(--hair);
       color: var(--ink); font-size: 10.5px; letter-spacing: .14em;
       text-transform: uppercase; cursor: pointer;
       min-width: 44px; min-height: 44px; padding: 0 12px;
     }
-
-    .portal { height: 250vh; position: relative; }
-    .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; }
-    .hero-img {
-      position: absolute; inset: -8%;
-      width: 116%; height: 116%; object-fit: cover;
-      transform: scale(calc(1.12 - var(--p) * .12));
-      transform-origin: 55% 45%;
-    }
-    .duotone {
-      position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(118deg, var(--teal), var(--amber));
-      mix-blend-mode: overlay;
-      opacity: calc(var(--p) * .28);
-    }
-    .veil {
-      position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse at center, transparent 38%, rgba(12,28,27,.78) 100%);
-    }
-    .panel {
-      position: absolute; top: 0; bottom: 0; width: 54%;
-      background: var(--ground); z-index: 3;
-    }
-    .panel.l { left: 0; transform: translateX(calc(var(--p) * -110%)); }
-    .panel.r { right: 0; transform: translateX(calc(var(--p) * 110%)); }
-    .spark {
-      position: absolute; top: 50%; left: 50%; z-index: 4;
-      width: 7px; height: 7px; border-radius: 50%; margin: -3.5px 0 0 -3.5px;
-      pointer-events: none;
-    }
-    .spark.a { background: var(--amber); transform: translate(calc(var(--p) * -42vw), calc(var(--p) * -36vh)); }
-    .spark.b { background: var(--teal); transform: translate(calc(var(--p) * 42vw), calc(var(--p) * 36vh)); }
-    .hero-logo {
-      position: absolute; left: 50%; top: 50%; z-index: 6;
-      margin: 0; width: min(48vw, 400px);
-      transform: translate(-50%, -50%) scale(calc(.86 + var(--p) * .14));
-      opacity: var(--p);
-      pointer-events: none;
-    }
-    .hero-logo img {
-      width: 100%; height: auto; max-width: none; border-radius: 18px;
-    }
-    .title {
-      position: absolute; inset: 0; z-index: 5;
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
-      transform: scale(calc(1 + var(--p) * .1));
-      letter-spacing: calc(-.02em - var(--p) * .028em);
-      opacity: calc(1 - var(--p));
-    }
-    .title .half {
-      font-family: Syne, sans-serif; font-weight: 800;
-      font-size: clamp(44px, 9vw, 112px);
-      text-transform: uppercase; color: var(--ink); line-height: .85;
-    }
-    .title .half.a { transform: translateX(calc(var(--p) * -48%)); }
-    .title .half.b { transform: translateX(calc(var(--p) * 48%)); }
-    .title .amp { color: var(--amber); }
-    .pin {
-      position: absolute; z-index: 6;
+    .pill {
       font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
-      text-transform: uppercase; color: var(--ink-2);
+      text-transform: uppercase; padding: 8px 10px;
+      border: 1px solid var(--hair); background: transparent; cursor: pointer; color: var(--ink);
     }
-    .pin.tl { top: calc(var(--nav) + 18px); left: 22px; }
-    .pin.tr { top: calc(var(--nav) + 18px); right: 22px; }
-    .pin.bl { bottom: 22px; left: 22px; }
-    .pin.br { bottom: 22px; right: 22px; }
-    .pin .amber { color: var(--amber); }
-    .pin .teal { color: var(--teal); }
+    .pill:hover, .pill.on { border-color: var(--amber); color: var(--amber); }
 
-    .fold {
-      min-height: 100vh; position: relative;
-      display: grid; align-content: center;
-      padding: 120px 8vw 100px;
-      background: var(--ground); overflow: hidden;
+    .map {
+      padding: calc(var(--nav) + 20px) 6vw 40px;
+      max-width: 1080px; margin: 0 auto;
     }
-    .fold .k { margin-bottom: 22px; }
-    .fold h2 { font-size: clamp(24px, 3.6vw, 52px); max-width: 22ch; }
-    .fold h2 em { font-style: normal; color: var(--amber); }
-    .talk { color: var(--ink-2); max-width: 42ch; margin-top: 22px; font-size: 17px; }
-    .idx {
-      margin-top: 48px;
-      font-family: Syne, sans-serif; font-weight: 800;
-      font-size: clamp(88px, 16vw, 180px);
-      line-height: .75; color: transparent;
-      -webkit-text-stroke: 1px var(--hair);
-      letter-spacing: -.04em;
+    .map h1 { font-size: clamp(36px, 11vw, 64px); margin: 8px 0 10px; }
+    .map .lede { color: var(--ink-2); max-width: 34ch; font-size: 17px; margin-bottom: 28px; }
+    .stops {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
     }
-    .orb {
-      position: absolute; right: -8vw; top: 18%;
-      width: min(42vw, 420px); height: min(42vw, 420px);
-      border-radius: 50%; overflow: hidden; opacity: .38;
+    .stop {
+      position: relative; aspect-ratio: 4 / 5; overflow: hidden;
+      border: 1px solid var(--hair); background: var(--ground-2);
+      color: var(--ink); text-align: left; cursor: pointer;
+      min-height: 0; padding: 0;
+    }
+    .stop img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: .48;
+    }
+    .stop::after {
+      content: ""; position: absolute; inset: 35% 0 0;
+      background: linear-gradient(transparent, rgba(12,28,27,.92));
       pointer-events: none;
     }
-    .orb img { width: 100%; height: 100%; object-fit: cover; }
-
-    .releases {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 48px; align-items: center;
-      padding: 100px 8vw 120px;
-      background: var(--ground-2);
-      border-top: 1px solid var(--hair);
+    .stop .meta { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 1; }
+    .stop .n { display: block; font-family: Syne, sans-serif; font-weight: 800; font-size: clamp(28px, 8vw, 42px); color: var(--amber); letter-spacing: -.04em; line-height: .9; margin-bottom: 4px; }
+    .stop.quiz .n { color: var(--teal); }
+    .stop .t { font-size: 15px; font-weight: 500; }
+    .stop.done { border-color: var(--teal); }
+    .stop .ok {
+      position: absolute; top: 10px; right: 10px; z-index: 1;
+      width: 8px; height: 8px; border-radius: 50%; background: var(--teal);
+      display: none;
     }
-    .releases h2 { font-size: clamp(32px, 4.6vw, 60px); margin: 12px 0 18px; max-width: 12ch; }
-    .lede { color: var(--ink-2); max-width: 40ch; font-size: 16px; }
-    .btns { display: flex; gap: 16px; margin-top: 28px; flex-wrap: wrap; }
-    .deck-col { max-width: 460px; justify-self: end; width: 100%; }
-    .deck { position: relative; width: 100%; aspect-ratio: 1; touch-action: pan-y; outline: none; }
-    .sleeve {
-      position: absolute; inset: 0;
-      background: var(--ground);
-      border: 1px solid var(--hair);
-      overflow: hidden;
-      box-shadow: 0 22px 48px rgba(0,0,0,.45);
-      cursor: grab; user-select: none;
-    }
-    .sleeve:active { cursor: grabbing; }
-    .sleeve img { width: 100%; height: 52%; object-fit: cover; }
-    .sleeve .meta { padding: 16px 18px 18px; }
-    .sleeve .code { color: var(--teal); }
-    .sleeve h3 { font-size: 26px; margin: 6px 0 8px; }
-    .sleeve p { color: var(--ink-2); font-size: 14px; }
-    .hint { margin-top: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .dots { display: flex; gap: 7px; }
-    .dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--muted); display: block; }
-    .dots i.on { background: var(--amber); }
-
-    .roster { padding: 80px 8vw; background: var(--ground); }
-    .row {
-      display: grid; grid-template-columns: 140px 1fr auto;
-      gap: 24px; align-items: baseline;
-      padding: 22px 0;
-      border-top: 1px solid var(--hair);
-    }
-    .row:last-child { border-bottom: 1px solid var(--hair); }
-    .row .name { font-size: clamp(22px, 3.4vw, 40px); }
-    .row .n { color: var(--ink-2); font-size: 14px; max-width: 28ch; text-align: right; }
-
-    .quiz {
-      padding: 40px 8vw 100px;
-      background: var(--ground);
-      border-top: 1px solid var(--hair);
-    }
-    .quiz h2 { font-size: clamp(32px, 4vw, 52px); margin: 0 0 12px; }
-    .q {
-      margin-top: 28px; padding-top: 22px;
-      border-top: 1px solid var(--hair);
-    }
-    .q h3 { font-size: 18px; font-weight: 500; margin-bottom: 12px; }
-    .opts { display: grid; gap: 8px; }
-    .opts button {
-      text-align: left; background: transparent;
-      border: 1px solid var(--hair); color: var(--ink);
-      padding: 12px 14px; cursor: pointer; font-size: 15px;
-    }
-    .opts button:hover { border-color: var(--amber); }
-    .opts button.good { border-color: var(--teal); color: var(--teal); }
-    .opts button.bad { border-color: var(--ink-2); opacity: .55; }
-    .feedback {
-      display: none; margin-top: 12px; color: var(--ink-2); font-size: 15px; max-width: 62ch;
-    }
-    .feedback.show { display: block; }
-    .feedback b { color: var(--amber); font-weight: 600; }
-    .score {
-      display: none; margin-top: 36px; padding-top: 22px;
-      border-top: 1px solid var(--hair);
-    }
-    .score.show { display: block; }
-    .score h3 { font-size: clamp(28px, 4vw, 44px); margin-bottom: 10px; }
-
-    .close {
-      padding: 80px 8vw 0;
-      background: var(--ground-2);
-      border-top: 1px solid var(--hair);
-      overflow: hidden;
-    }
-    .close-top {
-      display: flex; justify-content: space-between; align-items: end; gap: 24px;
-      padding-bottom: 36px;
-    }
-    .close h2 { font-size: clamp(28px, 4vw, 48px); max-width: 16ch; }
-    .fine { color: var(--muted); font-size: 13px; max-width: 46ch; margin-top: 12px; }
-    .foot {
-      display: flex; justify-content: space-between; gap: 16px;
-      padding: 16px 0 8px;
-      border-top: 1px solid var(--hair);
+    .stop.done .ok { display: block; }
+    .map-foot {
+      display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--hair);
       font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
     }
-    .crop {
-      font-family: Syne, sans-serif; font-weight: 800;
-      font-size: clamp(72px, 18vw, 220px);
-      letter-spacing: -.04em; text-transform: uppercase;
-      line-height: .78; transform: translateY(28%); white-space: nowrap;
-    }
-    .crop .amp { color: var(--amber); }
 
-    table.sheet { width: 100%; border-collapse: collapse; margin-top: 18px; }
-    table.sheet th {
-      text-align: left; font-size: 10.5px; font-weight: 600;
-      letter-spacing: .14em; text-transform: uppercase;
-      color: var(--muted); padding: 0 12px 12px 0;
-      border-bottom: 1px solid var(--hair);
+    .story {
+      position: fixed; inset: 0; z-index: 120;
+      display: none; flex-direction: column;
+      background: var(--ground);
     }
-    table.sheet td {
-      padding: 16px 12px 16px 0;
-      border-bottom: 1px solid var(--hair);
-      color: var(--ink-2); font-size: 14px; vertical-align: top;
+    .story.on { display: flex; }
+    .story-top {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px max(12px, env(safe-area-inset-left));
+      background: linear-gradient(rgba(12,28,27,.72), transparent);
     }
-    table.sheet td:first-child {
-      font-family: Syne, sans-serif; font-weight: 700;
-      font-size: 16px; letter-spacing: -.02em; color: var(--ink);
+    .story-top .count { margin-left: auto; color: var(--amber); }
+    .photo {
+      position: relative; flex: 1; min-height: 0;
+      touch-action: pan-x;
     }
-    .lesson { padding: 80px 8vw; border-top: 1px solid var(--hair); scroll-margin-top: 72px; }
-    .lesson.alt { background: var(--ground-2); }
-    .lesson h2 { font-size: clamp(28px, 4vw, 48px); margin: 8px 0 14px; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 24px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; margin-top: 24px; }
-    .box h3 { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
-    .box.do h3 { color: var(--teal); }
-    .box.no h3 { color: var(--amber); }
-    .box ul { margin: 0 0 0 18px; color: var(--ink-2); }
-    .box li { margin: 7px 0; }
-    .abcde { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 22px 0; }
-    .abcde button {
-      background: transparent; border: 1px solid var(--hair); color: var(--ink);
-      padding: 16px 8px; cursor: pointer; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-    }
-    .abcde button.on { border-color: var(--amber); color: var(--amber); }
-    .abcde .ltr { display: block; font-family: Syne, sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: 0; text-transform: none; }
-    .photo-row { display: grid; grid-template-columns: 1.15fr .85fr; gap: 28px; margin-top: 24px; align-items: start; }
-    .frame { border: 1px solid var(--hair); overflow: hidden; }
-    .frame img { width: 100%; height: 100%; object-fit: cover; min-height: 260px; }
-    .cap { font-size: 13px; color: var(--muted); margin-top: 8px; }
-    .steps { counter-reset: s; margin-top: 8px; }
-    .steps li {
-      list-style: none; padding: 14px 0; border-top: 1px solid var(--hair);
-      display: grid; grid-template-columns: 28px 1fr; gap: 12px; color: var(--ink-2);
-    }
-    .steps li::before { counter-increment: s; content: counter(s); color: var(--amber); font-family: Syne, sans-serif; font-weight: 800; }
-    .alarm { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-    .alarm span {
-      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--amber); border: 1px solid var(--hair); padding: 6px 10px;
-    }
-    .clinic { margin-top: 28px; }
-    .proto-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
-    .proto-nav button {
-      background: transparent; border: 1px solid var(--hair); color: var(--ink);
-      padding: 10px 14px; cursor: pointer; font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
-      min-height: 44px;
-    }
-    .proto-nav button.on { border-color: var(--amber); color: var(--amber); }
-    .clinic-grid { display: grid; grid-template-columns: 1.45fr .7fr; gap: 28px; align-items: start; }
-    .clinic-panel { border-top: 1px solid var(--hair); padding-top: 6px; min-height: 240px; }
-    .clinic-panel .sit-title { font-size: clamp(26px, 3.4vw, 40px); margin: 10px 0 8px; }
-    .clinic-side .frame { min-height: 0; }
-    .clinic-side img { width: 100%; height: 160px; object-fit: cover; min-height: 0; }
-    .src { font-size: 12px; color: var(--muted); margin-top: 14px; }
-    .quiz-themes { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
-    .quiz-themes button {
-      background: transparent; border: 1px solid var(--hair); color: var(--ink);
-      padding: 8px 12px; cursor: pointer; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; min-height: 40px;
-    }
-    .quiz-themes button.on { border-color: var(--amber); color: var(--amber); }
-    .q .tag { margin-bottom: 8px; }
-    .why-btn { margin-top: 12px; display: none; }
-    .why-btn.show { display: inline-block; }
-    .rx { display: grid; gap: 10px; }
-    .rx .line { padding: 16px 0; border-top: 1px solid var(--hair); }
-    .rx .line b { color: var(--amber); }
-
-    .lead { color: var(--ink-2); max-width: 36ch; margin-top: 14px; font-size: 17px; }
-    .bill {
-      position: relative; overflow: hidden;
-      margin: 22px 0 10px; height: min(38vw, 340px);
-      border: 1px solid var(--hair);
-    }
-    .bill img {
+    .photo img {
       width: 100%; height: 100%; object-fit: cover;
-      transform: scale(1.14);
-      transition: transform 1.5s cubic-bezier(.22,1,.36,1), opacity .4s ease;
     }
-    .motion .bill.in img { transform: scale(1); }
-    .bill::after {
-      content: "";
-      position: absolute; inset: 42% 0 0;
-      background: linear-gradient(transparent, rgba(12,28,27,.88));
+    .photo::after {
+      content: ""; position: absolute; inset: 40% 0 0;
+      background: linear-gradient(transparent, var(--ground));
       pointer-events: none;
     }
-    .bill figcaption {
-      position: absolute; left: 16px; right: 16px; bottom: 12px; z-index: 1;
-      font-size: 13px; color: var(--ink);
-    }
-    .shot { width: 100%; height: 128px; object-fit: cover; margin: 0 0 12px; }
-    .fold-card { border-top: 1px solid var(--hair); }
-    .fold-card summary {
-      list-style: none; display: flex; align-items: center; gap: 14px;
-      min-height: 68px; padding: 14px 0; cursor: pointer;
-    }
-    .fold-card summary::-webkit-details-marker { display: none; }
-    .fold-card summary::after {
-      content: "+"; margin-left: auto; color: var(--amber);
-      font-family: Syne, sans-serif; font-weight: 800; font-size: 22px; line-height: 1;
-    }
-    .fold-card[open] summary::after { content: "–"; }
-    .fold-card .sum { display: grid; gap: 4px; }
-    .fold-card ul { margin: 0 0 16px 18px; color: var(--ink-2); }
-    .fold-card .talk { margin: 0 0 16px; }
-    .tiles {
-      display: grid; grid-template-columns: repeat(2, 1fr);
-      gap: 10px; margin-top: 20px;
-    }
-    .tile { border: 1px solid var(--hair); padding: 14px; min-height: 118px; }
-    .tile summary { list-style: none; cursor: pointer; }
-    .tile summary::-webkit-details-marker { display: none; }
-    .tile .n {
-      display: block; font-family: Syne, sans-serif; font-weight: 800;
-      font-size: clamp(22px, 4vw, 32px); letter-spacing: -.03em;
-      color: var(--amber); margin: 6px 0 4px;
-    }
-    .tile[open] { border-color: var(--amber); }
-    .tile .more {
-      color: var(--ink-2); font-size: 14px; margin-top: 10px; padding-top: 10px;
+    .panel {
+      flex: 0 0 auto;
+      padding: 8px 6vw calc(16px + env(safe-area-inset-bottom));
       border-top: 1px solid var(--hair);
+      background: var(--ground);
     }
-    .see {
-      display: inline-block; margin-top: 6px; color: var(--amber);
-      font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+    .panel h2 { font-size: clamp(26px, 7vw, 36px); margin: 6px 0 10px; max-width: 16ch; }
+    .panel h2 em { font-style: normal; color: var(--amber); }
+    .panel .lead { color: var(--ink-2); font-size: 16px; max-width: 38ch; margin-bottom: 16px; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .pair button {
+      min-height: 48px; border: 1px solid var(--hair); background: transparent;
+      cursor: pointer; font-size: 15px; font-weight: 600;
     }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .chips span {
-      border: 1px solid var(--hair); padding: 8px 12px;
-      font-size: 14px; color: var(--ink-2);
-    }
-    .stepper { margin-top: 22px; padding-top: 8px; }
-    .stepper .now {
-      font-family: Syne, sans-serif; font-weight: 800;
-      font-size: clamp(36px, 8vw, 52px); color: var(--amber); letter-spacing: -.04em;
-    }
-    .stepper p.line { color: var(--ink-2); margin: 8px 0 16px; max-width: 42ch; font-size: 17px; }
-    .abcde button.on { transform: translateY(-2px); }
+    .pair .do { color: var(--teal); border-color: var(--teal); }
+    .pair .no { color: var(--amber); }
+    .pair button.on { background: rgba(201,165,106,.08); }
+    .dots { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); display: block; }
+    .dots i.on { background: var(--amber); }
 
-    .motion .reveal { opacity: 0; transform: translateY(18px); }
-    .motion .reveal.in { opacity: 1; transform: none; transition: opacity .7s ease, transform .7s ease; }
-    .motion .rise {
-      opacity: 0;
-      transform: translateY(28px);
+    .sheet {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 6;
+      max-height: 48vh; overflow: auto;
+      background: var(--ground-2);
+      border-top: 1px solid var(--amber);
+      padding: 16px 6vw calc(18px + env(safe-area-inset-bottom));
+      transform: translateY(110%);
+      transition: transform .35s cubic-bezier(.22,1,.36,1);
     }
-    .motion .rise.in {
-      opacity: 1;
-      transform: none;
-      transition: opacity .7s ease, transform .7s cubic-bezier(.22, 1, .36, 1);
-      transition-delay: var(--d, 0s);
-    }
-    .tick { display: none; }
-    .rail-hint { display: none; }
-    .hint-phone { display: none; }
+    .sheet.on { transform: none; }
+    .sheet h3 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); margin-bottom: 10px; }
+    .sheet.do h3 { color: var(--teal); }
+    .sheet ul { margin: 0 0 0 18px; color: var(--ink-2); }
+    .sheet li { margin: 7px 0; }
+    .sheet p { color: var(--ink-2); }
+    .sheet .src { font-size: 12px; color: var(--muted); margin-top: 10px; }
 
-    @media (max-width: 900px) {
-      .bar { padding: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right)); gap: 10px; backdrop-filter: none; background: var(--ground); }
-      .bar nav { display: none; }
-      .bar nav.open {
-        display: flex; flex-direction: column; position: fixed;
-        top: var(--nav); left: 0; right: 0; padding: 8px 16px 20px;
-        background: var(--ground); border-bottom: 1px solid var(--hair); gap: 0;
-        max-height: calc(100vh - var(--nav)); overflow: auto; z-index: 110;
-      }
-      .bar nav.open a { padding: 14px 0; border-bottom: 1px solid var(--hair); font-size: 13px; }
-      .menu { display: grid; place-items: center; margin-left: auto; }
-      .bar > .pill { margin-left: 0; padding: 8px 10px; }
-      .brand { gap: 8px; }
-      .brand img { height: 28px; }
-      .brand .word { font-size: 13px; }
-      .hero-logo { width: min(82vw, 340px); }
-      .bill { margin-left: -6vw; margin-right: -6vw; height: 58vw; border-left: 0; border-right: 0; }
-      .shot { height: 110px; }
-      .tiles { gap: 8px; }
-      .portal { height: 180vh; }
-      .fold, .lesson, .releases, .quiz, .roster, .close { padding-left: 6vw; padding-right: 6vw; }
-      .lesson, .quiz, .releases, .fold, .close { scroll-margin-top: calc(var(--nav) + 36px); }
-      .sess { padding-top: 48px; padding-bottom: 72px; overflow-x: clip; min-width: 0; }
-      .releases, .deck-col, .photo-row, .clinic-grid { min-width: 0; max-width: 100%; }
-      .fold { overflow: visible; min-height: 0; padding-bottom: 36px; }
-      .releases, .row, .close-top, .grid-2, .grid-3, .photo-row, .clinic-grid { grid-template-columns: 1fr; }
-      .clinic-side img { height: 120px; }
-      .row .n { text-align: left; max-width: none; }
-      .deck-col { justify-self: stretch; overflow: visible; }
-      .orb { display: none; }
-      .tick {
-        display: flex; align-items: center;
-        position: fixed; top: var(--nav); left: 0; right: 0; z-index: 90;
-        height: 30px; padding: 0 max(16px, env(safe-area-inset-left));
-        font-size: 10.5px; font-weight: 600; letter-spacing: .14em;
-        text-transform: uppercase; color: var(--amber);
-        background: var(--ground); border-bottom: 1px solid var(--hair);
-        transform: translateY(-110%); opacity: 0; pointer-events: none;
-        transition: transform .35s ease, opacity .35s ease;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
-      .tick.on { transform: none; opacity: 1; }
-      .rail, .grid-3.rail, .grid-2.rail {
-        display: flex; flex-wrap: nowrap; gap: 12px;
-        overflow-x: auto; scroll-snap-type: x mandatory;
-        scroll-padding-inline: 6vw;
-        padding: 6px 6vw 18px; margin: 18px -6vw 0;
-        min-width: 0; max-width: 100vw;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        touch-action: pan-x;
-        scrollbar-width: none;
-      }
-      .rail::-webkit-scrollbar, .abcde::-webkit-scrollbar, .deck::-webkit-scrollbar,
-      .proto-nav::-webkit-scrollbar, .quiz-themes::-webkit-scrollbar, .alarm::-webkit-scrollbar { display: none; }
-      .rail > * {
-        flex: 0 0 min(78vw, 300px);
-        scroll-snap-align: start;
-      }
-      .rail > .box {
-        border: 1px solid var(--hair);
-        padding: 20px 16px 18px;
-        min-height: 220px;
-      }
-      .rail-hint { display: block; margin-top: 10px; }
-      .abcde {
-        display: flex; gap: 10px;
-        overflow-x: auto; scroll-snap-type: x mandatory;
-        scroll-padding-inline: 6vw;
-        margin: 18px -6vw 8px; padding: 4px 6vw 14px;
-        min-width: 0; max-width: 100vw;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        touch-action: pan-x;
-        scrollbar-width: none;
-      }
-      .abcde button {
-        flex: 0 0 min(78vw, 300px);
-        min-height: 132px; padding: 22px 18px;
-        font-size: 13px; letter-spacing: .08em; text-align: left;
-        scroll-snap-align: start;
-      }
-      .abcde .ltr { font-size: 36px; margin-bottom: 10px; }
-      .alarm, .proto-nav, .quiz-themes {
-        display: flex; flex-wrap: nowrap; gap: 8px;
-        overflow-x: auto; scroll-snap-type: x proximity;
-        scroll-padding-inline: 6vw;
-        margin-left: -6vw; margin-right: -6vw;
-        padding: 6px 6vw 12px;
-        min-width: 0; max-width: 100vw;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        touch-action: pan-x;
-        scrollbar-width: none;
-      }
-      .alarm span, .proto-nav button, .quiz-themes button {
-        flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start;
-      }
-      .deck {
-        display: flex; aspect-ratio: auto; height: auto;
-        overflow-x: auto; scroll-snap-type: x mandatory;
-        scroll-padding-inline: 6vw; gap: 12px;
-        padding: 4px 6vw 10px; margin-left: -6vw; margin-right: -6vw;
-        min-width: 0; max-width: 100vw;
-        touch-action: pan-x;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior-x: contain;
-        scrollbar-width: none;
-      }
-      .sleeve {
-        position: relative; inset: auto;
-        flex: 0 0 min(78vw, 320px);
-        min-height: 340px; height: auto;
-        scroll-snap-align: start;
-        transform: none !important;
-        box-shadow: 0 16px 32px rgba(0,0,0,.4);
-      }
-      .sleeve img { height: 168px; }
-      .hint-desk { display: none; }
-      .hint-phone { display: block; }
-      table.sheet thead { display: none; }
-      table.sheet tr { display: grid; grid-template-columns: 1fr; gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--hair); }
-      table.sheet td { border: 0; padding: 0; }
-      table.sheet td[data-l]::before {
-        content: attr(data-l);
-        display: block; font-size: 10.5px; letter-spacing: .12em;
-        text-transform: uppercase; color: var(--muted); margin: 8px 0 2px;
-      }
-      .opts button { min-height: 44px; }
-      .pin.tr, .pin.br { display: none; }
-      .title .half { font-size: clamp(28px, 9vw, 56px); }
-      .crop { font-size: clamp(48px, 18vw, 96px); }
+    .opts { display: grid; gap: 8px; margin-bottom: 12px; }
+    .opts button {
+      text-align: left; background: transparent; border: 1px solid var(--hair);
+      padding: 12px 14px; cursor: pointer; font-size: 15px; min-height: 44px;
+    }
+    .opts button.good { border-color: var(--teal); color: var(--teal); }
+    .opts button.bad { opacity: .55; }
+    .why { display: none; color: var(--ink-2); font-size: 14px; margin-bottom: 12px; }
+    .why.show { display: block; }
+    .why b { color: var(--amber); font-weight: 600; }
+
+    .next-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    .next-row .pill { flex: 1; text-align: center; min-height: 44px; }
+
+    @media (min-width: 900px) {
+      .brand img { height: 34px; }
+      .word { font-size: 15px; }
+      .menu { display: none; }
+      .bar { padding: 0 22px; gap: 28px; }
+      .bar nav { display: flex; gap: 16px; flex: 1; overflow-x: auto; }
+      .bar nav a { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); white-space: nowrap; }
+      .bar nav a:hover { color: var(--amber); }
+      .bar > .pill { margin-left: auto; }
+      .stops { grid-template-columns: repeat(4, 1fr); }
+      .story { max-width: 480px; left: auto; right: 0; border-left: 1px solid var(--hair); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .orb { transform: none !important; }
-      .motion .reveal, .motion .rise { opacity: 1; transform: none; filter: none; }
-      .bill img { transform: none !important; }
-      html { scroll-behavior: auto; }
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      html { scroll-behavior: smooth; }
+      .sheet { transition: none; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <nav class="bar">
-      <a class="brand" href="#topo">
-        <img src="assets/logo.png" alt="ONG Amigo Bicho" width="405" height="210" />
-        <span class="word">Aula<span class="amp">.</span></span>
-      </a>
-      <nav id="links">
-        <a href="#usar">Como usar</a>
-        <a href="#papel">Papel</a>
-        <a href="#abcde">ABCDE</a>
-        <a href="#vitais">Vitais</a>
-        <a href="#trauma">Trauma</a>
-        <a href="#fraturas">Fraturas</a>
-        <a href="#coluna">Coluna</a>
-        <a href="#feridas">Feridas</a>
-        <a href="#manejo">Manejo</a>
-        <a href="#terapeutico">Terapêutica</a>
-        <a href="calculadora.html">Calculadora</a>
-        <a href="#quiz">Quiz</a>
-        <a href="#fontes">Fontes</a>
-      </nav>
-      <button class="menu" type="button" id="menu">Menu</button>
-      <a class="pill" href="calculadora.html">Calculadora</a>
-    </nav>
-  </header>
-  <div id="tick" class="tick" aria-live="polite"></div>
+  <nav class="bar">
+    <a class="brand" href="#mapa">
+      <img src="assets/logo.png" alt="ONG Amigo Bicho" width="405" height="210" />
+      <span class="word">Aula<span class="amp">.</span></span>
+    </a>
+    <nav id="links"></nav>
+    <button class="menu" type="button" id="menu">Menu</button>
+    <a class="pill" href="calculadora.html">Calculadora</a>
+  </nav>
 
-  <section class="portal" id="topo" data-tick="">
-    <div class="stage" id="stage">
-      <img class="hero-img" src="assets/hero.jpg" alt="Cão na mesa de emergência, com oxigênio" />
-      <div class="duotone" aria-hidden="true"></div>
-      <div class="veil" aria-hidden="true"></div>
-      <div class="panel l" aria-hidden="true"></div>
-      <div class="panel r" aria-hidden="true"></div>
-      <i class="spark a" aria-hidden="true"></i>
-      <i class="spark b" aria-hidden="true"></i>
-      <h1 class="title">
-        <span class="half a">Au</span><span class="half b">la<span class="amp">.</span></span>
-      </h1>
-      <figure class="hero-logo">
-        <img src="assets/logo.png" alt="ONG Amigo Bicho — Seja um amigo você também" width="405" height="210" />
-      </figure>
-      <p class="pin tl">Para quem está <span class="amber">aprendendo</span></p>
-      <p class="pin tr">Leia com <span class="teal">calma</span></p>
-      <p class="pin bl">Desça para <span class="amber">abrir</span></p>
-      <p class="pin br">Plantão de <span class="teal">cães e gatos</span></p>
+  <main class="map" id="mapa">
+    <p class="label amber">ONG Amigo Bicho</p>
+    <h1 class="display">Mapa do<br> plantão.</h1>
+    <p class="lede">Toque uma estação. Lá dentro, uma tela — uma ideia. Remédio e diagnóstico: pare e chame.</p>
+    <div class="stops" id="stops"></div>
+    <div class="map-foot">
+      <button class="pill" type="button" id="fontesBtn">Fontes</button>
+      <span>CFMV 1.260/2019</span>
+      <a class="pill" href="calculadora.html">Conta da ampola</a>
     </div>
-  </section>
+  </main>
 
-  <section class="fold sess" id="usar" data-tick="00 · Como usar">
-    <p class="label amber k">00 · Como usar</p>
-    <h2 class="display reveal">Primeiro o animal <em>inteiro</em>. Depois a ferida.</h2>
-    <p class="lead">Olá. Isto é o caderno do plantão. Toque, deslize, erre no quiz. Remédio e diagnóstico: pare e chame.</p>
-    <div class="idx" aria-hidden="true">00</div>
-    <div class="orb" id="orb"><img src="assets/cat.jpg" alt="" /></div>
-  </section>
-
-  <section class="lesson sess" id="como" data-tick="00 · Como usar">
-    <p class="label teal">Três passos</p>
-    <p class="rail-hint label">Deslize para o lado</p>
-    <div class="grid-3 rail">
-      <article class="box">
-        <img class="shot" src="assets/team.jpg" alt="" />
-        <p class="label teal">1 · Chegada</p>
-        <h3>Sala segura?</h3>
-        <p class="talk">Gente o bastante. Fale baixo. Peça ajuda antes de tocar.</p>
-      </article>
-      <article class="box">
-        <img class="shot" src="assets/oxygen.jpg" alt="" />
-        <p class="label">2 · Triagem</p>
-        <h3>Ar, gengiva, consciência</h3>
-        <p class="talk">Só depois a pata. Olhe se está piorando.</p>
-      </article>
-      <article class="box">
-        <img class="shot" src="assets/still.jpg" alt="" />
-        <p class="label amber">3 · Depois</p>
-        <h3>Anote e chame</h3>
-        <p class="talk">Horário e o que mudou. Remédio não é sua decisão.</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="releases sess" id="situacoes" data-tick="Treino · Cartas">
-    <div>
-      <p class="label teal">02 · Treino</p>
-      <h2 class="display reveal">Oito situações do plantão.</h2>
-      <p class="lede">Vire as cartas. Aqui a gente treina a atitude — não o nome do remédio.</p>
-      <div class="btns">
-        <a class="pill" href="#quiz">Ir ao quiz</a>
-        <a class="pill" href="calculadora.html">Praticar doses</a>
+  <div class="story" id="story" aria-hidden="true">
+    <div class="photo" id="photo">
+      <img id="photoImg" alt="" />
+      <div class="story-top">
+        <button class="pill" type="button" id="back">Mapa</button>
+        <span class="label amber" id="kicker">01 · Papel</span>
+        <span class="label count" id="count">1 / 4</span>
       </div>
     </div>
-    <div class="deck-col">
-      <div class="deck" id="deck" tabindex="0" aria-label="Cartas de situações. Arraste ou use as setas."></div>
-      <div class="hint">
-        <p class="label hint-desk">Arraste a carta · ou use as setas</p>
-        <p class="label hint-phone">Deslize as cartas para o lado</p>
-        <div class="dots" id="dots"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="lesson alt sess" id="papel" data-tick="01 · Papel">
-    <p class="label amber">01 · Papel</p>
-    <h2 class="display reveal">Você ajuda. O veterinário decide.</h2>
-    <p class="lead">Apoio, debaixo de orientação. Diagnóstico ou remédio: pare e chame.</p>
-    <figure class="bill">
-      <img src="assets/team.jpg" alt="Equipe na mesa: uma pessoa examina, a outra prepara material" />
-      <figcaption>Você prepara. Quem decide é o veterinário.</figcaption>
-    </figure>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label teal">Você pode</span><b>Triagem, vitais, contenção, anotar</b></span></summary>
-      <ul>
-        <li>Receber o animal e fazer a triagem inicial.</li>
-        <li>Medir e anotar temperatura, coração, respiração, gengiva e TPC.</li>
-        <li>Conter com calma, só o necessário.</li>
-        <li>Ajudar nos primeiros socorros e a preparar material.</li>
-        <li>Ajudar em coleta, curativo prescrito, exame e imobilização, quando pedido.</li>
-        <li>Anotar horário, o que mudou e o que foi feito.</li>
-      </ul>
-    </details>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label amber">Não é com você</span><b>Remédio, dose, diagnóstico, alta</b></span></summary>
-      <ul>
-        <li>Dizer o diagnóstico ou o prognóstico.</li>
-        <li>Escolher, mudar ou passar remédio e dose.</li>
-        <li>Decidir a velocidade do soro.</li>
-        <li>Sedação, anestesia ou procedimento invasivo sem ordem e sem supervisão.</li>
-        <li>Alta, atestado, declaração de óbito ou decisão de operar.</li>
-      </ul>
-    </details>
-    <div class="chips">
-      <span>Mordida / fuga → peça ajuda</span>
-      <span>Contenção mínima</span>
-      <span>Dor deixa o dócil imprevisível</span>
-    </div>
-  </section>
-
-  <section class="lesson sess" id="abcde" data-tick="02 · ABCDE">
-    <p class="label teal">02 · Emergência</p>
-    <h2 class="display reveal">ABCDE. Sempre nessa ordem.</h2>
-    <p class="lead">Toque a letra. A foto muda. Em trauma, isso vem antes da fratura.</p>
-    <figure class="bill">
-      <img id="abcdePic" src="assets/oxygen.jpg" alt="Cão com oxigênio na mesa de emergência" />
-      <figcaption id="abcdeCap">A · o ar entra?</figcaption>
-    </figure>
-    <p class="rail-hint label">Deslize as letras</p>
-    <div class="abcde" id="abcdeNav">
-      <button class="on" data-k="A"><span class="ltr">A</span>O ar entra?</button>
-      <button data-k="B"><span class="ltr">B</span>Respira bem?</button>
-      <button data-k="C"><span class="ltr">C</span>Circula?</button>
-      <button data-k="D"><span class="ltr">D</span>Acordado?</button>
-      <button data-k="E"><span class="ltr">E</span>Ferida, frio?</button>
-    </div>
-    <article id="abcdePanel" class="talk"></article>
-    <div class="alarm">
-      <span>Falta de ar</span><span>Gengiva roxa</span><span>Sangramento que não para</span>
-      <span>Desmaio</span><span>Convulsão</span><span>Suspeita de coluna</span>
-      <span>Osso para fora</span><span>Dor que piora</span>
-    </div>
-  </section>
-
-  <section class="lesson alt sess" id="vitais" data-tick="03 · Vitais">
-    <p class="label amber">03 · Números do plantão</p>
-    <h2 class="display reveal">Sinais vitais: olhe a tendência.</h2>
-    <p class="lead">Toque o número. O que importa é: está piorando?</p>
-    <figure class="bill">
-      <img src="assets/vitals.jpg" alt="Ausculta do peito de um cão na mesa de emergência" />
-      <figcaption>Meça. Anote o horário. Compare com a medição anterior.</figcaption>
-    </figure>
-    <div class="tiles">
-      <details class="tile">
-        <summary><span class="label">Temperatura</span><span class="n">37,8–39,2°</span><span class="see">reto · toque</span></summary>
-        <p class="more">Chame se estiver muito baixo ou alto, principalmente com outro sinal. Anote valor + horário + como mediu. Medo e tamanho mudam o número.</p>
-      </details>
-      <details class="tile">
-        <summary><span class="label">Coração</span><span class="n">60–160</span><span class="see">cão · toque</span></summary>
-        <p class="more">Cão grande mais baixo; filhote/pequeno mais alto. Gato no consultório costuma 140–220. Chame se mudar de repente. Anote se o pulso é forte ou fraco.</p>
-      </details>
-      <details class="tile">
-        <summary><span class="label">Respiração</span><span class="n">10–30</span><span class="see">cão · toque</span></summary>
-        <p class="more">Gato ~16–40. Chame se houver esforço, cor roxa ou gato de boca aberta. Anote o número e se está pesada.</p>
-      </details>
-      <details class="tile">
-        <summary><span class="label">Gengiva / TPC</span><span class="n">&lt; 2 s</span><span class="see">rosada · toque</span></summary>
-        <p class="more">Chame se pálida, roxa ou TPC demorado. Anote cor + TPC + horário.</p>
-      </details>
-    </div>
-    <div class="stepper" id="medir">
-      <p class="label">Como medir, na ordem</p>
-      <p class="now" id="medirN">01</p>
-      <p class="line" id="medirTxt"></p>
-      <div class="btns">
-        <button class="pill" type="button" id="medirPrev">Anterior</button>
-        <button class="pill" type="button" id="medirNext">Próximo</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="lesson sess" id="trauma" data-tick="04 · Trauma">
-    <p class="label teal">04 · Reconhecer</p>
-    <h2 class="display reveal">Trauma não é só o osso.</h2>
-    <p class="lead">O mesmo tombo pode ter machucado por dentro. Não trate a pata isolada.</p>
-    <figure class="bill">
-      <img src="assets/splint.jpg" alt="Pata imobilizada com tala" />
-      <figcaption>A tala agora é para deixar quieto — não para consertar o osso.</figcaption>
-    </figure>
-    <p class="label amber">O que você vê</p>
-    <div class="chips">
-      <span>Manca / não apoia</span>
-      <span>Volume, dor</span>
-      <span>Pose estranha</span>
-      <span>Ferida por cima</span>
-      <span>Não provoque estalo</span>
-    </div>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label">Pense também</span><b>Coluna, peito, barriga, xixi com sangue</b></span></summary>
-      <p class="talk">Aparência “discreta” não exclui lesão grave. Internar para observar mesmo quem parece estável.</p>
-    </details>
-  </section>
-
-  <section class="lesson alt sess" id="fraturas" data-tick="05 · Fratura">
-    <p class="label amber">05 · Fratura</p>
-    <h2 class="display reveal">Não tente colocar o osso no lugar.</h2>
-    <p class="lead">Proteja até o veterinário ver. Toque o cartão para a lista.</p>
-    <figure class="bill">
-      <img src="assets/press.jpg" alt="Mãos com luva pressionando gaze na pata" />
-      <figcaption>Osso para fora: cubra por fora. Não empurre nada para dentro.</figcaption>
-    </figure>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label teal">Faça</span><b>Quietinho · cubra · olhe a ponta</b></span></summary>
-      <ul>
-        <li>Deixe o animal o mais quieto e confortável possível.</li>
-        <li>Cubra com material limpo se houver ferida.</li>
-        <li>Ajude na tala provisória só se for pedido.</li>
-        <li>Olhe a pata da ponta: cor, calor, se tem pulso.</li>
-        <li>Anote como aconteceu, horário e se piorou.</li>
-      </ul>
-    </details>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label amber">Não faça</span><b>Não alinhe · não teste · não dê remédio</b></span></summary>
-      <ul>
-        <li>Não puxe o membro para alinhar.</li>
-        <li>Não fique “testando” a fratura.</li>
-        <li>Não aperte a tala nem esconda os dedos.</li>
-        <li>Não dê remédio por conta.</li>
-        <li>Não deixe caminhar se isso piora a lesão.</li>
-      </ul>
-    </details>
-  </section>
-
-  <section class="lesson sess" id="coluna" data-tick="06 · Coluna">
-    <p class="label teal">06 · Coluna e pelve</p>
-    <h2 class="display reveal">Mova em bloco. Nunca pelas patas.</h2>
-    <p class="lead">Não anda, pernas moles, dor no pescoço ou nas costas: pense em coluna.</p>
-    <figure class="bill">
-      <img src="assets/spine.jpg" alt="Cão alinhado em maca, equipe sustentando cabeça e tronco" />
-      <figcaption>Cabeça, pescoço e tronco alinhados. Mais de uma pessoa.</figcaption>
-    </figure>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label teal">Como mover</span><b>Tábua, maca ou cobertor esticado</b></span></summary>
-      <p class="talk">Mais de uma pessoa. Não aperte o peito. Combine o “um, dois, três”.</p>
-    </details>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label amber">Não faça</span><b>Não dobre · não teste se “sente”</b></span></summary>
-      <p class="talk">Não levante pelas patas. Não arraste pela coleira. Não peça para andar “para ver se melhora”.</p>
-    </details>
-  </section>
-
-  <section class="lesson alt sess" id="feridas" data-tick="07 · Feridas">
-    <p class="label amber">07 · Sangue e ferida</p>
-    <h2 class="display reveal">Pressione. Não tire o objeto.</h2>
-    <p class="lead">Furo pequeno por fora pode ser fundo por dentro. Andar não prova que está bem.</p>
-    <figure class="bill">
-      <img src="assets/gums.jpg" alt="Checagem da gengiva: cor e TPC" />
-      <figcaption>Gengiva pálida ou TPC lento: chame agora.</figcaption>
-    </figure>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label teal">Sangramento</span><b>Gaze + pressão. Outra por cima se encharcar</b></span></summary>
-      <p class="talk">Não tire a primeira gaze. Se não para, chame agora. Luvas. Anote onde é e quanto sangrou.</p>
-    </details>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label amber">Objeto cravado</span><b>Não retire no local</b></span></summary>
-      <p class="talk">Estabilize para o transporte. Tirar pode piorar o buraco e o sangue. Não jogue produto irritante em ferida funda sem ordem.</p>
-    </details>
-  </section>
-
-  <section class="lesson sess" id="manejo" data-tick="08 · Manejo">
-    <p class="label teal">08 · Dor, frio, calor, convulsão</p>
-    <h2 class="display reveal">Acalme. Observe. Avise.</h2>
-    <p class="lead">Quem escolhe o analgésico é o veterinário. Você observa.</p>
-    <figure class="bill">
-      <img src="assets/cat.jpg" alt="Gato aquecido com cobertor" />
-      <figcaption>Voz baixa. Cobertor. Sem bolsa quente na pele.</figcaption>
-    </figure>
-    <p class="rail-hint label">Deslize os cuidados</p>
-    <div class="grid-2 rail">
-      <article class="box do"><img class="shot" src="assets/cat.jpg" alt="" /><h3>Menos estresse</h3><p class="talk">Devagar, voz baixa, chão que não escorrega, contenção curta.</p></article>
-      <article class="box no"><img class="shot" src="assets/catgums.jpg" alt="" /><h3>Sinais de dor</h3><p class="talk">Pose estranha, vocaliza, foge, ofega, protege um lado. Olhe a evolução.</p></article>
-      <article class="box"><img class="shot" src="assets/cat.jpg" alt="" /><h3>Frio</h3><p class="talk">Cobertor e calor indireto. Bolsa quente na pele queima.</p></article>
-      <article class="box"><img class="shot" src="assets/oxygen.jpg" alt="" /><h3>Calor</h3><p class="talk">Menos estresse. Gelo direto na pele, não. Continue medindo.</p></article>
-    </div>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label amber">Convulsão</span><b>Afaste · proteja a cabeça · conte o tempo</b></span></summary>
-      <p class="talk">Não ponha a mão na boca e não segure à força. Chame na hora.</p>
-    </details>
-  </section>
-
-  <section class="lesson alt sess" id="terapeutico" data-tick="09 · Terapêutica">
-    <p class="label amber">09 · O que o veterinário costuma usar</p>
-    <h2 class="display reveal">Toque a situação. Leia o que fazer.</h2>
-    <p class="lead">Você não escolhe o remédio. Reconheça o pedido e prepare o material.</p>
-    <div class="clinic">
-      <div class="proto-nav" id="protoNav" role="tablist" aria-label="Situações terapêuticas"></div>
-      <div class="clinic-grid">
-        <div class="clinic-panel" id="protoHost" role="tabpanel"></div>
-        <aside class="clinic-side">
-          <div class="frame"><img id="protoPic" src="assets/gums.jpg" alt="Material de plantão" /></div>
-          <p class="label teal" style="margin-top:16px">Como usar</p>
-          <ol class="steps">
-            <li>Escolha a situação no menu.</li>
-            <li>Leia o que você faz — e o que não faz.</li>
-            <li>Pese. Abra a calculadora. Mostre o volume ao veterinário.</li>
-            <li>Só aspire depois da ordem.</li>
-          </ol>
-          <div class="btns"><a class="pill" id="calcSit" href="calculadora.html">Abrir a calculadora</a></div>
-        </aside>
-      </div>
-    </div>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label">Lembrete</span><b>Corticoide alto na coluna não é rotina</b></span></summary>
-      <p class="talk">Anti-inflamatório só depois que o animal já tem pressão e volume. No gato, enrofloxacina não passa de 5 mg/kg.</p>
-    </details>
-  </section>
-
-  <section class="lesson sess" id="pos" data-tick="10 · Depois">
-    <p class="label teal">10 · Depois</p>
-    <h2 class="display reveal">Observar também é tratar.</h2>
-    <p class="lead">Anote com horário. Toque o que você está olhando.</p>
-    <div class="tiles">
-      <details class="tile"><summary><span class="label">Respiração</span><span class="n">Peito</span><span class="see">toque</span></summary><p class="more">Anote frequência, esforço, cor da gengiva. Chame se piora o esforço ou fica roxo.</p></details>
-      <details class="tile"><summary><span class="label">Circulação</span><span class="n">Gengiva</span><span class="see">toque</span></summary><p class="more">Anote gengiva, TPC, pulso, pata fria. Chame se muito pálido, pulso fraco ou desmaio.</p></details>
-      <details class="tile"><summary><span class="label">Cabeça / pernas</span><span class="n">Pose</span><span class="see">toque</span></summary><p class="more">Anote consciência, pose, movimento. Chame se nova fraqueza, paralisia ou convulsão.</p></details>
-      <details class="tile"><summary><span class="label">Membro / ferida</span><span class="n">Ponta</span><span class="see">toque</span></summary><p class="more">Anote inchaço, dor, sangue, cor da ponta. Chame se o inchaço cresce ou a ponta esfria.</p></details>
-    </div>
-  </section>
-
-  <section class="quiz sess" id="quiz" data-tick="11 · Quiz">
-    <p class="label amber">11 · Agora você responde</p>
-    <h2 class="display reveal">Quiz por tema.</h2>
-    <p class="talk">Escolha o tema. Responda. Depois, se quiser, abra a explicação — com a fonte. Errar aqui é treino.</p>
-    <div class="quiz-themes" id="quizThemes"></div>
-    <div id="quizHost"></div>
-    <div class="score" id="scoreBox"></div>
-  </section>
-
-  <section class="lesson sess" id="fontes" data-tick="12 · Fontes">
-    <p class="label teal">12 · De onde veio esta aula</p>
-    <h2 class="display reveal">Fontes profissionais.</h2>
-    <p class="lead">Treino. Não é receita. Toque para ver de onde veio cada conduta.</p>
-    <details class="fold-card">
-      <summary><span class="sum"><span class="label">Fontes</span><b>CFMV, Merck, UC Davis, ACVECC</b></span></summary>
-      <ul>
-        <li>CFMV — Resolução nº 1.260/2019 (o que o auxiliar pode fazer, sob supervisão).</li>
-        <li>Merck Veterinary Manual — First Aid and Transport of Small Animals; Trauma in Emergency Medicine; Initial Triage and Resuscitation; Opioids Used in Emergency Practice (revisões 2025–2026).</li>
-        <li>UC Davis — California Veterinary Emergency Team, Normal Vital Signs (atualização fev. 2026).</li>
-        <li>ACVECC — VetATLS / Veterinary Committee on Trauma (abordagem do politrauma).</li>
-        <li>Clinician’s Brief — Trauma: medication therapies; Fracture management (analgésico µ primeiro; AINE depois de estável; cefazolina em fratura aberta).</li>
-      </ul>
-    </details>
-    <p class="src">Se o protocolo da sua ONG for diferente, vale o da casa.</p>
-  </section>
-
-  <section class="close sess" id="fecho" data-tick="Calculadora">
-    <div class="close-top">
-      <div>
-        <p class="label teal">05 · Próximo passo</p>
-        <h2 class="display reveal">Agora vamos à conta.</h2>
-        <p class="fine">Você já viu o papel, o ABCDE, os vitais, fratura, coluna, ferida e convulsão. Na calculadora a gente confere o volume da ampola — só depois da ordem do veterinário. CFMV 1.260/2019.</p>
-      </div>
-      <div class="btns">
-        <a class="pill" href="calculadora.html">Abrir calculadora</a>
-        <a class="pill" href="#quiz">Refazer o quiz</a>
-      </div>
-    </div>
-    <div class="foot">
-      <span>Aula de plantão</span>
-      <span>Auxiliar veterinário</span>
-      <span>Chame o veterinário</span>
-    </div>
-    <p class="crop" aria-hidden="true">Aula<span class="amp">.</span></p>
-  </section>
+    <div class="panel" id="panel"></div>
+    <div class="sheet" id="sheet"></div>
+  </div>
 
   <script>
-    const sleeves = [
-      { n: "01", title: "Chegada", line: "Antes de tocar: a sala é segura? Tem gente o bastante? Fale baixo. Peça ajuda.", img: "assets/hero.jpg" },
-      { n: "02", title: "Olhe o todo", line: "Ar, respiração, gengiva, consciência. Só depois a pata quebrada.", img: "assets/still.jpg" },
-      { n: "03", title: "Fratura", line: "Deixe o membro quieto. Cubra se tiver ferida. Não tente ‘colocar o osso no lugar’.", img: "assets/splint.jpg" },
-      { n: "04", title: "Coluna", line: "Não deixe caminhar. Mova em bloco, com mais de uma pessoa. Cabeça, pescoço e corpo alinhados.", img: "assets/hero.jpg" },
-      { n: "05", title: "Sangramento", line: "Pressione com gaze. Se encharcar, coloque outra por cima. Não tire objeto cravado.", img: "assets/still.jpg" },
-      { n: "06", title: "Falta de ar", line: "Oxigênio, pouco estresse. Gato de boca aberta é emergência. Chame agora.", img: "assets/hero.jpg" },
-      { n: "07", title: "Convulsão", line: "Afaste coisas, proteja a cabeça, conte o tempo. Não ponha a mão na boca.", img: "assets/cat.jpg" },
-      { n: "08", title: "Dor", line: "Acalme. Anote. Quem escolhe o analgésico é o veterinário — não você.", img: "assets/splint.jpg" }
-    ];
-
-    const deck = document.getElementById("deck");
-    const dots = document.getElementById("dots");
-    const phone = window.matchMedia("(max-width: 900px)");
-    let order = sleeves.map((_, i) => i);
-    let front = 0;
-    let drag = null;
-    let riseIO = null;
-
-    function stack() {
-      if (phone.matches) {
-        [...deck.children].forEach(el => {
-          el.style.transition = "none";
-          el.style.transform = "none";
-          el.style.zIndex = "1";
-        });
-        [...dots.children].forEach((d, i) => d.classList.toggle("on", i === 0));
-        return;
-      }
-      const n = sleeves.length;
-      order.forEach((idx, i) => {
-        const el = deck.children[idx];
-        const depth = (i - front + n) % n;
-        el.style.zIndex = String(n - depth);
-        el.style.transition = drag && idx === order[front] ? "none" : "transform .45s cubic-bezier(.22,1,.36,1)";
-        if (drag && idx === order[front]) return;
-        el.style.transform = `translate(${depth * 7}px, ${depth * -6}px) rotate(${depth * 1.15}deg) scale(${1 - depth * 0.018})`;
-      });
-      [...dots.children].forEach((d, i) => d.classList.toggle("on", i === front));
-    }
-
-    sleeves.forEach(s => {
-      const el = document.createElement("article");
-      el.className = "sleeve";
-      el.innerHTML = `<img src="${s.img}" alt="" /><div class="meta"><p class="label code">Carta ${s.n}</p><h3 class="display">${s.title}</h3><p>${s.line}</p></div>`;
-      el.addEventListener("pointerdown", onDown);
-      deck.appendChild(el);
-      dots.appendChild(document.createElement("i"));
-    });
-    stack();
-
-    function onDown(e) {
-      if (phone.matches) return;
-      const el = e.currentTarget;
-      if (el !== deck.children[order[front]]) return;
-      el.setPointerCapture(e.pointerId);
-      drag = { el, x: e.clientX, y: e.clientY, dx: 0 };
-      el.style.transition = "none";
-    }
-    deck.addEventListener("pointermove", e => {
-      if (!drag) return;
-      const dx = e.clientX - drag.x;
-      const dy = e.clientY - drag.y;
-      drag.dx = dx;
-      drag.el.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx * 0.06}deg) scale(1.03)`;
-    });
-    function throwCard(dir) {
-      const el = deck.children[order[front]];
-      const w = deck.offsetWidth;
-      el.style.transition = "transform .5s cubic-bezier(.22,.8,.2,1)";
-      el.style.transform = `translate(${dir * w * 1.15}px, -36px) rotate(${dir * 16}deg)`;
-      setTimeout(() => { front = (front + 1) % sleeves.length; stack(); }, 280);
-    }
-    function release() {
-      if (!drag) return;
-      const dx = drag.dx;
-      drag = null;
-      if (Math.abs(dx) > deck.offsetWidth * 0.1) throwCard(Math.sign(dx) || 1);
-      else stack();
-    }
-    deck.addEventListener("pointerup", release);
-    deck.addEventListener("pointercancel", release);
-    deck.addEventListener("keydown", e => {
-      if (phone.matches || (e.key !== "ArrowRight" && e.key !== "ArrowLeft")) return;
-      e.preventDefault();
-      throwCard(e.key === "ArrowRight" ? 1 : -1);
-    });
-    phone.addEventListener("change", stack);
-    deck.addEventListener("scroll", () => {
-      if (!phone.matches) return;
-      const cards = [...deck.children];
-      const mid = deck.scrollLeft + deck.clientWidth * 0.35;
-      let i = 0;
-      cards.forEach((c, n) => { if (c.offsetLeft <= mid) i = n; });
-      [...dots.children].forEach((d, n) => d.classList.toggle("on", n === i));
-    }, { passive: true });
-
-    const abcde = {
-      A: { t: "Olhe boca, pescoço, vômito e secreção. Tire só o que você alcança, sem enfiar nada no escuro. Se achar que o pescoço quebrou, mantenha alinhado e chame.", img: "assets/oxygen.jpg", cap: "A · o ar entra?", alt: "Cão com oxigênio" },
-      B: { t: "Conte a respiração, veja o esforço e a cor da gengiva. Muito esforço, gengiva roxa ou gato de boca aberta é emergência. Oxigênio conforme o protocolo, sem estressar.", img: "assets/vitals.jpg", cap: "B · respira bem?", alt: "Ausculta do peito" },
-      C: { t: "Gengiva, TPC, pulso, coração, pata fria. Gengiva muito pálida, pulso fraco, desmaio ou sangue demais: chame agora.", img: "assets/gums.jpg", cap: "C · circula? Olhe a gengiva", alt: "Checagem da gengiva" },
-      D: { t: "Está acordado? A pose mudou? Tem convulsão? Se achar trauma de cabeça ou coluna, mexa pouco e mantenha alinhado.", img: "assets/catgums.jpg", cap: "D · acordado?", alt: "Avaliação da consciência" },
-      E: { t: "Procure ferida, osso torto, sangue, frio ou calor. Cubra a ferida e proteja do frio e do calor demais.", img: "assets/press.jpg", cap: "E · ferida, frio?", alt: "Gaze na pata" }
-    };
-    const panel = document.getElementById("abcdePanel");
-    const abcdePic = document.getElementById("abcdePic");
-    const abcdeCap = document.getElementById("abcdeCap");
-    function setABC(k) {
-      document.querySelectorAll("#abcdeNav button").forEach(b => b.classList.toggle("on", b.dataset.k === k));
-      const item = abcde[k];
-      panel.textContent = item.t;
-      if (abcdePic) {
-        abcdePic.style.opacity = "0";
-        setTimeout(() => {
-          abcdePic.src = item.img;
-          abcdePic.alt = item.alt;
-          abcdePic.style.opacity = "1";
-        }, 180);
-      }
-      if (abcdeCap) abcdeCap.textContent = item.cap;
-    }
-    setABC("A");
-    document.getElementById("abcdeNav").addEventListener("click", e => {
-      const b = e.target.closest("button"); if (b) setABC(b.dataset.k);
-    });
-
-    const medir = [
-      "Respiração antes de tocar: olhe o peito sem estressar.",
-      "Coração e pulso: ausculte ou palpe; anote se é rítmico e forte.",
-      "Gengiva e TPC: cor e tempo. Compare com o resto do quadro.",
-      "Temperatura: lubrifique. Se o animal reagir muito, pare.",
-      "Meça de novo no intervalo que o veterinário pedir."
-    ];
-    let medirI = 0;
-    const medirN = document.getElementById("medirN");
-    const medirTxt = document.getElementById("medirTxt");
-    function drawMedir() {
-      if (!medirN) return;
-      medirN.textContent = String(medirI + 1).padStart(2, "0");
-      medirTxt.textContent = medir[medirI];
-    }
-    document.getElementById("medirNext")?.addEventListener("click", () => { medirI = (medirI + 1) % medir.length; drawMedir(); });
-    document.getElementById("medirPrev")?.addEventListener("click", () => { medirI = (medirI - 1 + medir.length) % medir.length; drawMedir(); });
-    drawMedir();
-
-    const protocols = [
+    const stations = [
       {
-        id: "choque", name: "Choque",
-        lead: "Gengiva pálida, frio, mole, TPC lento. Primeiro ar e soro. Anti-inflamatório agora faz mal ao rim.",
-        do: ["Oxigênio sem forçar máscara no gato em crise", "Acesso na veia, se o veterinário pedir", "Aqueça e deixe quieto", "Meça de novo depois de cada carga de soro"],
-        dont: ["Não infunda o soro ‘até o fim’ sem olhar de novo", "Não dê anti-inflamatório no choque", "Não atrase a analgesia: o veterinário escolhe o opioide"],
-        drugs: "Soro Ringer: cão 10–20 mL/kg por vez; gato 5–10 mL/kg, em 10–15 min, e reavalia. Dor: metadona.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation of Small Animal Emergency Patients.",
-        calc: "soro", pic: "assets/gums.jpg"
+        id: "papel", n: "01", name: "Chegada & Papel", img: "assets/team.jpg",
+        slides: [
+          { img: "assets/team.jpg", kicker: "01 · Papel", title: "Você ajuda.<br><em>O vet decide.</em>", lead: "Apoio, debaixo de orientação. Diagnóstico ou remédio: pare e chame.",
+            do: ["Receber o animal e fazer a triagem inicial.", "Medir e anotar temperatura, coração, respiração, gengiva e TPC.", "Conter com calma, só o necessário.", "Ajudar nos primeiros socorros e a preparar material.", "Anotar horário, o que mudou e o que foi feito."],
+            dont: ["Dizer o diagnóstico ou o prognóstico.", "Escolher, mudar ou passar remédio e dose.", "Decidir a velocidade do soro.", "Sedação ou procedimento invasivo sem ordem.", "Alta, atestado ou decisão de operar."] },
+          { img: "assets/hero.jpg", kicker: "01 · Chegada", title: "Sala segura?", lead: "Gente o bastante. Fale baixo. Peça ajuda antes de tocar.",
+            do: ["Olhe a sala e o animal antes de chegar perto.", "Peça ajuda se faltar gente.", "Fale baixo."],
+            dont: ["Não avance sozinho se puder morder ou fugir.", "Não force pose que piora a lesão."] }
+        ]
       },
       {
-        id: "dor", name: "Dor / fratura",
-        lead: "Dor forte de osso: opioide µ (metadona, morfina, fentanil). Anti-inflamatório só quando já está estável.",
-        do: ["Anote a dor antes e meia hora depois", "Imobilizar o membro já diminui a necessidade de remédio", "Tenha naloxona à mão se o veterinário usar opioide"],
-        dont: ["Não dê anti-inflamatório no choque, desidratado ou junto com corticoide", "Não misture dois anti-inflamatórios"],
-        drugs: "Metadona 0,2–0,5 mg/kg (cão) a cada 4–6 h. Dipirona 25 mg/kg a cada 8 h ajuda, mas não segura fratura sozinha.",
-        src: "Merck Veterinary Manual — Opioids Used in Emergency Practice; Clinician’s Brief — Fracture management.",
-        calc: "dor", pic: "assets/splint.jpg"
+        id: "abcde", n: "02", name: "ABCDE", img: "assets/oxygen.jpg",
+        slides: [
+          { img: "assets/oxygen.jpg", kicker: "02 · A", title: "O ar entra?", lead: "Boca, pescoço, vômito, secreção. Em trauma, isso vem antes da fratura.",
+            do: ["Olhe a via aérea.", "Tire só o que você alcança, sem enfiar nada no escuro.", "Se o pescoço pode ter quebrado, mantenha alinhado."],
+            dont: ["Não atrase o ABCDE por causa da pata.", "Não enfie o dedo no escuro."] },
+          { img: "assets/vitals.jpg", kicker: "02 · B", title: "Respira bem?", lead: "Conte, veja o esforço e a cor da gengiva. Gato de boca aberta é emergência.",
+            do: ["Oxigênio conforme o protocolo, sem estressar.", "Deixe na pose em que ele respira melhor."],
+            dont: ["Não force o gato em crise com máscara.", "Não deite à força."] },
+          { img: "assets/gums.jpg", kicker: "02 · C", title: "Circula?", lead: "Gengiva, TPC, pulso, pata fria. Pálida ou TPC lento: chame agora.",
+            do: ["Anote cor + TPC + horário.", "Prepare a veia se o veterinário pedir."],
+            dont: ["Não dê anti-inflamatório no choque.", "Não ignore pulso fraco só porque ele ainda anda."] },
+          { img: "assets/catgums.jpg", kicker: "02 · D", title: "Acordado?", lead: "Pose, convulsão, trauma de cabeça. Mexa pouco se suspeitar de coluna.",
+            do: ["Olhe se está acordado e se a pose mudou.", "Mantenha alinhado se houver trauma de pescoço."],
+            dont: ["Não teste se “sente” várias vezes."] },
+          { img: "assets/press.jpg", kicker: "02 · E", title: "Ferida, frio?", lead: "Cubra a ferida. Proteja do frio e do calor demais.",
+            do: ["Procure ferida, osso torto, sangue, frio ou calor.", "Cubra com material limpo."],
+            dont: ["Não trate a pata isolada do resto do corpo."] }
+        ]
       },
       {
-        id: "aberta", name: "Fratura aberta",
-        lead: "Cubra. Não empurre o osso. Antibiótico na veia cedo, se o veterinário pedir.",
-        do: ["Gaze limpa ou estéril", "Controle o sangue por fora, sem apertar demais a circulação"],
-        dont: ["Não lave com álcool no osso sem ordem", "Não sutura ferida suja na triagem"],
-        drugs: "Cefazolina 22 mg/kg na veia a cada 6–8 h (primeira linha em fratura aberta tipos I–II).",
-        src: "Clinician’s Brief — Trauma: a brief review of medication therapies (cefalosporina de 1ª geração).",
-        calc: "atb", pic: "assets/press.jpg"
+        id: "vitais", n: "03", name: "Sinais vitais", img: "assets/vitals.jpg",
+        slides: [
+          { img: "assets/vitals.jpg", kicker: "03 · Tendência", title: "O número sozinho quase não serve.", lead: "Anote com horário. O que importa: está piorando?",
+            do: ["Anote valor + horário + o que foi feito.", "Compare com a medição anterior."],
+            dont: ["Não confie num valor ‘normal’ isolado.", "Não esqueça: medo e dor também sobem coração e respiração."] },
+          { img: "assets/vitals.jpg", kicker: "03 · Temp", title: "37,8–39,2 °C", lead: "Reto. Medo e tamanho mudam o número.",
+            do: ["Anote valor + horário + como mediu.", "Lubrifique. Se reagir muito, pare."],
+            dont: ["Não ignore febre ou hipotermia com outro sinal."] },
+          { img: "assets/gums.jpg", kicker: "03 · TPC", title: "Rosada. TPC &lt; 2 s.", lead: "Pálida, roxa ou TPC de 3 s: choque. Chame agora.",
+            do: ["Anote cor + TPC + horário.", "Olhe também o pulso."],
+            dont: ["Não espere ele parar de andar para avisar."] },
+          { img: "assets/oxygen.jpg", kicker: "03 · Ordem", title: "Meça nesta ordem.", lead: "Respiração (sem tocar) → coração → gengiva → temperatura → de novo.",
+            do: ["Respiração antes de tocar.", "Meça de novo no intervalo que o veterinário pedir."],
+            dont: ["Não comece pela temperatura se ele já está em falta de ar."] }
+        ]
       },
       {
-        id: "coluna", name: "Coluna",
-        lead: "Mova em bloco. Analgesia. Corticoide em mega-dose não é rotina hoje.",
-        do: ["Prancha ou cobertor, 3 a 4 pessoas", "Oxigênio se a respiração piora", "Avise se não faz xixi"],
-        dont: ["Não teste dor profunda várias vezes", "Não dê corticoide ‘por protocolo’"],
-        drugs: "Opioide µ em dose que não apague o exame neurológico (metadona ou fentanil, o veterinário titula).",
-        src: "Merck Veterinary Manual — Trauma of the Spinal Column and Cord; ACVECC VetATLS.",
-        calc: "dor", pic: "assets/spine.jpg"
+        id: "trauma", n: "04", name: "Trauma", img: "assets/splint.jpg",
+        slides: [
+          { img: "assets/splint.jpg", kicker: "04 · Trauma", title: "Não é só o osso.", lead: "O mesmo tombo pode ter machucado por dentro. Não trate a pata isolada.",
+            do: ["Olhe o corpo inteiro: peito, barriga, coluna, xixi.", "ABCDE primeiro."],
+            dont: ["Não conclua que está bem só porque anda.", "Não ignore aparência ‘discreta’."] },
+          { img: "assets/gums.jpg", kicker: "04 · O que você vê", title: "Manca. Incha. Dói.", lead: "Pose estranha, ferida por cima. Não provoque estalo para testar.",
+            do: ["Anote o que você vê e o horário.", "Pense também em coluna, peito, sangramento interno."],
+            dont: ["Não fique testando a fratura."] }
+        ]
       },
       {
-        id: "crise", name: "Convulsão",
-        lead: "Proteja, conte o tempo, meça glicose. Crise longa: benzodiazepínico com o veterinário.",
-        do: ["Anote início, duração, quantas crises", "Afaste objetos, proteja a cabeça", "Glicemia, se houver aparelho"],
-        dont: ["Não ponha a mão na boca", "Não ‘espere passar’ uma crise de vários minutos"],
-        drugs: "Diazepam 0,5 mg/kg na veia (ou 1–2 mg/kg no reto se não houver veia). Midazolam 0,2–0,5 mg/kg na veia, músculo ou nariz.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation (manejo de convulsão).",
-        calc: "crise", pic: "assets/cat.jpg"
+        id: "fratura", n: "05", name: "Fratura", img: "assets/press.jpg",
+        slides: [
+          { img: "assets/splint.jpg", kicker: "05 · Fratura", title: "Não coloque o osso no lugar.", lead: "A tala agora é para deixar quieto — não para consertar.",
+            do: ["Deixe o mais quieto possível.", "Cubra se houver ferida.", "Olhe a ponta: cor, calor, pulso.", "Ajude na tala só se for pedido."],
+            dont: ["Não puxe para alinhar.", "Não aperte a tala nem esconda os dedos.", "Não dê remédio por conta."] },
+          { img: "assets/press.jpg", kicker: "05 · Osso para fora", title: "Cubra. Não empurre.", lead: "Segure o sangue por fora. Chame com urgência.",
+            do: ["Gaze limpa por cima.", "Controle o sangue sem apertar demais a circulação."],
+            dont: ["Não empurre o osso para dentro.", "Não lave com álcool no osso sem ordem."] }
+        ]
       },
       {
-        id: "ar", name: "Falta de ar",
-        lead: "Oxigênio primeiro. Não deite o animal à força. Soro demais piora contusão no pulmão.",
-        do: ["Deixe na pose em que ele respira melhor", "Menos estresse, especialmente no gato", "Kit de toracocentese pronto para o veterinário"],
-        dont: ["Não force deitar de lado", "Não encha de soro se o peito foi atingido"],
-        drugs: "Oxigênio contínuo. Se houver dor de costela, opioide — o veterinário escolhe a dose.",
-        src: "Merck Veterinary Manual — Trauma in Emergency Medicine (tórax: O₂ + analgesia µ).",
-        calc: "soro", pic: "assets/oxygen.jpg"
+        id: "coluna", n: "06", name: "Coluna", img: "assets/spine.jpg",
+        slides: [
+          { img: "assets/spine.jpg", kicker: "06 · Coluna", title: "Mova em bloco.", lead: "Não anda, pernas moles, dor no pescoço ou nas costas: pense em coluna.",
+            do: ["Tábua, maca ou cobertor esticado.", "Mais de uma pessoa. Cabeça, pescoço e tronco alinhados."],
+            dont: ["Não levante pelas patas.", "Não arraste pela coleira.", "Não peça para andar ‘para ver se melhora’.", "Não teste se ‘sente’ várias vezes."] }
+        ]
+      },
+      {
+        id: "feridas", n: "07", name: "Feridas", img: "assets/press.jpg",
+        slides: [
+          { img: "assets/press.jpg", kicker: "07 · Sangue", title: "Pressione. Gaze por cima.", lead: "Se encharcar, ponha outra — não tire a primeira.",
+            do: ["Luvas. Gaze limpa, pressão direta.", "Anote onde é e quanto sangrou."],
+            dont: ["Não tire a primeira gaze encharcada.", "Não ignore sangramento que não para."] },
+          { img: "assets/gums.jpg", kicker: "07 · Objeto", title: "Não tire o objeto.", lead: "Furo pequeno por fora pode ser fundo por dentro. Andar não prova que está bem.",
+            do: ["Estabilize para o transporte.", "Chame o veterinário."],
+            dont: ["Não retire no local.", "Não jogue produto irritante em ferida funda sem ordem."] }
+        ]
+      },
+      {
+        id: "manejo", n: "08", name: "Dor & convulsão", img: "assets/cat.jpg",
+        slides: [
+          { img: "assets/cat.jpg", kicker: "08 · Manejo", title: "Acalme. Observe. Avise.", lead: "Quem escolhe o analgésico é o veterinário.",
+            do: ["Voz baixa, chão que não escorrega, contenção curta.", "Cobertor se estiver frio. Calor indireto."],
+            dont: ["Não ponha bolsa quente na pele.", "Não ponha gelo direto.", "Não dê analgésico por conta."] },
+          { img: "assets/catgums.jpg", kicker: "08 · Convulsão", title: "Afaste. Conte o tempo.", lead: "Não ponha a mão na boca. Crise longa: chame na hora.",
+            do: ["Afaste objetos, proteja a cabeça, conte o tempo.", "Anote início, duração, quantas crises.", "Glicemia, se houver aparelho."],
+            dont: ["Não ponha a mão na boca.", "Não segure à força.", "Não ‘espere passar’ uma crise de vários minutos."] }
+        ]
+      },
+      {
+        id: "terapeutica", n: "09", name: "Terapêutica", img: "assets/still.jpg",
+        slides: [
+          { img: "assets/gums.jpg", kicker: "09 · Choque", title: "Ar e soro primeiro.", lead: "Gengiva pálida, frio, TPC lento. Anti-inflamatório agora faz mal ao rim.",
+            do: ["Oxigênio sem forçar máscara no gato em crise.", "Acesso na veia, se o veterinário pedir.", "Aqueça e deixe quieto."],
+            dont: ["Não dê anti-inflamatório no choque.", "Não infunda o soro ‘até o fim’ sem olhar de novo."],
+            calc: "soro" },
+          { img: "assets/splint.jpg", kicker: "09 · Dor", title: "Opioide µ. O vet escolhe.", lead: "Anti-inflamatório só quando já está estável.",
+            do: ["Anote a dor antes e meia hora depois.", "Imobilizar o membro já diminui a necessidade de remédio."],
+            dont: ["Não dê anti-inflamatório no choque ou junto com corticoide.", "Não misture dois anti-inflamatórios."],
+            calc: "dor" },
+          { img: "assets/spine.jpg", kicker: "09 · Coluna", title: "Corticoide alto não é rotina.", lead: "Mova em bloco. Analgesia. O veterinário titula o opioide.",
+            do: ["Prancha ou cobertor, 3 a 4 pessoas.", "Avise se não faz xixi."],
+            dont: ["Não dê corticoide ‘por protocolo’.", "Não teste dor profunda várias vezes."],
+            calc: "dor" },
+          { img: "assets/cat.jpg", kicker: "09 · Convulsão", title: "Benzodiazepínico com o vet.", lead: "Proteja, conte o tempo, meça glicose.",
+            do: ["Anote início e duração.", "Glicemia, se houver aparelho."],
+            dont: ["Não ponha a mão na boca.", "Não aplique diazepam por conta."],
+            calc: "crise" }
+        ]
       }
     ];
-    const protoNav = document.getElementById("protoNav");
-    const protoHost = document.getElementById("protoHost");
-    protocols.forEach((p, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.textContent = p.name;
-      b.dataset.id = p.id;
-      b.setAttribute("role", "tab");
-      b.setAttribute("aria-selected", i === 0 ? "true" : "false");
-      if (i === 0) b.classList.add("on");
-      protoNav.appendChild(b);
-    });
-    function renderProto(id) {
-      const p = protocols.find(x => x.id === id);
-      protoNav.querySelectorAll("button").forEach(b => {
-        const on = b.dataset.id === id;
-        b.classList.toggle("on", on);
-        b.setAttribute("aria-selected", on ? "true" : "false");
-      });
-      protoHost.innerHTML = `
-        <p class="label amber">Situação</p>
-        <h3 class="display sit-title">${p.name}</h3>
-        <p class="lead">${p.lead}</p>
-        <details class="fold-card"><summary><span class="sum"><span class="label teal">Faça</span><b>Toque para a lista</b></span></summary><ul>${p.do.map(x=>`<li>${x}</li>`).join("")}</ul></details>
-        <details class="fold-card"><summary><span class="sum"><span class="label amber">Não faça</span><b>Toque para a lista</b></span></summary><ul>${p.dont.map(x=>`<li>${x}</li>`).join("")}</ul></details>
-        <details class="fold-card"><summary><span class="sum"><span class="label">Pedido típico</span><b>O que o veterinário costuma pedir</b></span></summary><p class="talk">${p.drugs}</p><p class="src">${p.src}</p></details>
-        <div class="btns"><a class="pill" href="calculadora.html?sit=${p.calc}">Ver a conta desta situação</a></div>`;
-      const side = document.getElementById("calcSit");
-      if (side) side.href = "calculadora.html?sit=" + p.calc;
-      const pic = document.getElementById("protoPic");
-      if (pic && p.pic) pic.src = p.pic;
-    }
-    renderProto("choque");
-    protoNav.addEventListener("click", e => {
-      const b = e.target.closest("button");
-      if (!b) return;
-      renderProto(b.dataset.id);
-      protoHost.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    });
 
     const quiz = [
-      { theme: "trauma", tag: "Trauma", q: "O animal chegou com a pata torta. Por que você ainda olha o corpo inteiro?",
+      { tag: "Trauma", q: "O animal chegou com a pata torta. Por que você ainda olha o corpo inteiro?",
         opts: ["Porque a fratura sempre é o problema mais grave.", "Porque o mesmo tombo pode ter machucado por dentro, mesmo sem aparecer.", "Porque todo mundo com fratura precisa de remédio na hora.", "Porque você deve endireitar o osso antes do raio-x."],
-        a: 1, why: "O trauma de alta energia (atropelamento, queda, briga) costuma ter várias lesões ao mesmo tempo. Uma fratura visível não exclui sangramento interno, lesão de peito ou de coluna. Por isso a regra é: primeiro estabilizar (ABCDE), depois investigar o osso.",
-        src: "Merck Veterinary Manual — Trauma in Emergency Medicine in Small Animals (2025/2026)." },
-      { theme: "trauma", tag: "Trauma", q: "O animal anda depois do atropelamento. Isso prova que está bem?",
+        a: 1, why: "O trauma de alta energia costuma ter várias lesões ao mesmo tempo. Primeiro estabilizar (ABCDE), depois o osso.",
+        src: "Merck Veterinary Manual — Trauma in Emergency Medicine (2025/2026)." },
+      { tag: "Trauma", q: "O animal anda depois do atropelamento. Isso prova que está bem?",
         opts: ["Sim. Se anda, não tem lesão grave.", "Não. Lesão interna pode aparecer horas depois.", "Sim, se a gengiva estiver rosada uma vez.", "Só se ele abanar o rabo."],
-        a: 1, why: "Muitos danos internos só ficam claros depois. O Merck recomenda internar para observar mesmo quem parece estável na chegada.",
-        src: "Merck Veterinary Manual — Trauma in Emergency Medicine: delayed injury; hospitalize for monitoring." },
-      { theme: "coluna", tag: "Coluna", q: "Qual conjunto de sinais faz você pensar em coluna?",
+        a: 1, why: "Muitos danos internos só ficam claros depois. Internar para observar mesmo quem parece estável.",
+        src: "Merck Veterinary Manual — delayed injury; hospitalize for monitoring." },
+      { tag: "Coluna", q: "Qual conjunto de sinais faz você pensar em coluna?",
         opts: ["Só um dedo mancando.", "De repente não anda, pernas moles, dor forte no pescoço ou nas costas.", "Só febre.", "Gengiva rosada e TPC de 1 segundo."],
-        a: 1, why: "Incapacidade súbita de andar, fraqueza ou paralisia, dor na coluna/pescoço e perda de xixi/fezes depois de trauma pedem movimentação em bloco e o veterinário na hora.",
-        src: "Merck Veterinary Manual — Trauma of the Spinal Column and Cord in Animals." },
-      { theme: "coluna", tag: "Coluna", q: "Como você move um animal com suspeita de coluna?",
+        a: 1, why: "Incapacidade súbita de andar, fraqueza, dor na coluna e perda de xixi/fezes pedem movimento em bloco.",
+        src: "Merck Veterinary Manual — Trauma of the Spinal Column and Cord." },
+      { tag: "Coluna", q: "Como você move um animal com suspeita de coluna?",
         opts: ["Pelas patas de trás, rápido.", "Em bloco, superfície firme, mais de uma pessoa, cabeça e tronco alinhados.", "Pela coleira, para controlar a cabeça.", "Deixa andar ‘para ver se melhora’."],
-        a: 1, why: "Torção, flexão e puxão pelas patas podem piorar a medula. Use tábua, maca ou cobertor esticado, equipe combinada.",
-        src: "Merck Veterinary Manual — First Aid and Transport of Small Animals; VetATLS." },
-      { theme: "fratura", tag: "Fratura", q: "Para que serve a tala provisória?",
+        a: 1, why: "Torção e puxão pelas patas podem piorar a medula. Tábua, maca ou cobertor esticado.",
+        src: "Merck Veterinary Manual — First Aid and Transport; VetATLS." },
+      { tag: "Fratura", q: "Para que serve a tala provisória?",
         opts: ["Para deixar o osso no lugar certo.", "Para diminuir o movimento e a dor até o veterinário avaliar.", "Para substituir a cirurgia.", "Para o animal poder caminhar no canil."],
-        a: 1, why: "Imobilização provisória reduz movimento, dor e lesão de tecido. Não é redução da fratura. Raio-x e tratamento definitivo são do veterinário.",
-        src: "Merck Veterinary Manual — Bone Fractures in Dogs and Cats; First Aid and Transport." },
-      { theme: "fratura", tag: "Fratura", q: "Por que não se puxa o membro para ‘alinhar’?",
+        a: 1, why: "Imobilização provisória reduz movimento e dor. Não é redução da fratura.",
+        src: "Merck Veterinary Manual — Bone Fractures; First Aid and Transport." },
+      { tag: "Fratura", q: "Por que não se puxa o membro para ‘alinhar’?",
         opts: ["Porque dói em quem está segurando.", "Porque pode piorar a dor e machucar vaso, nervo e músculo.", "Porque o osso se arruma sozinho em dez minutos.", "Porque tala apertada resolve tudo."],
-        a: 1, why: "Manipulação repetida e alinhamento à força lesam partes moles, vasos e nervos. A prioridade do auxiliar é quietude e proteção.",
-        src: "Merck Veterinary Manual — First Aid and Transport; Bone Fractures in Dogs and Cats." },
-      { theme: "ferida", tag: "Ferida", q: "Tem ferimento em cima de uma possível fratura. O que você faz?",
+        a: 1, why: "Alinhar à força lesa partes moles, vasos e nervos. Prioridade: quietude e proteção.",
+        src: "Merck Veterinary Manual — First Aid and Transport." },
+      { tag: "Ferida", q: "Tem ferimento em cima de uma possível fratura. O que você faz?",
         opts: ["Empurra o osso para dentro e sutura.", "Cobre, segura o sangramento por fora, não suja mais e chama o veterinário.", "Lava com álcool e deixa ao ar.", "Dá um anti-inflamatório por conta própria."],
-        a: 1, why: "Fratura aberta: cubra com material limpo, controle hemorragia externa, não recoloque osso. Antibiótico é decisão do veterinário (em geral cefazolina na veia).",
-        src: "Clinician’s Brief — Trauma medication therapies; Merck — Bone Fractures." },
-      { theme: "ferida", tag: "Ferida", q: "Há um objeto cravado. Você tira no local?",
+        a: 1, why: "Fratura aberta: cubra, controle o sangue por fora, não recoloque o osso. Antibiótico é do veterinário.",
+        src: "Clinician’s Brief — Trauma medication therapies." },
+      { tag: "Ferida", q: "Há um objeto cravado. Você tira no local?",
         opts: ["Sim, para limpar a ferida.", "Não. Estabilize o objeto e chame o veterinário.", "Só se for um graveto fino.", "Sim, se o animal estiver andando."],
-        a: 1, why: "Retirar o objeto pode piorar o sangramento e o dano profundo. A abertura pequena por fora não mostra o caminho por dentro.",
-        src: "Merck Veterinary Manual — First Aid and Transport of Small Animals." },
-      { theme: "abcde", tag: "ABCDE", q: "Quais sinais de respiração pedem o veterinário na hora?",
+        a: 1, why: "Retirar pode piorar o sangramento e o dano profundo.",
+        src: "Merck Veterinary Manual — First Aid and Transport." },
+      { tag: "ABCDE", q: "Quais sinais de respiração pedem o veterinário na hora?",
         opts: ["Um suspiro enquanto dorme.", "Muito esforço para respirar, gengiva roxa, gato de boca aberta.", "Cão calmo com 24 respirações por minuto.", "Ofegação depois de brincar, que já passou."],
-        a: 1, why: "Dispneia importante, cianose e respiração de boca aberta no gato são emergência. Oxigênio e mínimo estresse; não atrase por causa de raio-x.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation; Trauma (tórax)." },
-      { theme: "abcde", tag: "ABCDE", q: "Em que ordem você olha o animal na chegada?",
+        a: 1, why: "Dispneia, cianose e boca aberta no gato são emergência.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation." },
+      { tag: "ABCDE", q: "Em que ordem você olha o animal na chegada?",
         opts: ["Primeiro a fratura, depois o resto.", "A vias aéreas, B respiração, C circulação, D neurológico, E exposição.", "Primeiro a temperatura, sempre.", "Como o tutor pedir."],
-        a: 1, why: "ABCDE (ou ABCs) é o padrão de emergência em pequenos animais: via aérea, respiração, circulação, depois neurológico e exposição.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation of Small Animal Emergency Patients." },
-      { theme: "convulsao", tag: "Convulsão", q: "Na convulsão, o que é seguro — e o que é proibido?",
+        a: 1, why: "ABCDE é o padrão de emergência em pequenos animais.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation." },
+      { tag: "Convulsão", q: "Na convulsão, o que é seguro — e o que é proibido?",
         opts: ["Pôr a mão na boca e puxar a língua.", "Afastar objetos, proteger a cabeça, contar o tempo. Não pôr a mão na boca nem segurar à força.", "Amarrar as quatro patas e pôr gelo na cabeça.", "Dar diazepam por conta e filmar depois."],
-        a: 1, why: "Você protege o animal e cronometra. Remédio (diazepam/midazolam) só com o veterinário. Mão na boca = mordida.",
-        src: "Merck Veterinary Manual — Initial Triage (emergency management of seizures)." },
-      { theme: "convulsao", tag: "Convulsão", q: "Uma crise passa de 5 minutos. O que isso pede?",
+        a: 1, why: "Você protege e cronometra. Remédio só com o veterinário. Mão na boca = mordida.",
+        src: "Merck Veterinary Manual — emergency management of seizures." },
+      { tag: "Convulsão", q: "Uma crise passa de 5 minutos. O que isso pede?",
         opts: ["Esperar mais 10 minutos em silêncio.", "Avisar o veterinário na hora: pode ser status. Glicemia se houver aparelho.", "Dar açúcar na boca à força.", "Banho frio."],
-        a: 1, why: "Crise longa ou que volta logo é emergência. O veterinário pode usar benzodiazepínico. Hipoglicemia entra no diagnóstico diferencial — por isso a glicose, se o aparelho existir.",
-        src: "Merck Veterinary Manual — Initial Triage and Resuscitation (seizures; glucose)." },
-      { theme: "vitais", tag: "Vitais", q: "Além do número (febre, coração, respiração), o que você anota?",
+        a: 1, why: "Crise longa é emergência. O veterinário pode usar benzodiazepínico.",
+        src: "Merck Veterinary Manual — Initial Triage (seizures; glucose)." },
+      { tag: "Vitais", q: "Além do número, o que você anota?",
         opts: ["Só o nome do tutor.", "Horário, se está piorando ou melhorando, e o que foi feito.", "Nada, se o número parecer ‘normal’.", "Nada. O veterinário lembra."],
-        a: 1, why: "Tendência com horário vale mais que um valor isolado. Medo e dor também sobem coração e respiração — por isso o contexto.",
-        src: "Merck Veterinary Manual — Rule of 20 / monitoring the critically ill small animal." },
-      { theme: "vitais", tag: "Vitais", q: "TPC de 3 segundos e gengiva muito pálida. O que isso sugere?",
+        a: 1, why: "Tendência com horário vale mais que um valor isolado.",
+        src: "Merck Veterinary Manual — monitoring the critically ill small animal." },
+      { tag: "Vitais", q: "TPC de 3 segundos e gengiva muito pálida. O que isso sugere?",
         opts: ["Que o animal está descansando.", "Má circulação / choque — chame o veterinário agora.", "Que a temperatura está normal.", "Nada, se ele ainda anda."],
-        a: 1, why: "TPC em geral é até 2 segundos, gengiva rosada. TPC demorado e mucosa pálida apontam má perfusão. Isso entra no C do ABCDE.",
-        src: "UC Davis CVET Normal Vital Signs (2026): CRT < 2 s, MM pink/moist; Merck triage." },
-      { theme: "papel", tag: "Papel", q: "Quem escolhe o remédio e a dose?",
+        a: 1, why: "TPC em geral é até 2 s, gengiva rosada. TPC demorado e mucosa pálida apontam má perfusão.",
+        src: "UC Davis CVET Normal Vital Signs (2026); Merck triage." },
+      { tag: "Papel", q: "Quem escolhe o remédio e a dose?",
         opts: ["O auxiliar, se já viu o caso uma vez.", "Só o médico-veterinário. Você prepara e confere depois da ordem.", "O tutor, pelo WhatsApp.", "Qualquer um da equipe, se tiver pressa."],
-        a: 1, why: "A Resolução CFMV 1.260/2019 coloca o auxiliar em apoio, assistência e acompanhamento sob orientação. Prescrição não é sua.",
+        a: 1, why: "A Resolução CFMV 1.260/2019 coloca o auxiliar em apoio sob orientação. Prescrição não é sua.",
         src: "CFMV — Resolução nº 1.260/2019." }
     ];
 
-    const themes = [
-      { id: "all", label: "Todos" },
-      { id: "trauma", label: "Trauma" },
-      { id: "abcde", label: "ABCDE" },
-      { id: "fratura", label: "Fratura" },
-      { id: "coluna", label: "Coluna" },
-      { id: "ferida", label: "Ferida" },
-      { id: "convulsao", label: "Convulsão" },
-      { id: "vitais", label: "Vitais" },
-      { id: "papel", label: "Papel" }
-    ];
-    let quizTheme = "all";
-    const answers = {};
-    const host = document.getElementById("quizHost");
-    const themeBar = document.getElementById("quizThemes");
-    themes.forEach((t, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.dataset.id = t.id;
-      b.textContent = t.label;
-      if (i === 0) b.classList.add("on");
-      themeBar.appendChild(b);
-    });
-    function visibleQuiz() {
-      return quiz.map((item, i) => ({ item, i })).filter(x => quizTheme === "all" || x.item.theme === quizTheme);
-    }
-    function renderQuiz() {
-      const vis = visibleQuiz();
-      host.innerHTML = vis.map(({ item, i }, n) => `
-        <article class="q" data-i="${i}">
-          <p class="label tag amber">${item.tag}</p>
-          <h3>${n + 1}. ${item.q}</h3>
-          <div class="opts" data-q="${i}">
-            ${item.opts.map((o, oi) => `<button type="button" data-o="${oi}">${o}</button>`).join("")}
-          </div>
-          <button type="button" class="pill why-btn" data-why="${i}">Ver explicação</button>
-          <p class="feedback" id="fb-${i}"></p>
-        </article>`).join("");
-      vis.forEach(({ item, i }) => {
-        if (answers[i] == null) return;
-        const wrap = host.querySelector(`.opts[data-q="${i}"]`);
-        wrap.querySelectorAll("button").forEach(b => {
-          const idx = +b.dataset.o;
-          if (idx === item.a) b.classList.add("good");
-          else if (idx === answers[i]) b.classList.add("bad");
-        });
-        host.querySelector(`[data-why="${i}"]`).classList.add("show");
-      });
-      document.getElementById("scoreBox").classList.remove("show");
-      host.querySelectorAll(".q").forEach((el, i) => {
-        el.classList.add("rise");
-        el.style.setProperty("--d", `${(i % 6) * 60}ms`);
-      });
-      armRise(host);
-    }
-    themeBar.addEventListener("click", e => {
-      const b = e.target.closest("button"); if (!b) return;
-      quizTheme = b.dataset.id;
-      themeBar.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
-      renderQuiz();
-    });
-    host.addEventListener("click", e => {
-      const why = e.target.closest("[data-why]");
-      if (why) {
-        const i = +why.dataset.why;
-        const item = quiz[i];
-        const fb = document.getElementById("fb-" + i);
-        const picked = answers[i];
-        const right = picked === item.a;
-        fb.classList.add("show");
-        fb.innerHTML = `<b>${right ? "Por que esta está certa." : "Por que esta é a resposta."}</b> ${item.why}<span class="src" style="display:block">${item.src}</span>`;
-        return;
-      }
-      const btn = e.target.closest("button[data-o]");
-      if (!btn) return;
-      const wrap = btn.parentElement;
-      const i = +wrap.dataset.q;
-      const oi = +btn.dataset.o;
-      answers[i] = oi;
-      wrap.querySelectorAll("button").forEach(b => {
-        b.classList.remove("good", "bad");
-        const idx = +b.dataset.o;
-        if (idx === quiz[i].a) b.classList.add("good");
-        else if (idx === oi) b.classList.add("bad");
-      });
-      host.querySelector(`[data-why="${i}"]`).classList.add("show");
-      const vis = visibleQuiz();
-      if (vis.every(x => answers[x.i] != null)) {
-        const s = vis.filter(x => answers[x.i] === x.item.a).length;
-        const box = document.getElementById("scoreBox");
-        box.classList.add("show");
-        let msg = "Leia a explicação das que errou. Errar aqui é treino.";
-        if (s === vis.length) msg = "Mandou bem neste tema. Na dúvida no plantão, chame o veterinário.";
-        else if (s >= Math.ceil(vis.length * 0.75)) msg = "Quase lá. Abra a explicação — o porquê importa mais do que a letra.";
-        box.innerHTML = `<h3 class="display">${s} de ${vis.length}</h3><p class="talk">${msg}</p>`;
-      }
-    });
-    renderQuiz();
+    const quizStation = {
+      id: "quiz", n: "10", name: "Quiz", img: "assets/still.jpg", quiz: true,
+      slides: quiz.map((q, i) => ({
+        img: "assets/still.jpg", kicker: "10 · Quiz", title: q.q, lead: q.tag,
+        quiz: true, opts: q.opts, a: q.a, why: q.why, src: q.src, i
+      }))
+    };
+    const all = [...stations, quizStation];
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const stage = document.getElementById("stage");
-    const portal = document.querySelector(".portal");
-    const orb = document.getElementById("orb");
-    const tick = document.getElementById("tick");
-    function setP(p) { stage.style.setProperty("--p", p.toFixed(4)); }
-    function armRise(root = document) {
-      if (!riseIO) return;
-      root.querySelectorAll(".reveal, .rise").forEach(el => {
-        if (el.classList.contains("in")) return;
-        riseIO.observe(el);
-      });
+    const done = new Set(JSON.parse(localStorage.getItem("aula-done") || "[]"));
+    const answers = {};
+    const stops = document.getElementById("stops");
+    const links = document.getElementById("links");
+    const story = document.getElementById("story");
+    const photoImg = document.getElementById("photoImg");
+    const kicker = document.getElementById("kicker");
+    const countEl = document.getElementById("count");
+    const panel = document.getElementById("panel");
+    const sheet = document.getElementById("sheet");
+    let cur = null, idx = 0, sheetKind = null;
+
+    all.forEach(s => {
+      const a = document.createElement("button");
+      a.type = "button";
+      a.className = "stop" + (s.quiz ? " quiz" : "") + (done.has(s.id) ? " done" : "");
+      a.dataset.id = s.id;
+      a.innerHTML = `<img src="${s.img}" alt="" /><i class="ok"></i><span class="meta"><span class="n">${s.n}</span><span class="t">${s.name}</span></span>`;
+      a.addEventListener("click", () => openStation(s.id, 0));
+      stops.appendChild(a);
+      const l = document.createElement("a");
+      l.href = "#" + s.id;
+      l.textContent = s.n + " · " + s.name;
+      links.appendChild(l);
+    });
+    const homeLink = document.createElement("a");
+    homeLink.href = "#mapa";
+    homeLink.textContent = "Mapa";
+    links.prepend(homeLink);
+
+    function markDone(id) {
+      done.add(id);
+      localStorage.setItem("aula-done", JSON.stringify([...done]));
+      const tile = stops.querySelector(`[data-id="${id}"]`);
+      if (tile) tile.classList.add("done");
     }
-    if (!reduced) {
-      document.documentElement.classList.add("motion");
-      setP(0);
-      document.querySelectorAll(".sess").forEach(sec => {
-        sec.querySelectorAll(".box, .frame, .bill, .tile, table.sheet tbody tr, .steps li, .q, .clinic-panel, .clinic-side").forEach((el, i) => {
-          if (el.closest(".rail, .deck, .abcde, .alarm, .proto-nav, .quiz-themes")) return;
-          el.classList.add("rise");
-          el.style.setProperty("--d", `${(i % 6) * 70}ms`);
-        });
-      });
-      riseIO = new IntersectionObserver(entries => {
-        entries.forEach(en => {
-          if (!en.isIntersecting) return;
-          en.target.classList.add("in");
-          riseIO.unobserve(en.target);
-        });
-      }, { threshold: 0.06, rootMargin: "40px 0px -6% 0px" });
-      armRise();
-      let ticking = false;
-      function onScroll() {
-        const rect = portal.getBoundingClientRect();
-        const max = Math.max(1, portal.offsetHeight - innerHeight);
-        setP(Math.min(1, Math.max(0, -rect.top / max)));
-        const fold = document.getElementById("usar").getBoundingClientRect();
-        const fy = (innerHeight - fold.top) / innerHeight;
-        if (orb) orb.style.transform = `translateY(${fy * 36}px) rotate(${fy * 8}deg)`;
-        ticking = false;
+
+    function openStation(id, i, setHash = true) {
+      cur = all.find(s => s.id === id);
+      if (!cur) return;
+      idx = Math.max(0, Math.min(i || 0, cur.slides.length - 1));
+      links.classList.remove("open");
+      story.classList.add("on");
+      story.setAttribute("aria-hidden", "false");
+      if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("mapa").style.display = "none";
+      if (setHash && location.hash.slice(1) !== id) location.hash = id;
+      draw();
+    }
+    function closeStory() {
+      story.classList.remove("on");
+      story.setAttribute("aria-hidden", "true");
+      document.getElementById("mapa").style.display = "";
+      sheet.classList.remove("on");
+      cur = null;
+      if (location.hash.slice(1) !== "mapa") location.hash = "mapa";
+    }
+
+    function draw() {
+      const s = cur.slides[idx];
+      photoImg.src = s.img;
+      photoImg.alt = "";
+      kicker.textContent = s.kicker;
+      countEl.textContent = (idx + 1) + " / " + cur.slides.length;
+      sheet.classList.remove("on");
+      sheetKind = null;
+      const dots = cur.slides.map((_, i) => `<i class="${i === idx ? "on" : ""}"></i>`).join("");
+      if (s.quiz) {
+        const picked = answers[s.i];
+        const opts = s.opts.map((o, oi) => {
+          let cls = "";
+          if (picked != null) {
+            if (oi === s.a) cls = "good";
+            else if (oi === picked) cls = "bad";
+          }
+          return `<button type="button" data-o="${oi}" class="${cls}">${o}</button>`;
+        }).join("");
+        panel.innerHTML = `
+          <p class="label amber">${s.lead}</p>
+          <h2 class="display">${s.title}</h2>
+          <div class="opts">${opts}</div>
+          <p class="why ${picked != null ? "show" : ""}" id="whyBox">${picked != null ? `<b>Por quê.</b> ${s.why}<span class="src" style="display:block;margin-top:8px;color:var(--muted);font-size:12px">${s.src}</span>` : ""}</p>
+          <div class="next-row">
+            <button class="pill" type="button" data-nav="-1">Anterior</button>
+            <button class="pill" type="button" data-nav="1">${idx === cur.slides.length - 1 ? "Mapa" : "Próxima"}</button>
+          </div>
+          <div class="dots">${dots}</div>`;
+      } else {
+        const calc = s.calc ? `<a class="pill" href="calculadora.html?sit=${s.calc}" style="display:block;text-align:center;margin-bottom:12px">Ver a conta</a>` : "";
+        panel.innerHTML = `
+          <h2 class="display">${s.title}</h2>
+          <p class="lead">${s.lead}</p>
+          <div class="pair">
+            <button class="do" type="button" data-sheet="do">Faça</button>
+            <button class="no" type="button" data-sheet="no">Não faça</button>
+          </div>
+          ${calc}
+          <div class="next-row">
+            <button class="pill" type="button" data-nav="-1">Anterior</button>
+            <button class="pill" type="button" data-nav="1">${idx === cur.slides.length - 1 ? "Mapa" : "Próxima"}</button>
+          </div>
+          <div class="dots">${dots}</div>`;
       }
-      addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-      onScroll();
     }
-    function updateTick() {
-      const y = window.innerHeight * 0.32;
-      let current = null;
-      document.querySelectorAll("[data-tick]").forEach(el => {
-        const r = el.getBoundingClientRect();
-        if (r.top <= y && r.bottom > y) current = el;
-      });
-      if (!current || current.id === "topo" || !current.dataset.tick) {
-        tick.classList.remove("on");
-        tick.textContent = "";
+
+    function go(d) {
+      const n = idx + d;
+      if (n < 0) { closeStory(); return; }
+      if (n >= cur.slides.length) { markDone(cur.id); closeStory(); return; }
+      idx = n;
+      if (idx === cur.slides.length - 1) markDone(cur.id);
+      draw();
+    }
+
+    function openSheet(kind) {
+      const s = cur.slides[idx];
+      if (sheetKind === kind) { sheet.classList.remove("on"); sheetKind = null; return; }
+      sheetKind = kind;
+      const list = kind === "do" ? s.do : s.dont;
+      sheet.className = "sheet on " + kind;
+      sheet.innerHTML = `<h3>${kind === "do" ? "Faça" : "Não faça"}</h3><ul>${list.map(x => `<li>${x}</li>`).join("")}</ul>`;
+      panel.querySelectorAll(".pair button").forEach(b => b.classList.toggle("on", b.dataset.sheet === kind));
+    }
+
+    panel.addEventListener("click", e => {
+      const nav = e.target.closest("[data-nav]");
+      if (nav) { go(+nav.dataset.nav); return; }
+      const sh = e.target.closest("[data-sheet]");
+      if (sh) { openSheet(sh.dataset.sheet); return; }
+      const opt = e.target.closest("[data-o]");
+      if (opt && cur.slides[idx].quiz) {
+        answers[cur.slides[idx].i] = +opt.dataset.o;
+        draw();
+      }
+    });
+    document.getElementById("back").addEventListener("click", closeStory);
+    document.getElementById("menu").onclick = () => links.classList.toggle("open");
+    links.addEventListener("click", () => links.classList.remove("open"));
+
+    document.getElementById("fontesBtn").addEventListener("click", () => {
+      cur = {
+        id: "fontes", slides: [{
+          img: "assets/still.jpg", kicker: "Fontes", title: "De onde veio esta aula.",
+          lead: "Treino. Não é receita. Se o protocolo da casa for diferente, vale o da casa.",
+          do: ["CFMV 1.260/2019 — o auxiliar trabalha sob orientação.", "Merck Veterinary Manual — triagem, trauma, opioides, convulsão (2025–2026).", "UC Davis CVET — sinais vitais (fev. 2026).", "ACVECC VetATLS — politrauma.", "Clinician’s Brief — fratura aberta, cefazolina, AINE só depois de estável."],
+          dont: ["Não use esta aula como receita.", "Não aplique remédio sem a ordem do veterinário."]
+        }]
+      };
+      idx = 0;
+      links.classList.remove("open");
+      story.classList.add("on");
+      if (window.matchMedia("(max-width: 899px)").matches) document.getElementById("mapa").style.display = "none";
+      draw();
+    });
+
+    let dragX = null;
+    document.getElementById("photo").addEventListener("pointerdown", e => { dragX = e.clientX; });
+    document.getElementById("photo").addEventListener("pointerup", e => {
+      if (dragX == null || !story.classList.contains("on")) return;
+      const dx = e.clientX - dragX;
+      dragX = null;
+      if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+    });
+    addEventListener("keydown", e => {
+      if (!story.classList.contains("on")) return;
+      if (e.key === "Escape") closeStory();
+      if (e.key === "ArrowRight") go(1);
+      if (e.key === "ArrowLeft") go(-1);
+    });
+
+    function fromHash() {
+      const id = (location.hash || "#mapa").slice(1);
+      if (!id || id === "mapa" || id === "topo") {
+        if (story.classList.contains("on")) {
+          story.classList.remove("on");
+          story.setAttribute("aria-hidden", "true");
+          document.getElementById("mapa").style.display = "";
+          sheet.classList.remove("on");
+          cur = null;
+        }
         return;
       }
-      tick.textContent = current.dataset.tick;
-      tick.classList.add("on");
+      if (cur && cur.id === id && story.classList.contains("on")) return;
+      openStation(id, 0, false);
     }
-    addEventListener("scroll", updateTick, { passive: true });
-    updateTick();
-    document.querySelectorAll("table.sheet").forEach(t => {
-      const heads = [...t.querySelectorAll("th")].map(th => th.textContent.trim());
-      t.querySelectorAll("tbody tr").forEach(tr => {
-        [...tr.children].forEach((td, i) => { if (i && heads[i]) td.setAttribute("data-l", heads[i]); });
-      });
-    });
-    document.getElementById("menu").onclick = () => document.getElementById("links").classList.toggle("open");
-    function revealSec(id) {
-      const sec = id ? document.querySelector(id) : null;
-      (sec || document).querySelectorAll(".reveal, .rise").forEach(el => el.classList.add("in"));
-    }
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener("click", () => {
-        document.getElementById("links").classList.remove("open");
-        revealSec(a.getAttribute("href"));
-      });
-    });
-    addEventListener("hashchange", () => revealSec(location.hash));
+    addEventListener("hashchange", fromHash);
+    fromHash();
   </script>
 </body>
 </html>
