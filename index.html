@@ -20,7 +20,7 @@
       --teal: #2f8f82;
       --hair: rgba(244, 239, 228, .13);
       --nav: 58px;
-      --p: 1;
+      --p: 0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -373,7 +373,7 @@
     .tick { display: none; }
     .rail-hint { display: none; }
     .hint-phone { display: none; }
-    .shot, .nx-nav, .nx-track { display: none; }
+    .shot, .nx-nav, .nx-track, .portal-open { display: none; }
 
     @keyframes nx-halo {
       0%, 100% { opacity: .25; }
@@ -406,7 +406,13 @@
       .brand img { height: 28px; }
       .brand .word { font-size: 13px; }
       .hero-logo { width: min(82vw, 340px); }
-      .portal { height: 180vh; }
+      .portal { height: auto; }
+      .stage { height: 100svh; }
+      .portal-open {
+        display: block;
+        height: 110svh;
+        pointer-events: none;
+      }
       .fold, .lesson, .releases, .quiz, .roster, .close { padding-left: 6vw; padding-right: 6vw; }
       .lesson, .quiz, .releases, .fold, .close { scroll-margin-top: calc(var(--nav) + 36px); }
       .sess { padding-top: 48px; padding-bottom: 72px; overflow-x: clip; min-width: 0; }
@@ -520,14 +526,12 @@
       .title .half { font-size: clamp(28px, 9vw, 56px); }
       .crop { font-size: clamp(48px, 18vw, 96px); }
 
-      html { scroll-snap-type: y mandatory; scroll-padding: 0; }
-      .portal { scroll-snap-align: none; }
+      html.past-hero { scroll-snap-type: y proximity; scroll-padding: 0; }
       .sess {
         height: 100svh;
         max-height: 100svh;
         min-height: 100svh;
         scroll-snap-align: start;
-        scroll-snap-stop: always;
         scroll-margin: 0 !important;
         overflow: hidden;
         position: relative;
@@ -535,7 +539,7 @@
         flex-direction: column;
         justify-content: flex-end;
         gap: 6px;
-        padding: calc(30svh + var(--nav)) 6vw max(22px, env(safe-area-inset-bottom)) !important;
+        padding: calc(16svh + var(--nav)) 6vw max(22px, env(safe-area-inset-bottom)) !important;
       }
       .shot {
         display: block;
@@ -687,14 +691,17 @@
         min-height: 0;
         display: flex;
         flex-wrap: nowrap;
-        gap: 12px;
+        gap: 0 !important;
         overflow-x: auto;
+        overflow-y: hidden;
         scroll-snap-type: x mandatory;
+        scroll-padding: 0;
+        scroll-behavior: auto;
         scrollbar-width: none;
-        margin: 4px -6vw 0;
-        padding: 4px 6vw 8px;
+        margin: 8px 0 0 -6vw !important;
+        padding: 0 !important;
         max-width: none;
-        width: auto;
+        width: 100vw;
         touch-action: pan-y;
         overscroll-behavior-x: contain;
         -webkit-overflow-scrolling: touch;
@@ -703,13 +710,16 @@
       .nx-scroller > *,
       .phone-story .rail > *,
       .phone-story #abcdeNav > *,
-      .phone-story #deck > * {
-        flex: 0 0 calc(100vw - 12vw);
-        width: calc(100vw - 12vw);
-        max-width: calc(100vw - 12vw);
+      .phone-story #deck > *,
+      .phone-story .sleeve {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
         scroll-snap-align: start;
+        scroll-snap-stop: always;
         min-height: 0;
-        height: auto;
+        height: 100%;
+        box-sizing: border-box;
       }
       .phone-story .releases {
         display: flex;
@@ -729,7 +739,7 @@
         position: relative;
         inset: auto;
       }
-      .phone-story .sleeve img { height: 46%; min-height: 110px; }
+      .phone-story .sleeve img { height: 54%; min-height: 180px; }
       .phone-story .abcde button {
         min-height: 0;
         height: 100%;
@@ -769,7 +779,9 @@
       .phone-story .foot { display: none !important; }
       .phone-story .btns { margin-top: 8px; }
       .phone-story #situacoes .btns { display: none; }
+      .phone-story #situacoes { padding-top: calc(10svh + var(--nav)) !important; }
       .phone-story #situacoes .lede { -webkit-line-clamp: 2; }
+      .phone-story #situacoes h2 { font-size: clamp(22px, 6vw, 28px); }
       .phone-story #usar,
       .phone-story #quiz,
       .phone-story #fecho { justify-content: flex-end; }
@@ -785,7 +797,7 @@
       html { scroll-behavior: auto; }
       .shot .halo, .shot .float, .shot .sweep { animation: none !important; }
     }
-    @media (prefers-reduced-motion: no-preference) {
+    @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
       html { scroll-behavior: smooth; }
     }
   </style>
@@ -838,6 +850,7 @@
       <p class="pin bl">Desça para <span class="amber">abrir</span></p>
       <p class="pin br">Plantão de <span class="teal">cães e gatos</span></p>
     </div>
+    <div class="portal-open" aria-hidden="true"></div>
   </section>
 
   <section class="fold sess" id="usar" data-tick="00 · Como usar">
@@ -1367,6 +1380,7 @@
         riseIO.observe(el);
       });
     }
+    if (reduced) setP(1);
     if (!reduced) {
       document.documentElement.classList.add("motion");
       setP(0);
@@ -1388,8 +1402,11 @@
       let ticking = false;
       function onScroll() {
         const rect = portal.getBoundingClientRect();
-        const max = Math.max(1, portal.offsetHeight - innerHeight);
+        const max = phone.matches
+          ? Math.max(1, innerHeight * 0.92)
+          : Math.max(1, portal.offsetHeight - innerHeight);
         setP(Math.min(1, Math.max(0, -rect.top / max)));
+        document.documentElement.classList.toggle("past-hero", -rect.top >= max);
         const fold = document.getElementById("usar").getBoundingClientRect();
         const fy = (innerHeight - fold.top) / innerHeight;
         if (orb) orb.style.transform = `translateY(${fy * 36}px) rotate(${fy * 8}deg)`;
@@ -1435,7 +1452,7 @@
     addEventListener("hashchange", () => revealSec(location.hash));
 
     const NX_SWIPE = 16;
-    const NX_MOVE = 380;
+    const NX_MOVE = 420;
     function nxChevron(dir) {
       return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${dir === "prev" ? '<path d="m15 18-6-6 6-6"/>' : '<path d="m9 18 6-6-6-6"/>'}</svg>`;
     }
@@ -1471,10 +1488,19 @@
       const nav = opts.nav;
       const track = opts.track;
       const width = () => scroller.clientWidth;
-      const indexAt = (left = scroller.scrollLeft) => {
-        const w = width();
-        if (w <= 0) return 0;
-        return Math.max(0, Math.min(total() - 1, Math.round(left / w)));
+      const slideLeft = i => {
+        const child = scroller.children[i];
+        if (!child) return 0;
+        return child.getBoundingClientRect().left - scroller.getBoundingClientRect().left + scroller.scrollLeft;
+      };
+      const indexAt = () => {
+        const x = scroller.scrollLeft + width() * 0.5;
+        let i = 0;
+        [...scroller.children].forEach((c, n) => {
+          const left = slideLeft(n);
+          if (left <= x) i = n;
+        });
+        return Math.max(0, Math.min(total() - 1, i));
       };
       function paint(i) {
         slide = i;
@@ -1498,19 +1524,28 @@
       function goTo(index, smooth = true) {
         const last = total() - 1;
         const next = Math.max(0, Math.min(last, index));
-        const target = next * width();
+        const target = slideLeft(next);
         if (next === slide && Math.abs(scroller.scrollLeft - target) < 2) return;
         const wrapBack = next === 0 && slide === last && last > 0;
         moving = true;
+        scroller.style.scrollSnapType = "none";
         scroller.scrollTo({ left: target, behavior: !smooth || wrapBack ? "auto" : "smooth" });
         paint(next);
         clearTimeout(moveTimer);
-        moveTimer = setTimeout(() => { moving = false; }, wrapBack ? 80 : NX_MOVE);
+        moveTimer = setTimeout(() => {
+          scroller.style.scrollSnapType = "";
+          const settled = slideLeft(next);
+          if (Math.abs(scroller.scrollLeft - settled) > 2) {
+            scroller.scrollTo({ left: settled, behavior: "auto" });
+          }
+          moving = false;
+        }, wrapBack ? 80 : NX_MOVE);
       }
       if (nav) {
         nav.addEventListener("click", e => {
           const btn = e.target.closest("button");
-          if (!btn) return;
+          if (!btn || moving) return;
+          e.preventDefault();
           if (btn.dataset.dir) goTo(slide + Number(btn.dataset.dir));
           else if (btn.dataset.go != null) goTo(Number(btn.dataset.go));
         });
@@ -1560,9 +1595,8 @@
         if (next !== slide) paint(next);
       }, { passive: true });
       addEventListener("resize", () => {
-        const w = width();
-        if (w <= 0) return;
-        scroller.scrollTo({ left: indexAt() * w, behavior: "auto" });
+        if (width() <= 0) return;
+        scroller.scrollTo({ left: slideLeft(slide), behavior: "auto" });
       }, { passive: true });
       function inView() {
         const sec = scroller.closest(".sess");
