@@ -314,12 +314,29 @@
       font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
       color: var(--amber); border: 1px solid var(--hair); padding: 6px 10px;
     }
-    .proto-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+    .clinic { margin-top: 28px; }
+    .proto-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
     .proto-nav button {
       background: transparent; border: 1px solid var(--hair); color: var(--ink);
-      padding: 8px 12px; cursor: pointer; font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+      padding: 10px 14px; cursor: pointer; font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+      min-height: 44px;
     }
     .proto-nav button.on { border-color: var(--amber); color: var(--amber); }
+    .clinic-grid { display: grid; grid-template-columns: 1.45fr .7fr; gap: 28px; align-items: start; }
+    .clinic-panel { border-top: 1px solid var(--hair); padding-top: 6px; min-height: 240px; }
+    .clinic-panel .sit-title { font-size: clamp(26px, 3.4vw, 40px); margin: 10px 0 8px; }
+    .clinic-side .frame { min-height: 0; }
+    .clinic-side img { width: 100%; height: 160px; object-fit: cover; min-height: 0; }
+    .src { font-size: 12px; color: var(--muted); margin-top: 14px; }
+    .quiz-themes { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 8px; }
+    .quiz-themes button {
+      background: transparent; border: 1px solid var(--hair); color: var(--ink);
+      padding: 8px 12px; cursor: pointer; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; min-height: 40px;
+    }
+    .quiz-themes button.on { border-color: var(--amber); color: var(--amber); }
+    .q .tag { margin-bottom: 8px; }
+    .why-btn { margin-top: 12px; display: none; }
+    .why-btn.show { display: inline-block; }
     .rx { display: grid; gap: 10px; }
     .rx .line { padding: 16px 0; border-top: 1px solid var(--hair); }
     .rx .line b { color: var(--amber); }
@@ -359,7 +376,8 @@
       .portal { height: 180vh; }
       .fold, .lesson, .releases, .quiz, .roster { padding-left: 6vw; padding-right: 6vw; }
       .lesson { padding-top: 56px; padding-bottom: 56px; }
-      .releases, .row, .close-top, .grid-2, .grid-3, .photo-row, .form-grid { grid-template-columns: 1fr; }
+      .releases, .row, .close-top, .grid-2, .grid-3, .photo-row, .form-grid, .clinic-grid { grid-template-columns: 1fr; }
+      .clinic-side img { height: 120px; }
       .abcde { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
       .abcde button { padding: 12px 2px; font-size: 8px; letter-spacing: .02em; }
       .abcde .ltr { font-size: 16px; margin-bottom: 4px; }
@@ -403,6 +421,7 @@
         <a href="calculadora.html">Calculadora</a>
         <a href="#checklists">Checklists</a>
         <a href="#quiz">Quiz</a>
+        <a href="#fontes">Fontes</a>
       </nav>
       <button class="menu" type="button" id="menu">Menu</button>
       <a class="pill" href="calculadora.html">Calculadora</a>
@@ -518,13 +537,13 @@
   <section class="lesson alt" id="vitais">
     <p class="label amber">03 · Números do plantão</p>
     <h2 class="display reveal">Sinais vitais: olhe a tendência.</h2>
-    <p class="talk">Estes valores são referência. Idade, medo, dor e calor mudam o número. O que mais importa é: está piorando?</p>
+    <p class="talk">Estes valores são referência de treino (UC Davis CVET 2026 e tabelas do Merck/Plumb). Medo, dor, idade e tamanho mudam o número. O que mais importa é: está piorando?</p>
     <table class="sheet">
       <thead><tr><th>O que medir</th><th>Em geral</th><th>Chame se</th><th>Anote</th></tr></thead>
       <tbody>
-        <tr><td>Temperatura (reto)</td><td>Cão 38,0–39,2 °C · Gato 38,0–39,5 °C</td><td>Muito baixo ou muito alto, principalmente com outro sinal</td><td>Valor + horário + como mediu</td></tr>
-        <tr><td>Coração (FC)</td><td>Cão 60–160 · Gato 120–220 por minuto</td><td>Muito acima, muito abaixo, ou mudança súbita</td><td>Número + se o pulso está forte ou fraco</td></tr>
-        <tr><td>Respiração (FR)</td><td>Cão 18–36 · Gato 20–40 por minuto</td><td>Esforço, cor roxa, gato de boca aberta</td><td>Número + se está pesada</td></tr>
+        <tr><td>Temperatura (reto)</td><td>Cão e gato em geral 37,8–39,2 °C (varia com medo, tamanho e ambiente)</td><td>Muito baixo ou muito alto, principalmente com outro sinal</td><td>Valor + horário + como mediu</td></tr>
+        <tr><td>Coração (FC)</td><td>Cão 60–160 (cão grande mais baixo; filhote/pequeno mais alto) · Gato no consultório costuma 140–220</td><td>Muito acima, muito abaixo, ou mudança súbita</td><td>Número + se o pulso está forte ou fraco</td></tr>
+        <tr><td>Respiração (FR)</td><td>Cão em repouso ~10–30 · Gato ~16–40 por minuto</td><td>Esforço, cor roxa, gato de boca aberta</td><td>Número + se está pesada</td></tr>
         <tr><td>Gengiva e TPC</td><td>Rosada · TPC 1–2 segundos</td><td>Pálida, roxa, ou TPC demorado</td><td>Cor + TPC + horário</td></tr>
         <tr><td>Pressão e glicose</td><td>Conforme o aparelho e o porte</td><td>Pressão baixa ou glicose baixa confirmada</td><td>Valor + aparelho + horário</td></tr>
       </tbody>
@@ -632,7 +651,7 @@
         <article class="box do"><h3>Menos estresse</h3><p class="talk">Devagar, voz baixa, chão que não escorrega, contenção curta, cobertor se estiver frio.</p></article>
         <article class="box no"><h3>Sinais de dor</h3><p class="talk">Pose estranha, vocaliza, foge, ofega sem falta de ar, protege um lado, fica agressivo ou apático. Olhe a evolução.</p></article>
         <article class="box"><h3>Frio</h3><p class="talk">Cobertor e calor indireto. Bolsa quente na pele queima. Meça de novo.</p></article>
-        <article class="box"><h3>Calor</h3><p class="talk">Menos estresse. Esfrie com orientação e pare por volta de 39,5 °C. Gelo direto na pele, não.</p></article>
+        <article class="box"><h3>Calor</h3><p class="talk">Menos estresse. Esfrie só com orientação do veterinário e continue medindo. Gelo direto na pele, não.</p></article>
       </div>
       <div>
         <div class="frame"><img src="assets/cat.jpg" alt="Gato aquecido, manejo calmo" /></div>
@@ -644,25 +663,26 @@
 
   <section class="lesson alt" id="terapeutico">
     <p class="label amber">09 · O que o veterinário costuma usar</p>
-    <h2 class="display reveal">Terapêutica da rotina.</h2>
-    <p class="talk">Isto é para você reconhecer o pedido, preparar o material e conferir a conta. A escolha é do veterinário. A conta detalhada está na calculadora.</p>
-    <div class="photo-row">
-      <div class="frame"><img src="assets/still.jpg" alt="Material de plantão" /></div>
-      <article>
-        <p class="label teal">Como você usa isto</p>
-        <ol class="steps">
-          <li>Reconheça a situação (choque, fratura, convulsão…).</li>
-          <li>Veja o remédio de primeira linha abaixo.</li>
-          <li>Pese. Abra a calculadora. Mostre o volume ao veterinário.</li>
-          <li>Só aspire depois da ordem.</li>
-          <li>Anote horário, via, dose e se melhorou.</li>
-        </ol>
-      </article>
+    <h2 class="display reveal">Toque a situação. Leia o que fazer.</h2>
+    <p class="talk">Isto não é para você escolher o remédio. É para reconhecer o pedido, preparar o material e conferir a conta. Escolha uma situação no menu — o quadro muda na hora.</p>
+    <div class="clinic">
+      <div class="proto-nav" id="protoNav" role="tablist" aria-label="Situações terapêuticas"></div>
+      <div class="clinic-grid">
+        <div class="clinic-panel" id="protoHost" role="tabpanel"></div>
+        <aside class="clinic-side">
+          <div class="frame"><img src="assets/still.jpg" alt="Material de plantão: estetoscópio, gaze, frascos" /></div>
+          <p class="label teal" style="margin-top:16px">Como usar</p>
+          <ol class="steps">
+            <li>Escolha a situação no menu.</li>
+            <li>Leia o que você faz — e o que não faz.</li>
+            <li>Pese. Abra a calculadora. Mostre o volume ao veterinário.</li>
+            <li>Só aspire depois da ordem.</li>
+          </ol>
+          <div class="btns"><a class="pill" id="calcSit" href="calculadora.html">Abrir a calculadora</a></div>
+        </aside>
+      </div>
     </div>
-    <div class="proto-nav" id="protoNav"></div>
-    <div id="protoHost"></div>
-    <p class="talk">Corticoide em dose alta <b>não</b> é rotina na coluna. Anti-inflamatório só depois que o animal já tem pressão e volume. No gato, cuidado extra com anti-inflamatório e com enrofloxacina.</p>
-    <div class="btns"><a class="pill" href="calculadora.html">Abrir a calculadora</a></div>
+    <p class="talk" style="margin-top:22px">Corticoide em dose alta <b>não</b> é rotina na coluna (conduta atual de emergência). Anti-inflamatório só depois que o animal já tem pressão e volume. No gato, enrofloxacina não passa de 5 mg/kg.</p>
   </section>
 
   <section class="lesson" id="pos">
@@ -706,11 +726,26 @@
   </section>
 
   <section class="quiz" id="quiz">
-    <p class="label amber">04 · Agora você responde</p>
-    <h2 class="display reveal">Quiz da aula.</h2>
-    <p class="talk">Oito perguntas. Leia com calma. Depois de cada uma eu te digo por quê. Errar aqui é treino — no plantão a gente não quer errar.</p>
+    <p class="label amber">12 · Agora você responde</p>
+    <h2 class="display reveal">Quiz por tema.</h2>
+    <p class="talk">Escolha o tema. Responda. Depois, se quiser, abra a explicação — com a fonte. Errar aqui é treino.</p>
+    <div class="quiz-themes" id="quizThemes"></div>
     <div id="quizHost"></div>
     <div class="score" id="scoreBox"></div>
+  </section>
+
+  <section class="lesson" id="fontes">
+    <p class="label teal">13 · De onde veio esta aula</p>
+    <h2 class="display reveal">Fontes profissionais.</h2>
+    <p class="talk">Este material é de <b>treino</b>. Não é receita. Não substitui o veterinário da casa nem a bula. As condutas de auxiliar e as faixas de dose foram alinhadas a manuais e normas abaixo — sempre no contexto de cão e gato em emergência.</p>
+    <ul class="box" style="margin-top:18px; color: var(--ink-2);">
+      <li>CFMV — Resolução nº 1.260/2019 (o que o auxiliar pode fazer, sob supervisão).</li>
+      <li>Merck Veterinary Manual — First Aid and Transport of Small Animals; Trauma in Emergency Medicine; Initial Triage and Resuscitation; Opioids Used in Emergency Practice (revisões 2025–2026).</li>
+      <li>UC Davis — California Veterinary Emergency Team, Normal Vital Signs (atualização fev. 2026).</li>
+      <li>ACVECC — VetATLS / Veterinary Committee on Trauma (abordagem do politrauma).</li>
+      <li>Clinician’s Brief — Trauma: medication therapies; Fracture management (analgésico µ primeiro; AINE depois de estável; cefazolina em fratura aberta).</li>
+    </ul>
+    <p class="src">Se o protocolo da sua ONG for diferente, vale o da casa. Em dúvida de remédio ou dose: não aplique — pergunte.</p>
   </section>
 
   <section class="close" id="fecho">
@@ -828,33 +863,101 @@
     });
 
     const protocols = [
-      { id: "choque", name: "Choque", lead: "O animal está mole, gengiva pálida, frio. Primeiro oxigênio e soro — não anti-inflamatório.", do: ["Oxigênio sem forçar máscara no gato em crise", "Acesso na veia, se o vet pedir", "Aqueça, deixe quieto", "Meça de novo depois de cada carga de soro"], dont: ["Não infunda o soro ‘até o fim’ sem olhar de novo", "Não dê anti-inflamatório no choque", "Não atrase a dor: opioide o veterinário escolhe"], drugs: "Soro Ringer (cão 10–20 mL/kg por vez, gato 5–10). Metadona para a dor. Contas na calculadora." },
-      { id: "dor", name: "Dor / fratura", lead: "Dor forte de osso: opioide. Anti-inflamatório só quando já está estável.", do: ["Anote a dor antes e meia hora depois", "Imobilizar já diminui a necessidade de remédio"], dont: ["Não dê anti-inflamatório no choque, desidratado ou com corticoide", "Não misture dois anti-inflamatórios"], drugs: "Metadona 0,2–0,5 mg/kg a cada 4–6 h. Dipirona 25 mg/kg a cada 8 h ajuda, mas não segura fratura sozinha." },
-      { id: "aberta", name: "Fratura aberta", lead: "Cubra. Não empurre o osso. Antibiótico na veia cedo, se o vet pedir.", do: ["Gaze limpa", "Controle o sangue por fora"], dont: ["Não lave com álcool no osso sem ordem", "Não sutura ferida suja na triagem"], drugs: "Cefazolina 22 mg/kg na veia a cada 6–8 h, em geral 1 a 3 dias." },
-      { id: "coluna", name: "Coluna", lead: "Bloco, bexiga, analgesia. Corticoide em mega-dose não é rotina.", do: ["Prancha e 3–4 pessoas", "Oxigênio se a respiração piora"], dont: ["Não teste dor profunda várias vezes", "Não dê corticoide ‘por protocolo’"], drugs: "Metadona ou fentanil em dose baixa para não apagar o exame neurológico." },
-      { id: "crise", name: "Convulsão", lead: "Proteja, conte o tempo, meça glicose. Crise longa: benzodiazepínico com o vet.", do: ["Anote início, duração, quantas crises", "Glicemia"], dont: ["Não ponha a mão na boca", "Não ‘espere passar’ um status"], drugs: "Diazepam 0,5 mg/kg na veia, ou 1–2 mg/kg no reto se não houver veia. Midazolam 0,2–0,5 mg/kg também serve." },
-      { id: "ar", name: "Falta de ar", lead: "Oxigênio primeiro. Não deite o dispneico à força. Fluido demais piora contusão no pulmão.", do: ["Deixe na pose em que ele respira melhor", "Kit de toracocentese pronto para o vet"], dont: ["Não force decúbito lateral", "Não encha de soro se o peito foi atingido"], drugs: "Oxigênio contínuo. Opioide se houver dor de costela — o vet escolhe a dose." }
+      {
+        id: "choque", name: "Choque",
+        lead: "Gengiva pálida, frio, mole, TPC lento. Primeiro ar e soro. Anti-inflamatório agora faz mal ao rim.",
+        do: ["Oxigênio sem forçar máscara no gato em crise", "Acesso na veia, se o veterinário pedir", "Aqueça e deixe quieto", "Meça de novo depois de cada carga de soro"],
+        dont: ["Não infunda o soro ‘até o fim’ sem olhar de novo", "Não dê anti-inflamatório no choque", "Não atrase a analgesia: o veterinário escolhe o opioide"],
+        drugs: "Soro Ringer: cão 10–20 mL/kg por vez; gato 5–10 mL/kg, em 10–15 min, e reavalia. Dor: metadona.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation of Small Animal Emergency Patients.",
+        calc: "soro"
+      },
+      {
+        id: "dor", name: "Dor / fratura",
+        lead: "Dor forte de osso: opioide µ (metadona, morfina, fentanil). Anti-inflamatório só quando já está estável.",
+        do: ["Anote a dor antes e meia hora depois", "Imobilizar o membro já diminui a necessidade de remédio", "Tenha naloxona à mão se o veterinário usar opioide"],
+        dont: ["Não dê anti-inflamatório no choque, desidratado ou junto com corticoide", "Não misture dois anti-inflamatórios"],
+        drugs: "Metadona 0,2–0,5 mg/kg (cão) a cada 4–6 h. Dipirona 25 mg/kg a cada 8 h ajuda, mas não segura fratura sozinha.",
+        src: "Merck Veterinary Manual — Opioids Used in Emergency Practice; Clinician’s Brief — Fracture management.",
+        calc: "dor"
+      },
+      {
+        id: "aberta", name: "Fratura aberta",
+        lead: "Cubra. Não empurre o osso. Antibiótico na veia cedo, se o veterinário pedir.",
+        do: ["Gaze limpa ou estéril", "Controle o sangue por fora, sem apertar demais a circulação"],
+        dont: ["Não lave com álcool no osso sem ordem", "Não sutura ferida suja na triagem"],
+        drugs: "Cefazolina 22 mg/kg na veia a cada 6–8 h (primeira linha em fratura aberta tipos I–II).",
+        src: "Clinician’s Brief — Trauma: a brief review of medication therapies (cefalosporina de 1ª geração).",
+        calc: "atb"
+      },
+      {
+        id: "coluna", name: "Coluna",
+        lead: "Mova em bloco. Analgesia. Corticoide em mega-dose não é rotina hoje.",
+        do: ["Prancha ou cobertor, 3 a 4 pessoas", "Oxigênio se a respiração piora", "Avise se não faz xixi"],
+        dont: ["Não teste dor profunda várias vezes", "Não dê corticoide ‘por protocolo’"],
+        drugs: "Opioide µ em dose que não apague o exame neurológico (metadona ou fentanil, o veterinário titula).",
+        src: "Merck Veterinary Manual — Trauma of the Spinal Column and Cord; ACVECC VetATLS.",
+        calc: "dor"
+      },
+      {
+        id: "crise", name: "Convulsão",
+        lead: "Proteja, conte o tempo, meça glicose. Crise longa: benzodiazepínico com o veterinário.",
+        do: ["Anote início, duração, quantas crises", "Afaste objetos, proteja a cabeça", "Glicemia, se houver aparelho"],
+        dont: ["Não ponha a mão na boca", "Não ‘espere passar’ uma crise de vários minutos"],
+        drugs: "Diazepam 0,5 mg/kg na veia (ou 1–2 mg/kg no reto se não houver veia). Midazolam 0,2–0,5 mg/kg na veia, músculo ou nariz.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation (manejo de convulsão).",
+        calc: "crise"
+      },
+      {
+        id: "ar", name: "Falta de ar",
+        lead: "Oxigênio primeiro. Não deite o animal à força. Soro demais piora contusão no pulmão.",
+        do: ["Deixe na pose em que ele respira melhor", "Menos estresse, especialmente no gato", "Kit de toracocentese pronto para o veterinário"],
+        dont: ["Não force deitar de lado", "Não encha de soro se o peito foi atingido"],
+        drugs: "Oxigênio contínuo. Se houver dor de costela, opioide — o veterinário escolhe a dose.",
+        src: "Merck Veterinary Manual — Trauma in Emergency Medicine (tórax: O₂ + analgesia µ).",
+        calc: "soro"
+      }
     ];
     const protoNav = document.getElementById("protoNav");
     const protoHost = document.getElementById("protoHost");
     protocols.forEach((p, i) => {
       const b = document.createElement("button");
-      b.textContent = p.name; b.dataset.id = p.id;
+      b.type = "button";
+      b.textContent = p.name;
+      b.dataset.id = p.id;
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", i === 0 ? "true" : "false");
       if (i === 0) b.classList.add("on");
       protoNav.appendChild(b);
     });
     function renderProto(id) {
       const p = protocols.find(x => x.id === id);
-      protoNav.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.id === id));
-      protoHost.innerHTML = `<p class="talk">${p.lead}</p>
+      protoNav.querySelectorAll("button").forEach(b => {
+        const on = b.dataset.id === id;
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      protoHost.innerHTML = `
+        <p class="label amber">Situação</p>
+        <h3 class="display sit-title">${p.name}</h3>
+        <p class="talk">${p.lead}</p>
         <div class="grid-2">
           <article class="box do"><h3>Faça</h3><ul>${p.do.map(x=>`<li>${x}</li>`).join("")}</ul></article>
           <article class="box no"><h3>Não faça</h3><ul>${p.dont.map(x=>`<li>${x}</li>`).join("")}</ul></article>
         </div>
-        <p class="talk" style="margin-top:16px"><b>Remédio de primeira linha:</b> ${p.drugs} <a href="calculadora.html" style="color:var(--amber)">Abrir a conta →</a></p>`;
+        <p class="talk" style="margin-top:16px"><b>O que o veterinário costuma pedir:</b> ${p.drugs}</p>
+        <p class="src">${p.src}</p>
+        <div class="btns"><a class="pill" href="calculadora.html?sit=${p.calc}">Ver a conta desta situação</a></div>`;
+      const side = document.getElementById("calcSit");
+      if (side) side.href = "calculadora.html?sit=" + p.calc;
     }
     renderProto("choque");
-    protoNav.addEventListener("click", e => { const b = e.target.closest("button"); if (b) renderProto(b.dataset.id); });
+    protoNav.addEventListener("click", e => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      renderProto(b.dataset.id);
+      protoHost.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
 
     const lists = [
       { k: "chegada", t: "Chegada de trauma", items: ["Sala segura, gente o bastante", "O que aconteceu + horário", "ABCDE", "Coração, respiração, gengiva, TPC, temperatura", "Sangramento controlado", "Coluna protegida se houver suspeita", "Membros olhados sem mexer à toa", "Veterinário avisado se houver alarme"] },
@@ -887,142 +990,161 @@
     if (prev) Object.entries(prev).forEach(([k,v]) => { const el = document.querySelector(`#fichaForm [name="${k}"]`); if (el) el.value = v; });
 
     const quiz = [
-      {
-        q: "O animal chegou com a pata torta. Por que você ainda olha o corpo inteiro?",
-        opts: [
-          "Porque a fratura sempre é o problema mais grave.",
-          "Porque o mesmo tombo pode ter machucado por dentro, mesmo sem aparecer.",
-          "Porque todo mundo com fratura precisa de remédio na hora.",
-          "Porque você deve endireitar o osso antes do raio-x."
-        ],
-        a: 1,
-        ok: "Isso. A fratura é o que você vê. Sangramento interno, falta de ar ou choque podem estar quietos. Por isso a gente estabiliza primeiro.",
-        no: "Ainda não. Pense assim: o que quebrou o osso também pode ter machucado o peito, a barriga ou a cabeça."
-      },
-      {
-        q: "Qual conjunto de sinais faz você pensar em coluna?",
-        opts: [
-          "Só um dedo mancando.",
-          "De repente não anda, pernas moles, dor forte no pescoço ou nas costas.",
-          "Só febre.",
-          "Gengiva rosada e TPC de 1 segundo."
-        ],
-        a: 1,
-        ok: "Perfeito. Se o bicho parou de andar depois de um trauma, trate como coluna até o veterinário dizer o contrário.",
-        no: "Olhe de novo. Coluna é quando o movimento muda de uma hora para outra — fraqueza, paralisia, dor nas costas."
-      },
-      {
-        q: "Para que serve a tala provisória?",
-        opts: [
-          "Para deixar o osso no lugar certo.",
-          "Para diminuir o movimento e a dor até o veterinário avaliar.",
-          "Para substituir a cirurgia.",
-          "Para o animal poder caminhar no canil."
-        ],
-        a: 1,
-        ok: "Exato. Tala agora é descanso, não correção. Quem alinha de verdade é o veterinário, com exame e, se precisar, cirurgia.",
-        no: "Cuidado. Tala de plantão não ‘conserta’ o osso. Ela só deixa o membro mais quieto."
-      },
-      {
-        q: "Tem um ferimento em cima de uma possível fratura. O que você faz?",
-        opts: [
-          "Empurra o osso para dentro e sutura.",
-          "Cobre, segura o sangramento por fora, não suja mais e chama o veterinário.",
-          "Lava com álcool e deixa ao ar.",
-          "Dá um anti-inflamatório por conta própria."
-        ],
-        a: 1,
-        ok: "Isso. Cubra com gaze limpa. Não empurre tecido nem osso para dentro da ferida.",
-        no: "Não mexa no osso e não passe produto que ninguém pediu. Cubra e chame."
-      },
-      {
-        q: "Por que não se puxa o membro para ‘alinhar’?",
-        opts: [
-          "Porque dói em quem está segurando.",
-          "Porque pode piorar a dor e machucar vaso, nervo e músculo.",
-          "Porque o osso se arruma sozinho em dez minutos.",
-          "Porque tala apertada resolve tudo."
-        ],
-        a: 1,
-        ok: "Muito bem. Forçar o membro pode rasgar o que ainda estava inteiro. Quietude é cuidado.",
-        no: "Pense no tecido em volta do osso. Puxar pode piorar o estrago."
-      },
-      {
-        q: "Quais sinais de respiração pedem o veterinário na hora?",
-        opts: [
-          "Um suspiro enquanto dorme.",
-          "Muito esforço para respirar, gengiva roxa, gato de boca aberta.",
-          "Cão calmo com 24 respirações por minuto.",
-          "Ofegação depois de brincar, que já passou."
-        ],
-        a: 1,
-        ok: "Isso. Falta de ar não espera. Oxigênio, pouco estresse, e o veterinário agora.",
-        no: "O alarme é esforço, cor roxa ou gato respirando pela boca. Isso não é ‘deixar ver se melhora’."
-      },
-      {
-        q: "Na convulsão, o que é seguro — e o que é proibido?",
-        opts: [
-          "Pôr a mão na boca e puxar a língua.",
-          "Afastar objetos, proteger a cabeça, contar o tempo. Não pôr a mão na boca nem segurar à força.",
-          "Amarrar as quatro patas e pôr gelo na cabeça.",
-          "Dar diazepam por conta e filmar depois."
-        ],
-        a: 1,
-        ok: "Certo. Você protege o animal e o relógio. Remédio só com o veterinário.",
-        no: "Nunca a mão na boca. O bicho não escolhe a mordida. Proteja o redor e conte os segundos."
-      },
-      {
-        q: "Além do número (febre, coração, respiração), o que você anota?",
-        opts: [
-          "Só o nome do tutor.",
-          "Horário, se está piorando ou melhorando, e o que foi feito.",
-          "Nada, se o número parecer ‘normal’.",
-          "Nada. O veterinário lembra."
-        ],
-        a: 1,
-        ok: "Excelente. Um número solto quase não serve. A história — horário e tendência — é o que guia a conduta.",
-        no: "Anote o relógio e a mudança. ‘Estava 38,7 e agora 39,8’ vale mais do que um valor isolado."
-      }
+      { theme: "trauma", tag: "Trauma", q: "O animal chegou com a pata torta. Por que você ainda olha o corpo inteiro?",
+        opts: ["Porque a fratura sempre é o problema mais grave.", "Porque o mesmo tombo pode ter machucado por dentro, mesmo sem aparecer.", "Porque todo mundo com fratura precisa de remédio na hora.", "Porque você deve endireitar o osso antes do raio-x."],
+        a: 1, why: "O trauma de alta energia (atropelamento, queda, briga) costuma ter várias lesões ao mesmo tempo. Uma fratura visível não exclui sangramento interno, lesão de peito ou de coluna. Por isso a regra é: primeiro estabilizar (ABCDE), depois investigar o osso.",
+        src: "Merck Veterinary Manual — Trauma in Emergency Medicine in Small Animals (2025/2026)." },
+      { theme: "trauma", tag: "Trauma", q: "O animal anda depois do atropelamento. Isso prova que está bem?",
+        opts: ["Sim. Se anda, não tem lesão grave.", "Não. Lesão interna pode aparecer horas depois.", "Sim, se a gengiva estiver rosada uma vez.", "Só se ele abanar o rabo."],
+        a: 1, why: "Muitos danos internos só ficam claros depois. O Merck recomenda internar para observar mesmo quem parece estável na chegada.",
+        src: "Merck Veterinary Manual — Trauma in Emergency Medicine: delayed injury; hospitalize for monitoring." },
+      { theme: "coluna", tag: "Coluna", q: "Qual conjunto de sinais faz você pensar em coluna?",
+        opts: ["Só um dedo mancando.", "De repente não anda, pernas moles, dor forte no pescoço ou nas costas.", "Só febre.", "Gengiva rosada e TPC de 1 segundo."],
+        a: 1, why: "Incapacidade súbita de andar, fraqueza ou paralisia, dor na coluna/pescoço e perda de xixi/fezes depois de trauma pedem movimentação em bloco e o veterinário na hora.",
+        src: "Merck Veterinary Manual — Trauma of the Spinal Column and Cord in Animals." },
+      { theme: "coluna", tag: "Coluna", q: "Como você move um animal com suspeita de coluna?",
+        opts: ["Pelas patas de trás, rápido.", "Em bloco, superfície firme, mais de uma pessoa, cabeça e tronco alinhados.", "Pela coleira, para controlar a cabeça.", "Deixa andar ‘para ver se melhora’."],
+        a: 1, why: "Torção, flexão e puxão pelas patas podem piorar a medula. Use tábua, maca ou cobertor esticado, equipe combinada.",
+        src: "Merck Veterinary Manual — First Aid and Transport of Small Animals; VetATLS." },
+      { theme: "fratura", tag: "Fratura", q: "Para que serve a tala provisória?",
+        opts: ["Para deixar o osso no lugar certo.", "Para diminuir o movimento e a dor até o veterinário avaliar.", "Para substituir a cirurgia.", "Para o animal poder caminhar no canil."],
+        a: 1, why: "Imobilização provisória reduz movimento, dor e lesão de tecido. Não é redução da fratura. Raio-x e tratamento definitivo são do veterinário.",
+        src: "Merck Veterinary Manual — Bone Fractures in Dogs and Cats; First Aid and Transport." },
+      { theme: "fratura", tag: "Fratura", q: "Por que não se puxa o membro para ‘alinhar’?",
+        opts: ["Porque dói em quem está segurando.", "Porque pode piorar a dor e machucar vaso, nervo e músculo.", "Porque o osso se arruma sozinho em dez minutos.", "Porque tala apertada resolve tudo."],
+        a: 1, why: "Manipulação repetida e alinhamento à força lesam partes moles, vasos e nervos. A prioridade do auxiliar é quietude e proteção.",
+        src: "Merck Veterinary Manual — First Aid and Transport; Bone Fractures in Dogs and Cats." },
+      { theme: "ferida", tag: "Ferida", q: "Tem ferimento em cima de uma possível fratura. O que você faz?",
+        opts: ["Empurra o osso para dentro e sutura.", "Cobre, segura o sangramento por fora, não suja mais e chama o veterinário.", "Lava com álcool e deixa ao ar.", "Dá um anti-inflamatório por conta própria."],
+        a: 1, why: "Fratura aberta: cubra com material limpo, controle hemorragia externa, não recoloque osso. Antibiótico é decisão do veterinário (em geral cefazolina na veia).",
+        src: "Clinician’s Brief — Trauma medication therapies; Merck — Bone Fractures." },
+      { theme: "ferida", tag: "Ferida", q: "Há um objeto cravado. Você tira no local?",
+        opts: ["Sim, para limpar a ferida.", "Não. Estabilize o objeto e chame o veterinário.", "Só se for um graveto fino.", "Sim, se o animal estiver andando."],
+        a: 1, why: "Retirar o objeto pode piorar o sangramento e o dano profundo. A abertura pequena por fora não mostra o caminho por dentro.",
+        src: "Merck Veterinary Manual — First Aid and Transport of Small Animals." },
+      { theme: "abcde", tag: "ABCDE", q: "Quais sinais de respiração pedem o veterinário na hora?",
+        opts: ["Um suspiro enquanto dorme.", "Muito esforço para respirar, gengiva roxa, gato de boca aberta.", "Cão calmo com 24 respirações por minuto.", "Ofegação depois de brincar, que já passou."],
+        a: 1, why: "Dispneia importante, cianose e respiração de boca aberta no gato são emergência. Oxigênio e mínimo estresse; não atrase por causa de raio-x.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation; Trauma (tórax)." },
+      { theme: "abcde", tag: "ABCDE", q: "Em que ordem você olha o animal na chegada?",
+        opts: ["Primeiro a fratura, depois o resto.", "A vias aéreas, B respiração, C circulação, D neurológico, E exposição.", "Primeiro a temperatura, sempre.", "Como o tutor pedir."],
+        a: 1, why: "ABCDE (ou ABCs) é o padrão de emergência em pequenos animais: via aérea, respiração, circulação, depois neurológico e exposição.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation of Small Animal Emergency Patients." },
+      { theme: "convulsao", tag: "Convulsão", q: "Na convulsão, o que é seguro — e o que é proibido?",
+        opts: ["Pôr a mão na boca e puxar a língua.", "Afastar objetos, proteger a cabeça, contar o tempo. Não pôr a mão na boca nem segurar à força.", "Amarrar as quatro patas e pôr gelo na cabeça.", "Dar diazepam por conta e filmar depois."],
+        a: 1, why: "Você protege o animal e cronometra. Remédio (diazepam/midazolam) só com o veterinário. Mão na boca = mordida.",
+        src: "Merck Veterinary Manual — Initial Triage (emergency management of seizures)." },
+      { theme: "convulsao", tag: "Convulsão", q: "Uma crise passa de 5 minutos. O que isso pede?",
+        opts: ["Esperar mais 10 minutos em silêncio.", "Avisar o veterinário na hora: pode ser status. Glicemia se houver aparelho.", "Dar açúcar na boca à força.", "Banho frio."],
+        a: 1, why: "Crise longa ou que volta logo é emergência. O veterinário pode usar benzodiazepínico. Hipoglicemia entra no diagnóstico diferencial — por isso a glicose, se o aparelho existir.",
+        src: "Merck Veterinary Manual — Initial Triage and Resuscitation (seizures; glucose)." },
+      { theme: "vitais", tag: "Vitais", q: "Além do número (febre, coração, respiração), o que você anota?",
+        opts: ["Só o nome do tutor.", "Horário, se está piorando ou melhorando, e o que foi feito.", "Nada, se o número parecer ‘normal’.", "Nada. O veterinário lembra."],
+        a: 1, why: "Tendência com horário vale mais que um valor isolado. Medo e dor também sobem coração e respiração — por isso o contexto.",
+        src: "Merck Veterinary Manual — Rule of 20 / monitoring the critically ill small animal." },
+      { theme: "vitais", tag: "Vitais", q: "TPC de 3 segundos e gengiva muito pálida. O que isso sugere?",
+        opts: ["Que o animal está descansando.", "Má circulação / choque — chame o veterinário agora.", "Que a temperatura está normal.", "Nada, se ele ainda anda."],
+        a: 1, why: "TPC em geral é até 2 segundos, gengiva rosada. TPC demorado e mucosa pálida apontam má perfusão. Isso entra no C do ABCDE.",
+        src: "UC Davis CVET Normal Vital Signs (2026): CRT < 2 s, MM pink/moist; Merck triage." },
+      { theme: "papel", tag: "Papel", q: "Quem escolhe o remédio e a dose?",
+        opts: ["O auxiliar, se já viu o caso uma vez.", "Só o médico-veterinário. Você prepara e confere depois da ordem.", "O tutor, pelo WhatsApp.", "Qualquer um da equipe, se tiver pressa."],
+        a: 1, why: "A Resolução CFMV 1.260/2019 coloca o auxiliar em apoio, assistência e acompanhamento sob orientação. Prescrição não é sua.",
+        src: "CFMV — Resolução nº 1.260/2019." }
     ];
 
+    const themes = [
+      { id: "all", label: "Todos" },
+      { id: "trauma", label: "Trauma" },
+      { id: "abcde", label: "ABCDE" },
+      { id: "fratura", label: "Fratura" },
+      { id: "coluna", label: "Coluna" },
+      { id: "ferida", label: "Ferida" },
+      { id: "convulsao", label: "Convulsão" },
+      { id: "vitais", label: "Vitais" },
+      { id: "papel", label: "Papel" }
+    ];
+    let quizTheme = "all";
+    const answers = {};
     const host = document.getElementById("quizHost");
-    const answers = Array(quiz.length).fill(null);
-    host.innerHTML = quiz.map((item, qi) => `
-      <article class="q">
-        <h3>${qi + 1}. ${item.q}</h3>
-        <div class="opts" data-q="${qi}">
-          ${item.opts.map((o, oi) => `<button type="button" data-o="${oi}">${o}</button>`).join("")}
-        </div>
-        <p class="feedback" id="fb-${qi}"></p>
-      </article>`).join("");
-
+    const themeBar = document.getElementById("quizThemes");
+    themes.forEach((t, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.dataset.id = t.id;
+      b.textContent = t.label;
+      if (i === 0) b.classList.add("on");
+      themeBar.appendChild(b);
+    });
+    function visibleQuiz() {
+      return quiz.map((item, i) => ({ item, i })).filter(x => quizTheme === "all" || x.item.theme === quizTheme);
+    }
+    function renderQuiz() {
+      const vis = visibleQuiz();
+      host.innerHTML = vis.map(({ item, i }, n) => `
+        <article class="q" data-i="${i}">
+          <p class="label tag amber">${item.tag}</p>
+          <h3>${n + 1}. ${item.q}</h3>
+          <div class="opts" data-q="${i}">
+            ${item.opts.map((o, oi) => `<button type="button" data-o="${oi}">${o}</button>`).join("")}
+          </div>
+          <button type="button" class="pill why-btn" data-why="${i}">Ver explicação</button>
+          <p class="feedback" id="fb-${i}"></p>
+        </article>`).join("");
+      vis.forEach(({ item, i }) => {
+        if (answers[i] == null) return;
+        const wrap = host.querySelector(`.opts[data-q="${i}"]`);
+        wrap.querySelectorAll("button").forEach(b => {
+          const idx = +b.dataset.o;
+          if (idx === item.a) b.classList.add("good");
+          else if (idx === answers[i]) b.classList.add("bad");
+        });
+        host.querySelector(`[data-why="${i}"]`).classList.add("show");
+      });
+      document.getElementById("scoreBox").classList.remove("show");
+    }
+    themeBar.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      quizTheme = b.dataset.id;
+      themeBar.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+      renderQuiz();
+    });
     host.addEventListener("click", e => {
+      const why = e.target.closest("[data-why]");
+      if (why) {
+        const i = +why.dataset.why;
+        const item = quiz[i];
+        const fb = document.getElementById("fb-" + i);
+        const picked = answers[i];
+        const right = picked === item.a;
+        fb.classList.add("show");
+        fb.innerHTML = `<b>${right ? "Por que esta está certa." : "Por que esta é a resposta."}</b> ${item.why}<span class="src" style="display:block">${item.src}</span>`;
+        return;
+      }
       const btn = e.target.closest("button[data-o]");
       if (!btn) return;
       const wrap = btn.parentElement;
-      const qi = +wrap.dataset.q;
+      const i = +wrap.dataset.q;
       const oi = +btn.dataset.o;
-      answers[qi] = oi;
+      answers[i] = oi;
       wrap.querySelectorAll("button").forEach(b => {
         b.classList.remove("good", "bad");
         const idx = +b.dataset.o;
-        if (idx === quiz[qi].a) b.classList.add("good");
+        if (idx === quiz[i].a) b.classList.add("good");
         else if (idx === oi) b.classList.add("bad");
       });
-      const fb = document.getElementById("fb-" + qi);
-      const right = oi === quiz[qi].a;
-      fb.classList.add("show");
-      fb.innerHTML = right ? `<b>Boa.</b> ${quiz[qi].ok}` : `<b>Ainda não.</b> ${quiz[qi].no}`;
-      if (answers.every(x => x !== null)) {
-        const s = answers.filter((a, i) => a === quiz[i].a).length;
+      host.querySelector(`[data-why="${i}"]`).classList.add("show");
+      const vis = visibleQuiz();
+      if (vis.every(x => answers[x.i] != null)) {
+        const s = vis.filter(x => answers[x.i] === x.item.a).length;
         const box = document.getElementById("scoreBox");
         box.classList.add("show");
-        let msg = "Revise as cartas e tente de novo. Errar aqui é treino.";
-        if (s === 8) msg = "Você está pronto para o plantão de hoje. Lembre: na dúvida, chame o veterinário.";
-        else if (s >= 6) msg = "Quase lá. Leia de novo as que errou — o porquê importa mais do que a letra.";
-        box.innerHTML = `<h3 class="display">${s} de ${quiz.length}</h3><p class="talk">${msg}</p>`;
+        let msg = "Leia a explicação das que errou. Errar aqui é treino.";
+        if (s === vis.length) msg = "Mandou bem neste tema. Na dúvida no plantão, chame o veterinário.";
+        else if (s >= Math.ceil(vis.length * 0.75)) msg = "Quase lá. Abra a explicação — o porquê importa mais do que a letra.";
+        box.innerHTML = `<h3 class="display">${s} de ${vis.length}</h3><p class="talk">${msg}</p>`;
       }
     });
+    renderQuiz();
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const stage = document.getElementById("stage");

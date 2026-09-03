@@ -364,13 +364,15 @@
 
     let especie = "cao";
     let filtro = "all";
+    const sitIn = new URLSearchParams(location.search).get("sit");
+    if (sitIn && ["soro", "dor", "atb", "crise", "apoio"].includes(sitIn)) filtro = sitIn;
     const pesoEl = document.getElementById("peso");
 
     const chips = document.getElementById("chips");
     cats.forEach(c => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "chip" + (c.id === "all" ? " on" : "");
+      b.className = "chip" + (c.id === filtro ? " on" : "");
       b.dataset.id = c.id;
       b.textContent = c.label;
       chips.appendChild(b);
